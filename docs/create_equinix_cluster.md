@@ -107,3 +107,13 @@ helm install kepler kepler/kepler --namespace kepler --create-namespace
 kubectl exec -ti -n kepler daemonset/kepler \
     -- bash -c "curl localhost:9102/metrics" | grep 'kepler_container_package_joules_total'
 ```
+
+## Delete Cluster
+
+- If the Kind cluster still exists it can be used to delete the Equinix cluster.
+
+```sh
+kubectl delete cluster wg-green-reviews
+```
+
+- Otherwise delete both servers and the elastic IP via the Equinix console.
