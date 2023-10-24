@@ -47,13 +47,16 @@ export WORKER_NODE_TYPE="m3.small.x86"
 
 # SSH key to use for access to nodes
 export SSH_KEY="<YOUR_SSH_KEY>"
+
+# Kubernetes version to install
+export KUBERNETES_VERSION="v1.28.2"
 ```
 
 - Generate cluster manifests.
 
 ```sh
 clusterctl generate cluster wg-green-reviews \
-  --kubernetes-version v1.28.2 \
+  --kubernetes-version $KUBERNETES_VERSION \
   --control-plane-machine-count=1 \
   --worker-machine-count=1 \
   > wg-green-reviews.yaml
