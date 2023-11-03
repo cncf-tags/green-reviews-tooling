@@ -1,0 +1,43 @@
+name: OpenTofu
+
+on:
+  push:
+    branches:
+    - main
+
+defaults:
+  run:
+    working-directory: infrastructure/equinix-metal
+
+jobs:
+  opentofu:
+    name: OpenTofu
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      TF_VAR_equinix_auth_token: ${{ secrets.EQUINIX_AUTH_TOKEN }}
+      TF_VAR_project_id: ${{ secrets.PROJECT_ID }}
+      TF_VAR_ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: opentofu/setup-opentofu@v1
+
+    - name: Add SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+        ssh-add ~/.ssh/id_rsa
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+
+    - name: OpenTofu init
+      run: tofu init
+
+    - name: OpenTofu plan
+      run: tofu plan
+
+    - name: OpenTofu apply
+      run: tofu apply -auto-approve
