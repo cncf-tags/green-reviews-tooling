@@ -31,17 +31,23 @@ variable "device_plan" {
 variable "equinix_auth_token" {
   description = "Authentication token for Equinix Metal"
   type        = string
-  sensitive = true
+  sensitive   = true
 }
 
 variable "project_id" {
   description = "Project ID for the Equinix Metal resources"
   type        = string
-  sensitive = true
+  sensitive   = true
 }
 
 variable "ssh_public_key" {
   description = "SSH public key for the Equinix Metal device"
   type        = string
-  sensitive = true
+  sensitive   = true
+}
+
+variable "worker_nodes" {
+  description = "List of worker node names"
+  type        = list(string)
+  default     = ["worker1"]
 }

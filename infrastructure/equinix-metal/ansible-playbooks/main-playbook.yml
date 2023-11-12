@@ -1,6 +1,0 @@
----
-# Main playbook run to provision cluster.
-# TODO Implement playbook
-- name: Empty Play
-  hosts: all
-  tasks: []
