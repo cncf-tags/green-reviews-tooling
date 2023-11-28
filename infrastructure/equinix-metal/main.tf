@@ -33,26 +33,22 @@ resource "equinix_metal_device" "control_plane" {
   project_id          = var.project_id
   depends_on          = [equinix_metal_project_ssh_key.ssh_key]
   project_ssh_key_ids = [equinix_metal_project_ssh_key.ssh_key.id]
-  user_data           = <<EOF
-  #!/bin/bash
-  curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL="${var.k3s_version}" K3S_TOKEN="${var.k3s_agent_token}" sh -s - server \
-	--node-taint CriticalAddonsOnly=true:NoExecute \
-	--flannel-backend=none \
-	--disable-network-policy
-  EOF
 
+  connection {
+    user = "root"
+    private_key = file(var.ssh_private_key_path)
+    host = self.access_public_ipv4
+  }
 
-  behavior {
-    allow_changes = [
-      "user_data"
+  provisioner "remote-exec" {
+    inline = [
+      "curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=${var.k3s_version} K3S_TOKEN=${var.k3s_agent_token} sh -s - server --node-taint CriticalAddonsOnly=true:NoExecute --flannel-backend=none --disable-network-policy",
+      "systemctl is-active --quiet k3s.service",
     ]
   }
 }
 
-// NOTE: need to check if we need to execute a command in the controlplane to verify that k3s.service is up and running
-// before we try to make workerplanes to join
-
-// to extract KUBECONFIG we need to copy file in controlplane:/etc/rancher/k3s/k3s.yaml
+// NOTE: to extract KUBECONFIG we need to copy kubeconfig in controlplane:/etc/rancher/k3s/k3s.yaml
 
 resource "equinix_metal_device" "worker" {
   for_each            = toset(var.worker_nodes)
