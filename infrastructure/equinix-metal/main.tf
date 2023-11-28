@@ -34,9 +34,13 @@ resource "equinix_metal_device" "control_plane" {
   depends_on          = [equinix_metal_project_ssh_key.ssh_key]
   project_ssh_key_ids = [equinix_metal_project_ssh_key.ssh_key.id]
   user_data           = <<EOF
-#!/bin/bash
-echo "TODO provision control-plane"
-EOF
+  #!/bin/bash
+  curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL="${var.k3s_version}" K3S_TOKEN="${var.k3s_agent_token}" sh -s - server \
+	--node-taint CriticalAddonsOnly=true:NoExecute \
+	--flannel-backend=none \
+	--disable-network-policy
+  EOF
+
 
   behavior {
     allow_changes = [
@@ -44,6 +48,11 @@ EOF
     ]
   }
 }
+
+// NOTE: need to check if we need to execute a command in the controlplane to verify that k3s.service is up and running
+// before we try to make workerplanes to join
+
+// to extract KUBECONFIG we need to copy file in controlplane:/etc/rancher/k3s/k3s.yaml
 
 resource "equinix_metal_device" "worker" {
   for_each            = toset(var.worker_nodes)
@@ -56,9 +65,9 @@ resource "equinix_metal_device" "worker" {
   project_ssh_key_ids = [equinix_metal_project_ssh_key.ssh_key.id]
   depends_on          = [equinix_metal_device.control_plane]
   user_data           = <<EOF
-#!/bin/bash
-echo "TODO provision worker"
-EOF
+  #!/bin/bash
+  curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL="${var.k3s_version}" sh -s - agent --token "${var.k3s_agent_token}" --server "https://${equinix_metal_device.control_plane.access_private_ipv4}:6443"
+  EOF
 
   behavior {
     allow_changes = [
