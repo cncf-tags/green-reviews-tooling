@@ -1,3 +1,2 @@
 infrastructure/equinix-metal/.terraform/
-infrastructure/equinix-metal/inventory.ini
 infrastructure/equinix-metal/terraform.tfvars
