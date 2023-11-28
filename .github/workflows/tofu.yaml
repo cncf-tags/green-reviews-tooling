@@ -10,7 +10,7 @@ defaults:
     working-directory: infrastructure/equinix-metal
 
 jobs:
-  opentofu:
+  tofu:
     name: OpenTofu
     runs-on: ubuntu-latest
     env:
@@ -24,21 +24,11 @@ jobs:
     - uses: actions/checkout@v3
     - uses: opentofu/setup-opentofu@v1
 
-    - name: Add SSH key
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-        ssh-add ~/.ssh/id_rsa
-      env:
-        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-
-    - name: OpenTofu init
+    - name: tofu init
       run: tofu init
 
-    - name: OpenTofu plan
+    - name: tofu plan
       run: tofu plan
 
-    - name: OpenTofu apply
+    - name: tofu apply
       run: tofu apply -auto-approve
