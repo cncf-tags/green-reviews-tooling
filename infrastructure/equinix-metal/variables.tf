@@ -58,6 +58,13 @@ variable "ssh_public_key" {
   sensitive   = true
 }
 
+
+variable "ssh_private_key_path" {
+  description = "SSH private key path for the Equinix Metal device"
+  type        = string
+  default = "~/.ssh/id_rsa"
+}
+
 variable "worker_nodes" {
   description = "List of worker node names"
   type        = list(string)
