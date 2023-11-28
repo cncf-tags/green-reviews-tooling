@@ -28,6 +28,18 @@ variable "device_plan" {
   default     = "m3.small.x86"
 }
 
+variable "k3s_version" {
+  description = "k3s version for the cluster"
+  type        = string
+  default     = "v1.28.3+k3s2"
+}
+
+variable "k3s_agent_token" {
+  description = "agent token for joining workernodes with the controlplane"
+  type = string
+  sensitive = true
+}
+
 variable "equinix_auth_token" {
   description = "Authentication token for Equinix Metal"
   type        = string
