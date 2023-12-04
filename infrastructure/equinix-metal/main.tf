@@ -4,6 +4,10 @@ terraform {
       source  = "equinix/equinix"
       version = "1.13.0"
     }
+    null = {
+      source = "hashicorp/null"
+      version = "3.2.2"
+    }
   }
 
   backend "s3" {
@@ -68,6 +72,33 @@ resource "equinix_metal_device" "worker" {
   behavior {
     allow_changes = [
       "user_data"
+    ]
+  }
+}
+
+resource "null_resource" "install_cilium_cni" {
+  depends_on          = [equinix_metal_device.control_plane, equinix_metal_device.worker]
+
+  connection {
+    user = "root"
+    private_key = file(var.ssh_private_key_path)
+    host = equinix_metal_device.control_plane.access_public_ipv4
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "echo '@@@@@@ Installing Cilium @@@@@@'",
+      "CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/main/stable.txt)",
+      "CLI_ARCH=amd64",
+      "curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}",
+      "sha256sum --check cilium-linux-${CLI_ARCH}.tar.gz.sha256sum",
+      "sudo tar xzvfC cilium-linux-${CLI_ARCH}.tar.gz /usr/local/bin",
+      "rm cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}",
+      "echo '@@@@@@ Installed Cilium @@@@@@'",
+      "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml",
+      "echo '@@@@@@ Adding Cilium CNI to cluster @@@@@@'",
+      "cilium install --version 1.14.4",
+      "cilium status --wait"
     ]
   }
 }
