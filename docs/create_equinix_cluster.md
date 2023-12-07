@@ -10,14 +10,29 @@ Kind cluster for the management cluster.
 is recommended by Equinix for MacOS.
 - We plan to automate these steps later using GitHub Actions and an IaC tool.
 
+## Create management Cluster
+
+- If you don't have a management cluster running create it with
+```sh
+kind create cluster
+```
+
+- Check that it's running locally
+
+```sh
+kubectl cluster-info --context kind-kind
+```
+
 ## Create Cluster
 
-- Log in to the Equinix Metal [console](https://console.equinix.com/) and get
+- Log in to the Equinix Metal [console](https://console.equinix.com/) and create a new project. Get
 the project API key from the project settings. If it doesn't exist create it.
 
 ```sh
 export PACKET_API_KEY="<PROJECT_API_KEY>"
 ```
+
+- Create a project ssh-key with `<YOUR_SSH_KEY>`
 
 - Install the CAPI controllers using [clusterctl](https://cluster-api.sigs.k8s.io/user/quick-start.html#install-clusterctl).
 
@@ -92,8 +107,8 @@ helm install cilium cilium/cilium  --version 1.14.2 --namespace kube-system
 
 ```sh
 apt update
-apt install linux-headers-$(uname -r)
-apt install linux-modules-extra-$(uname -r) 
+apt install -y linux-headers-$(uname -r)
+apt install -y linux-modules-extra-$(uname -r) 
 modprobe intel_rapl_common
 ```
 
