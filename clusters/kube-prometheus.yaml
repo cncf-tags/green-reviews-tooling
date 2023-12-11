@@ -1,0 +1,45 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: kube-prometheus
+  namespace: flux-system
+spec:
+  interval: 24h
+  ref:
+    branch: main
+  url: https://github.com/prometheus-operator/kube-prometheus
+  ignore: |
+    alertmanager-*
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: kube-prometheus-setup
+  namespace: flux-system
+spec:
+  interval: 24h
+  path: ./manifests/setup
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: kube-prometheus
+  timeout: 5m0s
+  wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: kube-prometheus
+  namespace: flux-system
+spec:
+  interval: 24h
+  path: ./manifests
+  dependsOn:
+  - name: kube-prometheus-setup
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: kube-prometheus
+  timeout: 5m0s
+  wait: true
