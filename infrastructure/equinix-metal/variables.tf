@@ -4,6 +4,12 @@ variable "billing_cycle" {
   default     = "hourly"
 }
 
+variable "cilium_version" {
+  description = "cilium version for the cluster"
+  type        = string
+  default     = "1.14.4"
+}
+
 variable "cluster_name" {
   description = "Name of the cluster"
   type        = string
