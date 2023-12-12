@@ -97,7 +97,7 @@ resource "null_resource" "install_cilium_cni" {
       "echo '@@@@@@ Installed Cilium @@@@@@'",
       "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml",
       "echo '@@@@@@ Adding Cilium CNI to cluster @@@@@@'",
-      "cilium install --version 1.14.4",
+      "cilium install --version ${var.cilium_version}",
       "cilium status --wait"
     ]
   }
