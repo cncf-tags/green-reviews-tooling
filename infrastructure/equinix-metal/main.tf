@@ -65,9 +65,9 @@ resource "equinix_metal_device" "worker" {
   project_ssh_key_ids = [equinix_metal_project_ssh_key.ssh_key.id]
   depends_on          = [equinix_metal_device.control_plane]
   user_data           = <<EOF
-  #!/bin/bash
-  curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL="${var.k3s_version}" sh -s - agent --token "${var.k3s_agent_token}" --server "https://${equinix_metal_device.control_plane.access_private_ipv4}:6443"
-  EOF
+#!/bin/bash
+curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL="${var.k3s_version}" sh -s - agent --token "${var.k3s_agent_token}" --server "https://${equinix_metal_device.control_plane.access_private_ipv4}:6443"
+EOF
 
   behavior {
     allow_changes = [
@@ -77,7 +77,7 @@ resource "equinix_metal_device" "worker" {
 }
 
 resource "null_resource" "install_cilium_cni" {
-  depends_on          = [equinix_metal_device.control_plane, equinix_metal_device.worker]
+  depends_on          = [equinix_metal_device.control_plane]
 
   connection {
     user = "root"
@@ -99,6 +99,25 @@ resource "null_resource" "install_cilium_cni" {
       "echo '@@@@@@ Adding Cilium CNI to cluster @@@@@@'",
       "cilium install --version ${var.cilium_version}",
       "cilium status --wait"
+    ]
+  }
+}
+
+resource "null_resource" "bootstrap_flux" {
+  depends_on          = [null_resource.install_cilium_cni]
+
+  connection {
+    user = "root"
+    private_key = file(var.ssh_private_key_path)
+    host = equinix_metal_device.control_plane.access_public_ipv4
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "curl -s https://fluxcd.io/install.sh | sudo FLUX_VERSION=${var.flux_version} bash",
+      "export GITHUB_TOKEN=${var.flux_github_token}",
+      "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml",
+      "flux bootstrap github --owner=${var.flux_github_user} --repository=green-reviews-tooling --path=clusters"
     ]
   }
 }
