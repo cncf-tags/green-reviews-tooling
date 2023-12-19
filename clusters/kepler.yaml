@@ -1,0 +1,36 @@
+# Refer: https://artifacthub.io/packages/helm/kepler/kepler?modal=install
+# Note: By default kube-prometheus does not let you scrape services deployed in namespaces other than monitoring. 
+# So if you are running Kepler outside monitoring update the kube-prometheus
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: kepler
+  namespace: flux-system
+spec:
+  interval: 24h
+  url: https://sustainable-computing-io.github.io/kepler-helm-chart
+---
+# https://fluxcd.io/flux/components/helm/helmreleases/#install-configuration
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: kepler
+  namespace: flux-system
+spec:
+  interval: 24h
+  # Values.yaml updated. Refer: https://fluxcd.io/flux/components/helm/helmreleases/#inline-values
+  values:
+    serviceMonitor:
+      enabled: "true"
+      namespace: "monitoring"
+  targetNamespace: kepler
+  install:
+    createNamespace: true
+  chart:
+    spec:
+      chart: kepler
+      version: '0.5.3'
+      sourceRef:
+        kind: HelmRepository
+        name: kepler
