@@ -34,10 +34,28 @@ variable "device_plan" {
   default     = "m3.small.x86"
 }
 
+variable "equinix_auth_token" {
+  description = "Authentication token for Equinix Metal"
+  type        = string
+  sensitive   = true
+}
+
+variable "equinix_project_id" {
+  description = "Project ID for the Equinix Metal resources"
+  type        = string
+  sensitive   = true
+}
+
 variable "flux_github_token" {
   description = "GitHub token for Flux"
   type        = string
   sensitive = true
+}
+
+variable "flux_github_repo" {
+  description = "GitHub repository for Flux"
+  type        = string
+  default     = "green-reviews-tooling"
 }
 
 variable "flux_github_user" {
@@ -47,33 +65,21 @@ variable "flux_github_user" {
 }
 
 variable "flux_version" {
-  description = "Flux cli version"
+  description = "Flux CLI version"
   type        = string
   default     = "2.1.2"
+}
+
+variable "k3s_token" {
+  description = "k3s token for joining nodes to the cluster"
+  type = string
+  sensitive = true
 }
 
 variable "k3s_version" {
   description = "k3s version for the cluster"
   type        = string
-  default     = "v1.28.3+k3s2"
-}
-
-variable "k3s_agent_token" {
-  description = "agent token for joining workernodes with the controlplane"
-  type = string
-  sensitive = true
-}
-
-variable "equinix_auth_token" {
-  description = "Authentication token for Equinix Metal"
-  type        = string
-  sensitive   = true
-}
-
-variable "project_id" {
-  description = "Project ID for the Equinix Metal resources"
-  type        = string
-  sensitive   = true
+  default     = "v1.29.0+k3s1"
 }
 
 variable "ssh_public_key" {
@@ -81,7 +87,6 @@ variable "ssh_public_key" {
   type        = string
   sensitive   = true
 }
-
 
 variable "ssh_private_key_path" {
   description = "SSH private key path for the Equinix Metal device"
