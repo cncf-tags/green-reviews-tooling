@@ -36,7 +36,7 @@ jobs:
         SSH_AUTH_SOCK: /tmp/ssh_agent.sock
 
     - name: tofu init
-      run: tofu init -upgrade
+      run: tofu init
 
     - name: tofu plan
       run: tofu plan
