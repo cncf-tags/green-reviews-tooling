@@ -151,7 +151,7 @@ resource "null_resource" "bootstrap_flux" {
     inline = [
       "export $(cat /tmp/flux_env_vars | xargs) && env && rm /tmp/flux_env_vars",
       "curl -s https://fluxcd.io/install.sh | sudo FLUX_VERSION=${var.flux_version} bash",
-      "flux bootstrap github --owner=${var.flux_github_user} --repository=${var.flux_github_repo} --path=clusters --branch=wip-tofu-test"
+      "flux bootstrap github --owner=${var.flux_github_user} --repository=${var.flux_github_repo} --path=clusters --branch=${var.flux_branch}"
     ]
   }
 }

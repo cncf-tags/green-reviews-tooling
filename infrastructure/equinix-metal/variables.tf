@@ -46,6 +46,12 @@ variable "equinix_project_id" {
   sensitive   = true
 }
 
+variable "flux_branch" {
+  description = "Git branch for Flux"
+  type        = string
+  default     = "main"
+}
+
 variable "flux_github_token" {
   description = "GitHub token for Flux"
   type        = string
