@@ -1,26 +1,20 @@
 # Full Kepler install with dashboard
 
-
 ## Install `kube-prometheus-stack`
+
 ```bash
-helm install prom prometheus-community/kube-prometheus-stack --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues
-=false  --namespace monitoring --create-namespace
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false --namespace monitoring --create-namespace
 ```
 
 ## Install `kepler`
 
-> Make sure you override the specific fields
-```diff
-serviceMonitor:
--  enabled: false
-+  enabled: true
--  namespace: ""
-+  namespace: monitoring
+```bash
+helm repo add kepler https://sustainable-computing-io.github.io/kepler-helm-chart
+helm install kepler kepler/kepler --set serviceMonitor.enabled=true --set serviceMonitor.namespace=monitoring --namespace monitoring
 ```
 
-```bash
-helm install kepler kepler/kepler --values values.yaml -n monitoring
-```
+- If Kepler pods won't start or metrics are 0 check [trouble shooting](https://sustainable-computing.io/usage/trouble_shooting/) docs.
 
 ## Add the kepler grafana dashboard
 
