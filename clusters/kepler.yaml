@@ -32,3 +32,5 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: kepler
+  dependsOn:
+    - name: kube-prometheus-stack
