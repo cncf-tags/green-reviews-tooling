@@ -59,8 +59,6 @@ resource "equinix_metal_device" "control_plane" {
   }
 }
 
-// NOTE: to extract KUBECONFIG we need to copy kubeconfig in controlplane:/etc/rancher/k3s/k3s.yaml
-
 resource "equinix_metal_device" "worker" {
   for_each            = toset(var.worker_nodes)
   hostname            = "${var.cluster_name}-${each.value}"
