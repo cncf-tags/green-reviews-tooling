@@ -1,0 +1,2 @@
+infrastructure/equinix-metal/.terraform/
+infrastructure/equinix-metal/terraform.tfvars
