@@ -53,7 +53,7 @@ resource "equinix_metal_device" "control_plane" {
 
   provisioner "remote-exec" {
     inline = [
-      "curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=${var.k3s_version} K3S_TOKEN=${var.k3s_token} sh -s - server --node-taint node-role.kubernetes.io/control-plane=:NoSchedule --flannel-backend=none --disable-network-policy --disable=traefik",
+      "curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL=${var.k3s_version} K3S_TOKEN=${var.k3s_token} sh -s - server --node-taint node-role.kubernetes.io/control-plane=:NoSchedule --flannel-backend=none --disable-network-policy",
       "systemctl is-active --quiet k3s.service",
     ]
   }
