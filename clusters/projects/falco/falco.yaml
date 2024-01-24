@@ -6,7 +6,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
   name: falco-cncf-green-review-testing
-  namespace: flux-system
+  namespace: falco
 spec:
   interval: 6h
   ref:
