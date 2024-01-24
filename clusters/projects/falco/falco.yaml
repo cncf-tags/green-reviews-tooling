@@ -17,7 +17,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: falco-cncf-green-review-testing
-  namespace: flux-system
+  namespace: falco
 spec:
   interval: 6h
   path: ./kustomize
