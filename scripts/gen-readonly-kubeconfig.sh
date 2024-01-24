@@ -12,7 +12,10 @@ metadata:
   name: crole-customresources-readyonly
   labels:
     rbac.authorization.k8s.io/aggregate-to-view: "true"
-rules: []
+rules:
+- apiGroups: [""]
+  resources: ["pods/portforward"]
+  verbs: ["create"]
 ---
 apiVersion: v1
 kind: ServiceAccount
