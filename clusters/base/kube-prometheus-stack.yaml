@@ -23,6 +23,9 @@ spec:
         kind: HelmRepository
         name: prometheus
   values:
+    grafana:
+      ingress:
+        enabled: true
     prometheus:
       prometheusSpec:
         serviceMonitorSelectorNilUsesHelmValues: false
