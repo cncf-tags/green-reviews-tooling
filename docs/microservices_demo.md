@@ -10,7 +10,7 @@ helm upgrade onlineboutique oci://us-docker.pkg.dev/online-boutique-ci/charts/on
 3. to uninstall 
 
 ```
-helm delete onlineboutique
+helm delete online-boutique
 ```
 
 # How to install it via flux
