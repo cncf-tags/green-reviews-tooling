@@ -5,7 +5,7 @@
 2. run the following command: 
 
 ```
-helm upgrade onlineboutique oci://us-docker.pkg.dev/online-boutique-ci/charts/onlineboutique --install
+helm upgrade online-boutique oci://us-docker.pkg.dev/online-boutique-ci/charts/online-boutique --install
 ```
 3. to uninstall 
 
