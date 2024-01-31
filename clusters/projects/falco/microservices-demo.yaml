@@ -21,6 +21,6 @@ spec:
       chart: online-boutique
       sourceRef:
         kind: HelmRepository
-        name: onlineboutique
-  releaseName: onlineboutique
+        name: online-boutique
+  releaseName: online-boutique
   
