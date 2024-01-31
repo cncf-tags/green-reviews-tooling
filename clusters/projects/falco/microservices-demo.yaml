@@ -1,0 +1,26 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: online-boutique
+  namespace: falco
+spec:
+  interval: 24h
+  type: oci
+  url: oci://us-docker.pkg.dev/online-boutique-ci/charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: online-boutique
+  namespace: falco
+spec:
+  interval: 24h
+  chart:
+    spec:
+      chart: online-boutique
+      sourceRef:
+        kind: HelmRepository
+        name: online-boutique
+  releaseName: online-boutique
+  
