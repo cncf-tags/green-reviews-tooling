@@ -2,7 +2,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
-  name: onlineboutique
+  name: online-boutique
   namespace: falco
 spec:
   interval: 24h
