@@ -23,5 +23,4 @@ spec:
         kind: HelmRepository
         name: onlineboutique
   releaseName: onlineboutique
-  targetNamespace: default
   
