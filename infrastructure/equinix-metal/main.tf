@@ -13,7 +13,7 @@ terraform {
   backend "s3" {
     bucket  = "tag-env-green-reviews-open-tofu"
     key     = "opentofu/terraform.tfstate"
-    region  = "eu-central-1"
+    region  = "us-east-1"
     encrypt = true
   }
 }
