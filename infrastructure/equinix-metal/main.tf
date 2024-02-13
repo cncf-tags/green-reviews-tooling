@@ -60,9 +60,9 @@ resource "equinix_metal_device" "control_plane" {
 }
 
 resource "equinix_metal_device" "worker" {
-  plan                = var.device_plan
   for_each            = var.worker_nodes
   hostname            = "${var.cluster_name}-worker-${each.key}"
+  plan                = each.plan
   metro               = var.device_metro
   operating_system    = var.device_os
   billing_cycle       = var.billing_cycle
