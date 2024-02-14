@@ -101,7 +101,7 @@ variable "ssh_private_key_path" {
 }
 
 variable "worker_nodes" {
-  description = "List of worker node names"
+  description = "Map of worker nodes and config"
   type = map(object({
     labels = map(string)
     plan   = string
