@@ -15,4 +15,4 @@ Here are some resources to learn about the project:
 ### Contributing
 All contributions are welcome, including code contributions, issues, suggestions, questions, product direction, collaborations, etc.
 
-If you are intersted in contributing to the project, head over to the [Contributing Guide](./CONTRIBUTING.md)!
+If you are interested in contributing to the project, head over to the [Contributing Guide](./CONTRIBUTING.md)!
