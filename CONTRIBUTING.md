@@ -1,4 +1,4 @@
-# Contribution Guide
+# Contributing Guide
 
 First and foremost, thank you for contributing to this project led by the
 [CNCF Environmental Sustainability TAG](https://github.com/cncf/tag-env-sustainability)!
@@ -12,30 +12,28 @@ Read on to learn more about the project and how to contribute. As always, please
 don't hesitate to ask if anything is unclear. We value questions, guidance, and
 suggestions - they help us build the right thing.
 
-### Getting Started
-Here are some resources to learn about the project:
-- **Charter**: The [Green Reviews WG Charter](https://github.com/cncf/tag-env-sustainability/blob/main/working-groups/green-reviews/charter.md) outlines the WG's motivation, scope, goals, non-goals, and deliverables.
-- **Design Document**: The [WG's design document](https://docs.google.com/document/d/19fzZW-IMv2kDNatKFHeHh7wqcEN0e2N60wzxvCGZd48/edit?usp=sharing) is a live document created and maintained by the open-source contributors of the WG. Everyone is welcome to contribute ideas, questions, comments, suggestions, and take ownership of the project's implementation.
+### Finding Work
 
-### Contributing
-All contributions are welcome, including code contributions, issues, suggestions,
-questions, product direction, collaborations, etc.
+Here are some suggestions for how to find work to contribute to the project.
 
-Some suggestions for how to get involved with the Green Reviews WG:
+First, make sure you're up to speed with the project by looking through the resources in the [Getting Started](./README.md#getting-started) guide.
 
+Then, familiarise yourself with the current work and priorities, or find someone who would be willing to pair with you:
 - Join the twice monthly [WG meetings](https://github.com/cncf/tag-env-sustainability/tree/main/working-groups/green-reviews#meetings-and-contact).
-- Discuss asynchronously in [issues](https://github.com/orgs/cncf/projects/10/views/12).
-- Post in the CNCF Slack channel [#wg-green-reviews](https://cloud-native.slack.com/archives/C060EDHN431)
-- Find an issue in the [WG GitHub board](https://github.com/orgs/cncf/projects/10/views/12).
-- Create an issue in the [WG repository](https://github.com/cncf-tags/green-reviews-tooling).
-- Feel free to reach out to the [Green Review WG leads](https://github.com/cncf/tag-env-sustainability/tree/main/working-groups/green-reviews#chairs) directly with any queries, preferably in one of the open/public channels listed above.
+- [async] Leave a comment in any of the [issues](https://github.com/orgs/cncf/projects/10/views/12).
+- [async] Contribute to discussions in the CNCF Slack channel [#wg-green-reviews](https://cloud-native.slack.com/archives/C060EDHN431).
 
-We encourage all communication to remain public by going through the communications
-channels listed above so that everyone can stay informed!
+When you feel ready to contribute:
+- Check the Backlog in the [issue board](https://github.com/orgs/cncf/projects/10/views/12). More pressing issues are labeled with `good first issue` or `help wanted`.
+- If you would like to make a feature request or raise a bug, feel free to [open an issue](https://github.com/cncf-tags/green-reviews-tooling/issues/new).
+- _If all else fails_, you could reach out to the [Green Review WG leads](https://github.com/cncf/tag-env-sustainability/tree/main/working-groups/green-reviews#chairs) directly with any queries. However, the public communication channels listed above are preferred so that we can load-balance the work.
+
+We encourage all communication to remain public by going through the communications channels listed above so that everyone can stay informed!
 
 ### Opening a Pull Request
 
-Before opening your first Pull Request, please ensure that your commits are **signed and verified**: 
-
-The Kubernetes Best Practices for faster Reviews is a great resource for PR best practices: https://git.k8s.io/community/contributors/guide/pull-requests.md#best-practices-for-faster-reviews
-
+Recommendations for a faster Pull Request review:
+- Please ensure that your commits are **signed** and **verified**.
+  - **Signed**: Include a `Signed-off-by: Author Name <authoremail@example.com>` in all commits by doing `git rebase HEAD~2 --signoff` (replace `~2` with the number of commits to sign) and then `git push -f`. More info [here](https://github.com/cncf-tags/green-reviews-tooling/pull/53/checks?check_run_id=21563565653).
+  - **Verified**: [Learn more about commit signature verification with GPG.](https://docs.github.com/en/authentication/managing-commit-signature-verification/about-commit-signature-verification#gpg-commit-signature-verification)
+- The Kubernetes Best Practices for faster Reviews is a great resource for PR best practices: https://git.k8s.io/community/contributors/guide/pull-requests.md#best-practices-for-faster-reviews
