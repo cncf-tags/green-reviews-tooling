@@ -60,9 +60,9 @@ resource "equinix_metal_device" "control_plane" {
 }
 
 resource "equinix_metal_device" "worker" {
-  for_each            = toset(var.worker_nodes)
-  hostname            = "${var.cluster_name}-${each.value}"
-  plan                = var.device_plan
+  for_each            = var.worker_nodes
+  hostname            = "${var.cluster_name}-worker-${each.key}"
+  plan                = each.plan
   metro               = var.device_metro
   operating_system    = var.device_os
   billing_cycle       = var.billing_cycle
@@ -71,7 +71,10 @@ resource "equinix_metal_device" "worker" {
   depends_on          = [equinix_metal_device.control_plane]
   user_data           = <<EOF
 #!/bin/bash
-curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL="${var.k3s_version}" sh -s - agent --token "${var.k3s_token}" --server "https://${equinix_metal_device.control_plane.access_private_ipv4}:6443"
+curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL="${var.k3s_version}" sh -s - agent \
+--token "${var.k3s_token}" \
+--server "https://${equinix_metal_device.control_plane.access_private_ipv4}:6443" \
+${join(" \\\n", [for k, v in each.value.labels : "--node-label ${k}=${v}"])}
 EOF
 
   behavior {
