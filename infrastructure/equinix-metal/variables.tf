@@ -102,6 +102,24 @@ variable "ssh_private_key_path" {
 
 variable "worker_nodes" {
   description = "List of worker node names"
-  type        = list(string)
-  default     = ["worker1"]
+  type = map(object({
+    labels = map(string)
+    plan   = string
+  }))
+  default = {
+    internal-1 = {
+      labels = {
+        cncf-project     = "wg-green-reviews"
+        cncf-project-sub = "internal"
+      },
+      plan = "m3.small.x86"
+    },
+    falco-a = {
+      labels = {
+        cncf-project     = "falco"
+        cncf-project-sub = "falco-driver-modern-ebpf"
+      },
+      plan = "m3.small.x86"
+    }
+  }
 }
