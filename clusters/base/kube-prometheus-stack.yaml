@@ -23,10 +23,46 @@ spec:
         kind: HelmRepository
         name: prometheus
   values:
+    alertmanager:
+      alertmanagerSpec:
+        nodeSelector:
+          cncf-project: wg-green-reviews
+          cncf-project-sub: internal
+
     grafana:
       ingress:
         enabled: true
+      nodeSelector:
+        cncf-project: wg-green-reviews
+        cncf-project-sub: internal
+
+    kube-state-metrics:
+      nodeSelector:
+        cncf-project: wg-green-reviews
+        cncf-project-sub: internal
+
     prometheus:
       prometheusSpec:
+        nodeSelector:
+          cncf-project: wg-green-reviews
+          cncf-project-sub: internal
+
         serviceMonitorSelectorNilUsesHelmValues: false
+
+    prometheusOperator:
+      admissionWebhooks:
+        patch:
+          nodeSelector:
+            cncf-project: wg-green-reviews
+            cncf-project-sub: internal
+
+        deployment:
+          nodeSelector:
+            cncf-project: wg-green-reviews
+            cncf-project-sub: internal
+
+      nodeSelector:
+        cncf-project: wg-green-reviews
+        cncf-project-sub: internal
+
   targetNamespace: monitoring
