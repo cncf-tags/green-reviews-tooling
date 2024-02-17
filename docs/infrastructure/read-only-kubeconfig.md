@@ -1,4 +1,6 @@
-# Read only kubeconfig
+# Cluster Access
+
+## Read only kubeconfig
 
 > Refer: [Link](https://codeforphilly.github.io/chime/operations/limited-kubeconfigs/limited-kubeconfigs.html)
 
@@ -7,7 +9,7 @@
 ## Steps to get the kubeconfig
 
 ```bash
-chmod u+x scripts/gen-readonly-kubeconfig.sh 
+chmod u+x scripts/gen-readonly-kubeconfig.sh
 ./scripts/gen-readonly-kubeconfig.sh
 ```
 
