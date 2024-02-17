@@ -16,3 +16,19 @@ Here are some resources to learn about the project:
 All contributions are welcome, including code contributions, issues, suggestions, questions, product direction, collaborations, etc.
 
 If you are interested in contributing to the project, head over to the [Contributing Guide](./CONTRIBUTING.md)!
+
+## Roadmap
+
+The roadmap contains some of the short and long-term goals of the Green Reviews WG. Timelines are estimates and may change.
+
+| Timeline | Goals |
+|---|---|
+| Q4 '23 / Before & After KubeCon NA  | Announce Green Reviews WG during KubeCon NA Keynotes  |
+| | Draft of the implementation for the sustainability footprint measurement workflow ([tracking issue]()) |
+| | Cluster up and running on Equinix ([tracking issue]()) |
+| Q1 '24 / Before KubeCon EU  | Measure the cloud native sustainability footprint of Falco [milestone](https://github.com/cncf-tags/green-reviews-tooling/milestone/1) |
+| | Present architecture as part of the maintainer track at KubeCon EU  |
+| Q2 '24 / After KubeCon EU  | Automate cloud native sustainability footprint measuring of the Falco project (alpha version) |
+|| First stats published publicly on devstats.cncf.io |
+|| Identify the next CNCF Project |
+| Q3 '24 / Before KubeCon NA  |  Reproduce workflow with next CNCF Project |
