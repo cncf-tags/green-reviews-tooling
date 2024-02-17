@@ -1,4 +1,6 @@
-# Full Kepler install with dashboard
+# Install Kepler
+
+Full installation of Kepler with dashboard.
 
 ## Install `kube-prometheus-stack`
 
