@@ -3,3 +3,7 @@ kind: Kustomization
 resources:
 - gotk-components.yaml
 - gotk-sync.yaml
+patches:
+- path: sops-patch.yaml
+  target:
+    kind: Kustomization

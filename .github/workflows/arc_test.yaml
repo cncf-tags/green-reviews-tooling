@@ -1,0 +1,11 @@
+name: Actions Runner Controller Test
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: green-reviews-runner
+    steps:
+    - run: echo "🎉 This job uses runner scale set runners!"
+    - run: sleep 30
+    - run: echo "DONE"
