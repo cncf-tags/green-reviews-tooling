@@ -39,7 +39,7 @@ This GitOps approach was chosen so that it is:
 Flux watches the manifests added to the [clusters/ directory](../clusters/) and applies or reconciles them in the cluster. The `clusters/` directory contains the following subdirecotries:
 - [base/](../../clusters/base/) contains system-level applications e.g. [Kepler](https://www.cncf.io/projects/kepler/), [Prometheus](https://www.cncf.io/projects/prometheus/), and [Grafana](https://github.com/grafana/grafana). This is the base of this architectural reference, which is used to surface energy-level metrics to test the CNCF Projects.
 - [projects/](../../clusters/projects/) contains project-specific configuration.
-  - For example, `projects/falco/` deploys the manifests to deploy Falco. The Falco installation is maintained by the Falco maintainers in the following repository: https://github.com/falcosecurity/cncf-green-review-testing.
+  - For example, `projects/falco/` deploys the manifests for Falco. The Falco installation is maintained by the Falco maintainers in the following repository: https://github.com/falcosecurity/cncf-green-review-testing. More info
 - [flux-system/](../../clusters/flux-system/) contains the default files needed to operate Flux. This difectory was created when Flux was initially bootstrapped.
 
 ```bash
