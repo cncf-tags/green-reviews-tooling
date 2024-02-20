@@ -1,13 +1,15 @@
-# How to install it manually
+# Microservice demo
+
+## Manual installation
 
 1. Get access to the dev-cluster (ask Tag/WG leads)
 
-2. run the following command: 
+2. run the following command:
 
 ```
 helm upgrade online-boutique oci://us-docker.pkg.dev/online-boutique-ci/charts/online-boutique --install
 ```
-3. to uninstall 
+3. to uninstall
 
 ```
 helm delete online-boutique
