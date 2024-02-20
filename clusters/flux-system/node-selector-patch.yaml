@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flux
+  namespace: flux-system
+spec:
+  template:
+    spec:
+      nodeSelector:
+        cncf-project: wg-green-reviews
+        cncf-project-sub: internal
