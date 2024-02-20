@@ -13,7 +13,7 @@ The infrastructure used for this project leverages infrastructure credits that E
 
 The Green Reviews WG uses Infrastructure as Code (IaC) tools as much as possible. For example, tools used in this project include [OpenTofu](https://opentofu.org/) and [k3s](https://k3s.io/) to provision the infrastructure and cluster. Flux is used to provision the cluster components (see [Cluster Management](#cluster-management) below).
 
-OpenTofu reconciles the files in [infrastructure/](../../infrastructure/):
+OpenTofu reconciles the files in [infrastructure/](../../infrastructure/) via this GitHub [action](https://github.com/cncf-tags/green-reviews-tooling/blob/main/.github/workflows/tofu.yaml):
 ```bash
 ./infrastructure
 └── equinix-metal
@@ -21,7 +21,7 @@ OpenTofu reconciles the files in [infrastructure/](../../infrastructure/):
     └── variables.tf
 ```
 
-OpenTofu provisions the Equinix Metal infrastructure using the [Equinix Terraform provider](https://github.com/equinix/terraform-provider-equinix). `user_data` provisions Kubernetes with k3s. It bootstrap the control plane, worker nodes, Cilium CNI, Flux (see below), etc.
+OpenTofu provisions the Equinix Metal infrastructure using the [Equinix Terraform provider](https://github.com/equinix/terraform-provider-equinix). `user_data` provisions Kubernetes with k3s. It bootstraps the control plane, worker nodes, Cilium CNI, Flux (see below), etc.
 
 The OpenTofu state is stored in an S3 bucket with AWS credits available through the CNCF. The authentication tokens are stored as Secrets in this repository. There is an S3 bucket in the CNCF AWS account available for the TAG ENV team to use. The bucket name is `tag-env-green-reviews-open-tofu` and the username is `tag-env-technical-user`. There is an ongoing process for creating a 1Password team account to store these secrets, see: https://github.com/cncf/tag-env-sustainability/issues/336
 

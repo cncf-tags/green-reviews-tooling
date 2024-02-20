@@ -7,9 +7,9 @@ This project aims to provide an architectural reference for how to assess the su
 There are different roles and responsibilities involved in the review of the CNCF Projects. What do CNCF Project Maintainers provide? What does the Green Reviews WG provide? These questions are being answered through the current active collaboration with the maintainers of Falco.
 
 There are certain key differences around the deployment and implementation that vary for each project. CNCF Project Maintainers can help with the following:
-- Provide a way to install the CNCF Project in the community cluster and c
-- Share any requirements for deploying the CNCF Project or running the benchmarks
-- Contribute test scenarios for each of the specific CNCF Project, which should roughly be equivalent to the [functional unit](https://sci-guide.greensoftware.foundation/R) of the tool
+- Share any requirements for deploying the CNCF Project on Kubernetes or running the benchmarks
+- Provide and maintain the installation for the CNCF Project (and any resources required by the benchmark test e.g. synthetic workloads) in the community cluster
+- Contribute test scenarios for a specific CNCF Project, which should roughly be equivalent to the [functional unit](https://sci-guide.greensoftware.foundation/R) of the tool's SCI calculation
 
 CNCF Projects are welcome to flag their interest to collaborate with the Green Reviews WG by leaving a comment in [this issue](https://github.com/cncf/tag-env-sustainability/issues/223).
 
