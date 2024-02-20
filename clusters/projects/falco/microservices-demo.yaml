@@ -18,7 +18,7 @@ spec:
   interval: 24h
   chart:
     spec:
-      chart: online-boutique
+      chart: onlineboutique
       sourceRef:
         kind: HelmRepository
         name: online-boutique
