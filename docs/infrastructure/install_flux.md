@@ -1,4 +1,6 @@
-To install flux manually run the following: 
+# Install Flux
+
+To install flux manually run the following:
 
 ```
 export GITHUB_TOKEN=our_path
