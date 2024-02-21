@@ -37,3 +37,15 @@ Recommendations for a faster Pull Request review:
   - **Signed**: Include a `Signed-off-by: Author Name <authoremail@example.com>` in all commits by doing `git rebase HEAD~2 --signoff` (replace `~2` with the number of commits to sign) and then `git push -f`. More info [here](https://github.com/cncf-tags/green-reviews-tooling/pull/53/checks?check_run_id=21563565653).
   - **Verified**: [Learn more about commit signature verification with GPG.](https://docs.github.com/en/authentication/managing-commit-signature-verification/about-commit-signature-verification#gpg-commit-signature-verification)
 - The Kubernetes Best Practices for faster Reviews is a great resource for PR best practices: https://git.k8s.io/community/contributors/guide/pull-requests.md#best-practices-for-faster-reviews
+
+### Proposals
+
+For larger feature requests, please submit a design proposal in [docs/proposals/](./docs/proposals/). This is similar to a [Kubernetes Enhancement Proposal (KEP)](https://github.com/kubernetes/enhancements) or a [Architecture Desicision Record (ADR)](https://github.com/joelparkerhenderson/architecture-decision-record).
+
+First, create a copy of the template found in the proposal directory, [docs/proposals/proposal-000-template.md](./docs/proposals/proposal-000-template.md). Rename the file to the next number in the sequence and add a name for the proposal e.g. `proposal-001-my-feature.md`. Fill in the required fields, then open a PR for review.
+
+The initial PR can be a barebone PR with the goals/non-goals sections clarified that can be merged quickly and iterated on.
+
+Initial merging of the PR does not mean that the proposal is approved. The status of the PR is defined in the `Status` section. Any KEP marked as `provisional` is a working document and subject to change.
+
+A proposal that is accepted is a living document. Even the most well-planned ideas may change at some point.
