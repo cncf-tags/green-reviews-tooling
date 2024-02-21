@@ -40,7 +40,7 @@ Recommendations for a faster Pull Request review:
 
 ### Proposals
 
-For larger feature requests, please submit a design proposal in [docs/proposals/](./docs/proposals/). This is similar to a [Kubernetes Enhancement Proposal (KEP)](https://github.com/kubernetes/enhancements) or a [Architecture Desicision Record (ADR)](https://github.com/joelparkerhenderson/architecture-decision-record).
+For larger feature requests, please submit a design proposal in [docs/proposals/](./docs/proposals/). This is similar to a [Kubernetes Enhancement Proposal (KEP)](https://github.com/kubernetes/enhancements) or a [Architecture Decision Record (ADR)](https://github.com/joelparkerhenderson/architecture-decision-record).
 
 First, create a copy of the template found in the proposal directory, [docs/proposals/proposal-000-template.md](./docs/proposals/proposal-000-template.md). Rename the file to the next number in the sequence and add a name for the proposal e.g. `proposal-001-my-feature.md`. Fill in the required fields, then open a PR for review.
 
