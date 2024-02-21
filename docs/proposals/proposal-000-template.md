@@ -33,7 +33,7 @@ rejected, withdrawn, or replaced.
 
 
 <!--
-The headings here are just starting points, add more as makes sense in what you
+The headings here are just starting points, add more as makes sense for what you
 are proposing.
 -->
 ## Table of Contents
