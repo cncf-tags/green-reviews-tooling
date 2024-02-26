@@ -28,6 +28,15 @@ resource "equinix_metal_project_ssh_key" "ssh_key" {
   public_key = var.ssh_public_key
 }
 
+resource "equinix_metal_reserved_ip_block" "elastic_ip" {
+  for_each   = toset(var.elastic_ips)
+  project_id = var.equinix_project_id
+  type       = "public_ipv4"
+  metro      = var.device_metro
+  quantity   = 1
+  description = each.value
+}
+
 resource "equinix_metal_device" "control_plane" {
   hostname            = "${var.cluster_name}-control-plane"
   plan                = var.device_plan
@@ -71,8 +80,9 @@ resource "equinix_metal_device" "worker" {
   depends_on          = [equinix_metal_device.control_plane]
   user_data           = <<EOF
 #!/bin/bash
+${each.value.elastic_ip != "" ? "echo -e \"network:\n  version: 2\n  renderer: networkd\n  ethernets:\n    lo:\n      addresses: [127.0.0.1/8, '${join("/", [cidrhost(equinix_metal_reserved_ip_block.elastic_ip[each.value.elastic_ip].cidr_notation, 0), "32"])}']\" > /etc/netplan/01-netcfg.yaml\nnetplan apply\n" : ""}
 curl -sfL https://get.k3s.io | INSTALL_K3S_CHANNEL="${var.k3s_version}" sh -s - agent \
---token "${var.k3s_token}" \
+${each.value.elastic_ip != "" ? "--node-external-ip ${cidrhost(equinix_metal_reserved_ip_block.elastic_ip[each.value.elastic_ip].cidr_notation, 0)}" : ""} --token "${var.k3s_token}" \
 --server "https://${equinix_metal_device.control_plane.access_private_ipv4}:6443" \
 ${join(" \\\n", [for k, v in each.value.labels : "--node-label ${k}=${v}"])}
 EOF
@@ -83,6 +93,11 @@ EOF
       "user_data"
     ]
   }
+}
+
+resource "equinix_metal_ip_attachment" "monitoring" {
+  device_id = equinix_metal_device.worker["internal-1"].id
+  cidr_notation = join("/", [cidrhost(equinix_metal_reserved_ip_block.elastic_ip["monitoring"].cidr_notation, 0), "32"])
 }
 
 resource "null_resource" "install_cilium_cni" {
