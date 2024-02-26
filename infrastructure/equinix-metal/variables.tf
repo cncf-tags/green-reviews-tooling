@@ -34,6 +34,12 @@ variable "device_plan" {
   default     = "m3.small.x86"
 }
 
+variable "elastic_ips" {
+  description = "List of Equinix Metal elastic ip names"
+  type        = list(string)
+  default     = ["monitoring"]
+}
+
 variable "equinix_auth_token" {
   description = "Authentication token for Equinix Metal"
   type        = string
@@ -103,11 +109,13 @@ variable "ssh_private_key_path" {
 variable "worker_nodes" {
   description = "Map of worker nodes and config"
   type = map(object({
+    elastic_ip = string
     labels = map(string)
     plan   = string
   }))
   default = {
     internal-1 = {
+      elastic_ip = "monitoring"
       labels = {
         cncf-project     = "wg-green-reviews"
         cncf-project-sub = "internal"
@@ -115,6 +123,7 @@ variable "worker_nodes" {
       plan = "m3.small.x86"
     },
     falco-a = {
+      elastic_ip = ""
       labels = {
         cncf-project     = "falco"
         cncf-project-sub = "falco-driver-modern-ebpf"
