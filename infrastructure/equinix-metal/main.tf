@@ -31,8 +31,7 @@ resource "equinix_metal_project_ssh_key" "ssh_key" {
 resource "equinix_metal_reserved_ip_block" "elastic_ip" {
   for_each   = toset(var.elastic_ips)
   project_id = var.equinix_project_id
-  type       = "public_ipv4"
-  metro      = var.device_metro
+  type       = "global_ipv4"
   quantity   = 1
   description = each.value
 }
