@@ -67,7 +67,7 @@ For specific guides on how to deploy some of these components:
 
 Flux authenticates with the `cncf-tags/green-reviews-tooling` repository via a fine-grained GitHub Personal Access Token (PAT). The GitHub PAT is a dedicated PAT for this repository alone (see [Flux docs](https://fluxcd.io/flux/installation/bootstrap/github/#github-organization) for GitHub Organizations).
 
-## Access
+## Access
 
 ### Equinix Access
 
@@ -90,5 +90,7 @@ One of the aims of this project is to create public data visualizations from the
 A public Grafana instance is available at http://147.28.134.41/ that can be accessed using the following credentials:
 - Username: `admin`
 - Password: `prom-operator`
+
+Prometheus metrics can be queried at http://147.28.134.41/explore using the same credentials.
 
 To add a new Grafana dashboard, currently we deploy them as a ConfigMap managed by Flux. For example, in the Kepler dashboard [here](../../clusters/base/kepler-grafana.yaml), `data` contains the Grafana dashboard as a raw JSON object. The [Grafana sidecar for dashboards](https://github.com/grafana/helm-charts/tree/main/charts/grafana#sidecar-for-dashboards) watches all ConfigMaps and looks for the ones with the label (`metadata.labels`) `grafana_dashboard: "1"`.
