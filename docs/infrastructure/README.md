@@ -87,7 +87,7 @@ Steps taken to create the read-only Kubeconfig can be found [here](./read-only-k
 
 One of the aims of this project is to create public data visualizations from the benchmark tests that can then be used for the assessments.
 
-A public Grafana instance is available at http://147.28.134.41/ that can be accessed using the following credentials:
+A public Grafana instance is available at http://147.75.40.83/ that can be accessed using the following credentials:
 - Username: `admin`
 - Password: `prom-operator`
 
