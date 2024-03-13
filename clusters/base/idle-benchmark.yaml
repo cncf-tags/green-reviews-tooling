@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: idle-benchmark-job
+  namespace: monitoring
+spec:
+  schedule: '* */1 * * *'
+  jobTemplate:
+    metadata:
+      name: idle-benchmark-job
+    spec:
+      template:
+        spec:
+          containers:
+          - name: idle-benchmark-job
+            image: busybox
+            imagePullPolicy: IfNotPresent
+            command:
+            - echo
+            - "idle benchmark"            
+          restartPolicy: OnFailure
