@@ -1,6 +1,6 @@
 # Software Carbon Intensity
 
-SCI = ([E](https://sci-guide.greensoftware.foundation/E) * [I](https://sci-guide.greensoftware.foundation/I)) + [M](https://sci-guide.greensoftware.foundation/M) per [R](https://sci-guide.greensoftware.foundation/R)
+SCI = ([E](https://sci-guide.greensoftware.foundation/E) * [I](https://sci-guide.greensoftware.foundation/I) * [PUE](https://learn.greensoftware.foundation/energy-efficiency/#power-usage-effectiveness)) + [M](https://sci-guide.greensoftware.foundation/M) per [R](https://sci-guide.greensoftware.foundation/R)
 
 ## Energy (E)
 
@@ -9,6 +9,13 @@ TBC
 ## Energy Carbon Intensity (I)
 
 TBC
+
+## Power Usage Efectiveness (PUE)
+Is a ratio that describes how efficiently a data center uses energy for computing. Specifically, how much energy is used by the computing equipment in contrast to cooling and any other overhead that supports the data center.
+
+PUE = Total Facility Energy / IT Equipment Energy =  1 + Non IT Facility Energy / IT Equipment Energy
+
+An ideal PUE is 1.0. Anything that isn't considered a computing device in a data center (e.g. lighting, cooling, etc.) falls into the category of facility energy consumption.
 
 ## Embodied (M)
 
