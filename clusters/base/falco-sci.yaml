@@ -6,7 +6,7 @@ metadata:
   labels:
      grafana_dashboard: "1"
 data:
-  kepler-dashboard.json: |-
+  falco-sci-dashboard.json: |-
     {
       "annotations": {
         "list": [
