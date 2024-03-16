@@ -475,7 +475,7 @@ data:
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "(sum(increase(\n         (kepler_container_joules_total{container_name=\"falco\"}[15m:1m])\n      )\n   ) * $watt_per_second_to_kWh * $emissions_france * $pue_equinox\n) + $embodied_carbon_m3",
+              "expr": "(sum(increase(\n         (kepler_container_joules_total{container_name=\"falco\"}[15m:1m])\n      )\n   ) * $watt_per_second_to_kWh * $emissions_france * $pue_equinix\n) + $embodied_carbon_m3",
               "instant": false,
               "legendFormat": "__auto",
               "range": true,
