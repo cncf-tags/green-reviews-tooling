@@ -520,7 +520,7 @@ data:
             "description": "Power Usage Effectiveness for Equinix data centers",
             "hide": 2,
             "label": "Power Usage Effectiveness",
-            "name": "pue_equinox",
+            "name": "pue_equinix",
             "query": "1.46",
             "skipUrlSync": false,
             "type": "constant"
