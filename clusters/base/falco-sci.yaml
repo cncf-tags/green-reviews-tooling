@@ -517,7 +517,7 @@ data:
             "type": "constant"
           },
           {
-            "description": "Power Usage Effectiveness for Equinox data centers",
+            "description": "Power Usage Effectiveness for Equinix data centers",
             "hide": 2,
             "label": "Power Usage Effectiveness",
             "name": "pue_equinox",
