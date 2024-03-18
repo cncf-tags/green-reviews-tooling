@@ -28,9 +28,13 @@ In the [SCI dashboard](https://github.com/cncf-tags/green-reviews-tooling/blob/3
 
 ## Energy Carbon Intensity (I)
 
-> Unit: carbon per kilowatt hours (gCO2eq/kWh)
+The carbon intensity of electricity is a measure of how much carbon (CO2eq) emissions are produced per kilowatt-hour (kWh) of electricity consumed.
 
-TBC
+- The green reviews cluster is physically located in Equinix Metal's [Paris metro](https://deploy.equinix.com/locations/).
+- For carbon intensity we use the 2023 annual average value for France from the [CO2.js](https://github.com/thegreenwebfoundation/co2.js/blob/main/data/output/average-intensities.json#L422-L427) library from The Green Web Foundation.
+- CO2.js uses data published by [Ember](https://ember-climate.org/data/) under a CC-BY-4.0 license. 
+
+> Unit: carbon per kilowatt hours (gCO2eq/kWh)
 
 ## Embodied (M)
 
