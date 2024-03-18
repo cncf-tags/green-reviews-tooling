@@ -6,11 +6,11 @@ The SCI can be used to reduce the total carbon footprint of software. However it
 
 The top-level formula of the SCI is the following:
 
-> SCI = ([Energy (E)][2] * [Emissions Factor (I)][3]) + [Embodied Emissions (M)][4] per [Functional Unit (R)][5]
+> SCI = ([Energy (E)](#energy-e) * [Emissions Factor (I)](#energy-carbon-intensity-i)) + [Embodied Emissions (M)] per [Functional Unit (R)][5]
 
 ## Energy (E)
 
-Energy (E) represents the operational energy consumed by the physical hardware that the software system operates on. More info in the [SCI Guide][2].
+Energy (E) represents the operational energy consumed by the physical hardware that the software system operates on. More info in the [SCI Guide on (E)][2].
 
 > Unit: kilowatt hours (kWh)
 
@@ -28,17 +28,17 @@ In the [SCI dashboard](https://github.com/cncf-tags/green-reviews-tooling/blob/3
 
 ## Energy Carbon Intensity (I)
 
-The carbon intensity of electricity is a measure of how much carbon (CO2eq) emissions are produced per kilowatt-hour (kWh) of electricity consumed.
+The carbon intensity of electricity is a measure of how much carbon (CO2eq) emissions are produced per kilowatt-hour (kWh) of electricity consumed. More info in the [SCI Guide on (I)][3].
 
 - The green reviews cluster is physically located in Equinix Metal's [Paris metro](https://deploy.equinix.com/locations/).
 - For carbon intensity we use the 2023 annual average value for France from the [CO2.js](https://github.com/thegreenwebfoundation/co2.js/blob/main/data/output/average-intensities.json#L422-L427) library from The Green Web Foundation.
-- CO2.js uses data published by [Ember](https://ember-climate.org/data/) under a CC-BY-4.0 license. 
+- CO2.js uses data published by [Ember](https://ember-climate.org/data/) under a CC-BY-4.0 license.
 
 > Unit: carbon per kilowatt hours (gCO2eq/kWh)
 
 ## Embodied (M)
 
-Embodied carbon (also known as embedded carbon) is the amount of carbon emitted during the creation and disposal of a hardware device. More info in the [SCI Guide][4].
+Embodied carbon (also known as embedded carbon) is the amount of carbon emitted during the creation and disposal of a hardware device. More info in the [SCI Guide on (M)][4].
 
 > Unit: grams of carbon (gCO2eq)
 
@@ -77,7 +77,9 @@ CPU: Intel Xeon E-2378G [datasheet](https://www.intel.com/content/www/us/en/prod
 
 ## Functional Unit (R)
 
-TBC
+The SCI is the rate of carbon emissions per one functional unit. The functional unit describes how the software application scales e.g. per additional user, API call, etc. Since each software application scales differently, each one also has a different functional unit. More information can be found in the [SCI Guide on (R)][5].
+
+The SCI specification includes benchmark tests as a [suggested functional unit](https://sci.greensoftware.foundation/#functional-unit). The benchmark tests generate kernel events that Falco reacts to. The functional unit of the benchmark tests will be to reach a target kernel event rate e.g. X kernel events for Y minute(s).
 
 <!-- Sources -->
 [1]: https://sci.greensoftware.foundation/
