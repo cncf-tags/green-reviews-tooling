@@ -10,7 +10,7 @@ TBC
 
 TBC
 
-## Power Usage Effectiveness (PUE)
+### Power Usage Effectiveness (PUE)
 
 Is a ratio that describes how efficiently a data center uses energy for computing. Specifically, how much energy is used by the computing equipment in contrast to cooling and any other overhead that supports the data center.
 
