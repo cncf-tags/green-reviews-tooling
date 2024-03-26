@@ -46,8 +46,15 @@ export TF_VAR_ssh_public_key="*** Your SSH public key ***"
 
 ```sh
 tofu workspace list
+
   default
 * dev
+```
+
+- If the dev workspace doesn't exist create it.
+
+```sh
+tofu workspace new dev
 ```
 
 - Ensure you are using the **dev** workspace
