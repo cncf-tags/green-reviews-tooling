@@ -166,7 +166,7 @@ data:
               "showLineNumbers": false,
               "showMiniMap": false
             },
-            "content": "\n\n\n# [SCI Equation = ](https://sci-guide.greensoftware.foundation/)\n# [(E * I * PUE) + M per R](https://sci-guide.greensoftware.foundation/)",
+            "content": "\n\n\n# [SCI Equation = ](https://sci-guide.greensoftware.foundation/)\n# [(E * I) + M per R](https://sci-guide.greensoftware.foundation/)",
             "mode": "markdown"
           },
           "pluginVersion": "10.2.3",
