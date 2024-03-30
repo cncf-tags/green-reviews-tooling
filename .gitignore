@@ -1,2 +1,4 @@
 infrastructure/equinix-metal/.terraform/
 infrastructure/equinix-metal/terraform.tfvars
+infrastructure/equinix-metal/.terraform.lock.hcl
+rm
