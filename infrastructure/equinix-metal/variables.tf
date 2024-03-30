@@ -79,7 +79,7 @@ variable "flux_github_user" {
 variable "flux_version" {
   description = "Flux CLI version"
   type        = string
-  default     = "2.1.2"
+  default     = "2.2.3"
 }
 
 variable "k3s_token" {

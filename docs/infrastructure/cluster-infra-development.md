@@ -11,7 +11,7 @@ Our cluster runs on physical servers from Equinix Metal contributed to CNCF.
 
 - Install the [tofu](https://opentofu.org/docs/intro/install/) CLI
 - Fork the tooling repo https://github.com/cncf-tags/green-reviews-tooling
-- Get access to the `Green Reviews Cluster Dev` vault in the TAG ENV 1Password account (please post in the #tag-env-wg-green-reviews channel in CNCF Slack so we have tracking for your request) 
+- Get access to the `Green Reviews Cluster Dev` vault in the TAG ENV 1Password account (please post in the #tag-env-wg-green-reviews channel in CNCF Slack so we have tracking for your request)
 
 ## Setup
 
@@ -42,6 +42,12 @@ export TF_VAR_flux_github_branch="*** Your branch ***"
 export TF_VAR_ssh_public_key="*** Your SSH public key ***"
 ```
 
+- Initialize tofu
+
+```sh
+tofu init
+```
+
 - Check tofu workspaces
 
 ```sh
@@ -52,6 +58,9 @@ tofu workspace list
 ```
 
 - If the dev workspace doesn't exist create it.
+
+> [!CAUTION]
+> check if its already created or not
 
 ```sh
 tofu workspace new dev
@@ -69,11 +78,6 @@ Follow the usual tofu workflow. See [core workflow](https://opentofu.org/docs/in
 for more details.
 
 - Make changes
-- Initialize tofu
-
-```sh
-tofu init
-```
 
 - Review changes
 
