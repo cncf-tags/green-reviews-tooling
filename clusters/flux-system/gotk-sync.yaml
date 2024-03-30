@@ -11,7 +11,7 @@ spec:
     branch: main
   secretRef:
     name: flux-system
-  url: ssh://git@github.com/cncf-tags/green-reviews-tooling
+  url: ssh://git@github.com/dipankardas011/green-reviews-tooling
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
