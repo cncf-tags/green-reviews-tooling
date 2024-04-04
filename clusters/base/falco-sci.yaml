@@ -27,7 +27,6 @@ data:
       "editable": true,
       "fiscalYearStartMonth": 0,
       "graphTooltip": 0,
-      "id": 31,
       "links": [],
       "liveNow": false,
       "panels": [
@@ -476,7 +475,7 @@ data:
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "(sum(increase(\n         (kepler_container_joules_total{container_name=\"falco\"}[15m:1m])\n      )\n   ) * $watt_per_second_to_kWh * $emissions_france\n) + $embodied_carbon_m3",
+              "expr": "(sum(increase(\n         (kepler_container_joules_total{container_name=\"falco\"}[15m:1m])\n      )\n   ) * $watt_per_second_to_kWh * $emissions_france * $pue_equinix\n) + $embodied_carbon_m3",
               "instant": false,
               "legendFormat": "__auto",
               "range": true,
@@ -516,6 +515,15 @@ data:
             "query": "3.92",
             "skipUrlSync": false,
             "type": "constant"
+          },
+          {
+            "description": "Power Usage Effectiveness for Equinix data centers",
+            "hide": 2,
+            "label": "Power Usage Effectiveness",
+            "name": "pue_equinix",
+            "query": "1.46",
+            "skipUrlSync": false,
+            "type": "constant"
           }
         ]
       },
@@ -527,6 +535,6 @@ data:
       "timezone": "",
       "title": "Falco Software Carbon Intensity (SCI) index",
       "uid": "fb32062b-eb1c-414a-965a-c529d39ef2be",
-      "version": 23,
+      "version": 25,
       "weekStart": ""
     }

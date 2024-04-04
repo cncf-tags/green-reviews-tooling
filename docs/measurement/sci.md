@@ -36,6 +36,16 @@ The carbon intensity of electricity is a measure of how much carbon (CO2eq) emis
 
 > Unit: carbon per kilowatt hours (gCO2eq/kWh)
 
+### Power Usage Effectiveness (PUE)
+
+Is a ratio that describes how efficiently a data center uses energy for computing. Specifically, how much energy is used by the computing equipment in contrast to cooling and any other overhead that supports the data center.
+
+PUE = Total Facility Energy / IT Equipment Energy =  1 + (Non IT Facility Energy / IT Equipment Energy)
+
+An ideal PUE is 1.0. Anything that isn't considered a computing device in a data center (e.g. lighting, cooling, etc.) falls into the category of facility energy consumption.
+
+Equinix published this information for their data centers as part of their latest [2022 sustainability report](https://sustainability.equinix.com/wp-content/uploads/2023/05/Equinix-Inc.-2022-Sustainability-Report-Highlights-1.pdf).
+
 ## Embodied (M)
 
 Embodied carbon (also known as embedded carbon) is the amount of carbon emitted during the creation and disposal of a hardware device. More info in the [SCI Guide on (M)][4].
