@@ -1,6 +1,7 @@
-# Short, descriptive title
+# Deploy & trigger GitHub Action workflow from an upstream CNCF project
 
-Deploy - trigger GitHub Action workflow from an upstream release, including the binary
+To trigger our benchmarking task to run when a particular cncf project gets certain kinds of event, let's say its `release`.
+Some more info about this proposal is also present in [#83](https://github.com/cncf-tags/green-reviews-tooling/issues/83)
 
 ## Authors
 
@@ -42,13 +43,15 @@ rejected, withdrawn, or replaced.
 
 ## Summary
 
-This proposal focuses on automating the Green Review pipeline for Falco by drafting a proposal, defining a trigger mechanism, involving the Falco team in the implementation, deploying Falco using Flux, and testing the deployment process. The proposal also includes considerations for a phased implementation of the automation pipeline, starting with manual triggering and moving towards automation via a webhook.
+This proposal focuses on automating the Green Reviews pipeline for Falco by defining a trigger mechanism, involving the Falco team in the implementation, deploying Falco using Flux, and testing the deployment process. In future the pipeline will support more CNCF projects as they are onboarded.
+
+The proposal also includes considerations for a phased implementation of the automation, starting with manual triggering followed by automation via a webhook.
 
 
 ## Motivation
 
-To automate the trigger of Falco deployment when upstream aka origin repo creates a event.
-we will then deploy the workfload. once done with the 
+To automate the trigger of Falco deployment when upstream aka origin repo creates an event.
+we will then deploy the benchmarking workfload for the project, in this case its, Falco
 
 ### Goals
 
@@ -59,7 +62,7 @@ we will then deploy the workfload. once done with the
 
 ### Non-Goals
 
-- Creating cluster nodes on demand Refer #67
+- Creating cluster nodes on demand. [Future Goal Issue #67](https://github.com/cncf-tags/green-reviews-tooling/issues/67)
 
 
 ### Linked Docs
