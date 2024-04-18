@@ -73,14 +73,58 @@ we will then deploy the benchmarking workfload for the project, in this case its
 
 ## Proposal
 
-<!--
-This is where we get down to the specifics of what the proposal actually is:
-outlining your solution to the problem described in the Motivation section.
-This should have enough detail that reviewers can understand exactly what
-you're proposing, but should not include things like API designs or
-implementation. The "Design Details" section below is for the real
-nitty-gritty.
--->
+got an example GitHub action workflow file
+```yaml
+name: TriggerTest
+
+on:
+  workflow_dispatch:
+    inputs:
+      cncf_project:
+        description: 'CNCF Project Name'
+        required: true
+        default: 'falco'
+      cncf_project_sub:
+        description: 'CNCF Project Subcomponent'
+        required: false
+        default: 'modern-ebpf'
+      version:
+        description: 'Version'
+        required: true
+        default: '0.37.0'
+
+jobs:
+  echo-inputs:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Echo Inputs
+      run: |
+        echo "Add logic to deploy ${{ github.event.inputs.cncf_project }} ${{ github.event.inputs.cncf_project_sub }}"
+        echo "version ${{ github.event.inputs.version }}"
+```
+
+for invoking this
+
+```bash
+curl -X POST \
+     -H "Accept: application/vnd.github.v3+json" \
+     -H "Authorization: token $GITHUB_PAT" \
+     https://api.github.com/repos/rossf7/green-reviews-tooling/actions/workflows/trigger_test.yaml/dispatches \
+     -d '{"ref":"main", "inputs": {"cncf_project": "falco", "cncf_project_sub": "modern-ebpf","version":"0.37.0"}}'
+```
+
+> [!NOTE]
+> Here fine grained PAT is used
+> - Read access to code and metadata
+> - Read write access to actions
+
+
+> [!IMPORTANT]
+> We'll need to create these and provide it to the Falco team, aka any future CNCF project we are going to use for benchmarking.
+
 
 ### User Stories (Optional)
 
@@ -116,8 +160,8 @@ How will this affect the benchmark tests, CNCF Project Maintainers, pipeline mai
 
 ## Design Details
 
-> [!CAUTION]
-> TODO
+> [!TODO]
+> Add here
 
 <!--
 This section should contain enough information that the specifics of your
