@@ -73,38 +73,7 @@ we will then deploy the benchmarking workfload for the project, in this case its
 
 ## Proposal
 
-got an example GitHub action workflow file
-```yaml
-name: TriggerTest
-
-on:
-  workflow_dispatch:
-    inputs:
-      cncf_project:
-        description: 'CNCF Project Name'
-        required: true
-        default: 'falco'
-      cncf_project_sub:
-        description: 'CNCF Project Subcomponent'
-        required: false
-        default: 'modern-ebpf'
-      version:
-        description: 'Version'
-        required: true
-        default: '0.37.0'
-
-jobs:
-  echo-inputs:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Echo Inputs
-      run: |
-        echo "Add logic to deploy ${{ github.event.inputs.cncf_project }} ${{ github.event.inputs.cncf_project_sub }}"
-        echo "version ${{ github.event.inputs.version }}"
-```
+got an example GitHub action workflow file [Refer](./files/trigger-deploy.yml)
 
 for invoking this
 
@@ -112,7 +81,7 @@ for invoking this
 curl -X POST \
      -H "Accept: application/vnd.github.v3+json" \
      -H "Authorization: token $GITHUB_PAT" \
-     https://api.github.com/repos/rossf7/green-reviews-tooling/actions/workflows/trigger_test.yaml/dispatches \
+     https://api.github.com/repos/cncf-tags/green-reviews-tooling/actions/workflows/pipeline.yaml/dispatches \
      -d '{"ref":"main", "inputs": {"cncf_project": "falco", "cncf_project_sub": "modern-ebpf","version":"0.37.0"}}'
 ```
 
