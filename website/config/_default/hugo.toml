@@ -1,5 +1,5 @@
 baseURL = "https://docs.green-reviews.tag-env-sustainability.cncf.io/"
-title = "CNCF Green Reviews WG Documentation"
+title = "Home"
 canonifyURLs = false
 disableAliases = true
 disableHugoGeneratorInject = true

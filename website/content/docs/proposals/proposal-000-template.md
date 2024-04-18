@@ -6,7 +6,7 @@ date: 2023-09-07T16:04:48+02:00
 lastmod: 2023-09-07T16:04:48+02:00
 draft: false
 slug: 000-proposal-template
-weight: 820
+weight: 940
 toc: true
 seo:
   title: "" # custom title (optional)
