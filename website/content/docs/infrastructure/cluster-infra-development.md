@@ -1,12 +1,12 @@
 ---
-title: "Cluster infra development"
-description: "This section provides details around development of cluster infrastructure."
+title: "Cluster infrastructure development"
+description: "This section provides details around development of Kubernetes cluster infrastructure that sustainability assessment platform is built upon."
 summary: ""
 date: 2023-09-07T16:04:48+02:00
 lastmod: 2023-09-07T16:04:48+02:00
 draft: false
 slug: cluster-infra-development
-weight: 810
+weight: 820
 toc: true
 seo:
   title: "" # custom title (optional)
@@ -24,8 +24,8 @@ Our cluster runs on physical servers from Equinix Metal contributed to CNCF.
 
 ## Pre-Requisites
 
-- Install the [tofu](https://opentofu.org/docs/intro/install/) CLI
-- Fork the tooling repo https://github.com/cncf-tags/green-reviews-tooling
+- Install the [tofu](https://opentofu.org/docs/intro/install) CLI
+- Fork the tooling repo [green-reviews-tooling](https://github.com/cncf-tags/green-reviews-tooling)
 - Get access to the `Green Reviews Cluster Dev` vault in the TAG ENV 1Password account (please post in the #tag-env-wg-green-reviews channel in CNCF Slack so we have tracking for your request)
 
 ## Setup
@@ -89,7 +89,7 @@ tofu workspace select dev
 
 ## Making changes
 
-Follow the usual tofu workflow. See [core workflow](https://opentofu.org/docs/intro/core-workflow/)
+Follow the usual tofu workflow. See [core workflow](https://opentofu.org/docs/intro/core-workflow)
 for more details.
 
 - Make changes

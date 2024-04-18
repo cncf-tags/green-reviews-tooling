@@ -1,4 +1,19 @@
-# Cluster Access
+---
+title: "Cluster Access"
+description: "This section provides details for how to access the infrastructure Kubernetes cluster."
+summary: ""
+date: 2023-09-07T16:04:48+02:00
+lastmod: 2023-09-07T16:04:48+02:00
+draft: false
+slug: cluster-access
+weight: 860
+toc: true
+seo:
+  title: "" # custom title (optional)
+  description: "" # custom description (recommended)
+  canonical: "" # custom canonical URL (optional)
+  noindex: false # false (default) or true
+---
 
 ## Read only kubeconfig
 
@@ -14,6 +29,7 @@ chmod u+x scripts/gen-readonly-kubeconfig.sh
 ```
 
 ## Test out the kubeconfig
+
 ```bash
 export KUBECONFIG=${PWD}/green-reviews-cluster-readonly-config
 ```
