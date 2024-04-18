@@ -5,5 +5,4 @@
   [en.params]
     languageISO = "EN"
     languageTag = "en-US"
-    footer = 'Brought to you by <a class="text-muted" href="https://gethyas.com/">Hyas</a>'
-    alertText = '<a class="alert-link stretched-link fw-normal" href="/blog/example-post/">Doks version 1.0 just shipped!</a>'
+    footer = 'Powered by <a class="text-muted" href="https://gethyas.com/">Hyas</a> on <a class="text-muted" href="https://www.netlify.com">Netlify</a>'

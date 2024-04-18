@@ -83,9 +83,9 @@ The Boavizta API uses data published by the manufacturers. You can read about th
 
 ### M Per Instance Type
 
-| Instance Type	| TE (kgCO2eq) | TiR (minutes) | EL (years) | M (gCO2eq) |
+| Instance Type | TE (kgCO2eq) | TiR (minutes) | EL (years) | M (gCO2eq) |
 |---------------|--------------|---------------|------------|------------|
-| m3.small.x86  | 550          | 15            | 4          |	3.92     |
+| m3.small.x86  | 550          | 15            | 4          | 3.92       |
 
 **m3.small.x86**
 
