@@ -48,7 +48,6 @@ Must be one of provisional, implementable, implemented, deferred,
 rejected, withdrawn, or replaced.
 -->
 
-
 <!--
 The headings here are just starting points, add more as makes sense for what you
 are proposing.
