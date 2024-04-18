@@ -1,3 +1,20 @@
+---
+title: "000 - Proposal Template"
+description: "This is a change proposal template for the Green Reviews WG repository."
+summary: ""
+date: 2023-09-07T16:04:48+02:00
+lastmod: 2023-09-07T16:04:48+02:00
+draft: false
+slug: 000-proposal-template
+weight: 820
+toc: true
+seo:
+  title: "" # custom title (optional)
+  description: "" # custom description (recommended)
+  canonical: "" # custom canonical URL (optional)
+  noindex: false # false (default) or true
+---
+
 <!--
 How to use this template:
 
