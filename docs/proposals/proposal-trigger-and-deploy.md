@@ -1,4 +1,4 @@
-# GRP-001 - Trigger and Deploy GitHub Action workflow from an upstream CNCF project
+# Proposal-001 - Trigger and Deploy GitHub Action workflow from an upstream CNCF project
 
 To trigger our benchmarking task to run when a particular CNCF project gets certain kinds of event, such as a new `release`.
 
@@ -38,21 +38,40 @@ rejected, withdrawn, or replaced.
 
 ## Summary
 
-This proposal focuses on automating the Green Reviews pipeline for Falco by defining a trigger mechanism, involving the Falco team in the implementation, deploying Falco using Flux, and testing the deployment process. In future the pipeline will support more CNCF projects as they are onboarded.
+This proposal focuses on automating the Green Reviews pipeline for Falco by 
+defining a trigger mechanism, involving the Falco team in the implementation, 
+deploying Falco using Flux, and testing the deployment process. In future the 
+pipeline will support more CNCF projects as they are onboarded.
 
-The proposal also includes considerations for a phased implementation of the automation, starting with manual triggering followed by automation via a webhook.
+The proposal also includes considerations for a phased implementation of the 
+automation, starting with manual triggering followed by automation via a webhook.
 
 ## Motivation
 
-To automate the trigger of Falco deployment when upstream aka origin repo creates an event.
-We will then deploy the benchmarking workfload for the project, in this case Falco.
+To automate the trigger of Falco deployment when upstream aka origin repo 
+creates an event. We will then deploy the benchmarking workload for the 
+project, in this case Falco.
 
 ### Goals
 
-- Trigger GitHub Action workflow in green-reviews-tooling repo when Falco needs to be tested
-- Ask Falco team to implement the trigger
-- Deploy correct version of Falco in GitHub Action using Flux
-- Test the deployment via the Falco trigger
+- For adding *new projects* in our SCI benchmarking pipeline
+  - **They** need to specify what their benchmarking pipeline looks like aka 
+    script to be used
+  - **They** need to define any specific requirement for the project during 
+    the benchmark
+  - **They** need to trigger our pipeline when a relase happens in their project
+  - **They** need to help in setting up the configurations required to enable 
+    benchmarking job manifests in **Our** repo
+  - **We** need to give permission to call out *green-reviews* GitHub action
+  - **Our** GitHub actions will look for manifests or other resources to 
+    deploy the benchmarking job
+- We need to make evaluation of SCI score **independent** irrespective of projects
+- Our Current Sub-Goals aka current plan to accomplish
+  - Trigger GitHub Action workflow in green-reviews-tooling repo when 
+    Falco needs to be tested
+  - Ask Falco team to implement the trigger
+  - Deploy correct version of Falco in GitHub Action using Flux
+  - Test the deployment via the Falco trigger
 
 ### Non-Goals
 
@@ -61,7 +80,9 @@ We will then deploy the benchmarking workfload for the project, in this case Fal
 ### Linked Docs
 
 - **Slack Discussion Thread** [Link](https://cloud-native.slack.com/archives/C060EDHN431/p1712765271470189)
-- **Triggering GitHub Action**: For triggering the workflow AIUI we could use a webhook to trigger a workflow_dispatch event. [Workflow Dispatch](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch). It allows providing custom inputs and as a minimum I think we need the name of the CNCF project and the version to be deployed. [Providing Inputs for event that trigger workflows](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#providing-inputs)
+- **Triggering GitHub Action**: For triggering the workflow AIUI we could use a 
+webhook to trigger a workflow_dispatch event. [Workflow Dispatch](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch). 
+It allows providing custom inputs and as a minimum I think we need the name of the CNCF project and the version to be deployed. [Providing Inputs for event that trigger workflows](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#providing-inputs)
 
 ## Proposal
 
@@ -86,12 +107,6 @@ See [design details](#design-details) section for more information.
 
 ### User Stories
 
-<!--
-Detail the things that people will be able to do if this proposal is implemented.
-Include as much detail as possible so that people can understand the "how" of
-the system. The goal here is to make this feel real for users without getting
-bogged down.
--->
 
 #### Project maintainer adds green reviews pipeline to their CI/CD
 
@@ -113,13 +128,6 @@ the results to users of the project.
 
 ### Risks and Mitigations
 
-<!--
-What are the risks of this proposal, and how do we mitigate?
-Think broadly.  For example, consider how this will impact or be impacted
-by scaling to support more CNCF Projects.
-
-How will this affect the benchmark tests, CNCF Project Maintainers, pipeline maintainers, etc?
--->
 
 Multiple deployments will produce inaccurate results as we can only measure
 a single project per node. We can set concurrency in the workflow to ensure
@@ -133,12 +141,6 @@ removed. In future we could create nodes on demand and delete on completion.
 
 ## Design Details
 
-<!--
-This section should contain enough information that the specifics of your
-change are understandable. This may include manifests or workflow examples
-(though not always required) or even code snippets. If there's any ambiguity
-about HOW your proposal will be implemented, this is the place to discuss them.
--->
 
 ### Trigger
 
@@ -173,7 +175,17 @@ Flux will be used to deploy the CNCF project. Projects are able to use either
 `kustomization` or `helmrelease` resources to deploy their project.
 
 Project resources that should always be deployed in the cluster are stored in
-the current location in the tooling repo e.g. `/clusters/projects/falco/`
+the current location in the tooling repo, below are format where we might store
+project related configurations
+```
+# for the cncf_project
+clusters/projects/${project_name}
+
+# and for each cncf_project (different configurations)
+clusters/projects/${project_name}/${configuration_name}
+```
+
+e.g. `/clusters/projects/falco/`
 and are reconciled by source-controller.
 
 When the pipeline executes it will look for yaml files in the projects dir.
@@ -181,7 +193,8 @@ If there is a yaml file matching the `cncf_project` input its contents will be
 applied using kubectl. The same applies for the `cncf_project_sub` input. 
 
 The `version` param will need to be injected into the files to ensure the
-correct version of the project is deployed.
+correct version of the project is deployed. 
+(For these small minor changes we can utilize kustomize)
 
 ```
 projects
