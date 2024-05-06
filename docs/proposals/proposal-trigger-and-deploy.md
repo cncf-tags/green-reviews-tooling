@@ -60,20 +60,20 @@ project, in this case Falco.
 
 - For adding *new projects* in our SCI benchmarking pipeline
   - **They** need to specify what their benchmarking pipeline looks like aka 
-    script to be used
+    script to be used. See proposal [#2](https://github.com/cncf-tags/green-reviews-tooling/issues/83)
   - **They** need to define any specific requirement for the project during 
     the benchmark
   - **They** need to help in setting up the configurations required to enable 
     benchmarking job manifests in **Our** repo
-  - **We** need to give permission to call out *green-reviews* GitHub action
   - **We** need to trigger the pipeline when a new release happens for their project
+  - **We** need to give permission to call out *green-reviews* GitHub action
+  - **We** need to document the solution including how to onboard new CNCF projects
   - **Our** GitHub actions will look for manifests or other resources to 
     deploy the benchmarking job
-- We need to make evaluation of SCI score **independent** irrespective of projects
+- We need to make evaluation of SCI score **independent** irrespective of projects.  See proposal [#3](https://github.com/cncf-tags/green-reviews-tooling/issues/83)
 - Our Current Sub-Goals aka current plan to accomplish
   - Trigger GitHub Action workflow in green-reviews-tooling repo when 
-    Falco needs to be tested
-  - Ask Falco team to implement the trigger
+    a new release of Falco needs to be tested
   - Deploy correct version of Falco in GitHub Action using Flux
   - Test the deployment via the Falco trigger
 
