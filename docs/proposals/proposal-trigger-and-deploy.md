@@ -46,6 +46,10 @@ pipeline will support more CNCF projects as they are onboarded.
 The proposal also includes considerations for a phased implementation of the 
 automation, starting with manual triggering followed by automation via a webhook.
 
+The high level architecture is shown in this diagram.
+
+![wg green reviews workflow vision](./files/green-reviews-wg-workflow-vision.webp)
+
 ## Motivation
 
 To automate the trigger of Falco deployment when upstream aka origin repo 
@@ -59,10 +63,10 @@ project, in this case Falco.
     script to be used
   - **They** need to define any specific requirement for the project during 
     the benchmark
-  - **They** need to trigger our pipeline when a relase happens in their project
   - **They** need to help in setting up the configurations required to enable 
     benchmarking job manifests in **Our** repo
   - **We** need to give permission to call out *green-reviews* GitHub action
+  - **We** need to trigger the pipeline when a new release happens for their project
   - **Our** GitHub actions will look for manifests or other resources to 
     deploy the benchmarking job
 - We need to make evaluation of SCI score **independent** irrespective of projects
@@ -86,12 +90,11 @@ It allows providing custom inputs and as a minimum I think we need the name of t
 
 ## Proposal
 
-We will provide projects a GitHub webhook and access token the projects can use to
-trigger the green reviews pipeline.
+We will watch for new releases of the project by subscribing to the Atom feed
+of releases that GitHub publish e.g. https://github.com/falcosecurity/falco/releases.atom
 
-It is envisaged that projects will call this webhook when there is a new release
-of the project to be measured but they can call the pipeline at other times if
-required.
+Our automation will call a GitHub webhook to trigger the green reviews pipeline
+in our tooling repo.
 
 See this example curl command and related [workflow](./files/trigger-deploy.yml)
 
@@ -103,23 +106,23 @@ curl -X POST \
      -d '{"ref":"main", "inputs": {"cncf_project": "falco", "cncf_project_sub": "modern-ebpf","version":"0.37.0"}}'
 ```
 
-See [design details](#design-details) section for more information.
+The projects will also be able to call this webhook using a fine grained access
+token we will provide.
+
+This can be used to trigger the pipeline ad-hoc during development and can be
+added to their CI/CD pipeline if additional trigger points are required.
 
 ### User Stories
 
+#### Project maintainer creates new release to be measured
 
-#### Project maintainer adds green reviews pipeline to their CI/CD
-
-Participating CNCF projects will add calling the webhook to their CI/CD pipeline.
-They can use either the curl command we provide or an alternative of their choice.
-
-The fine grained access token we provide will need to be stored as a secret in
-their CI/CD pipeline.
+Our automation detects a new release was published and triggers the green
+reviews pipeline.
 
 #### Project maintainer deploys their project so it can be measured
 
 Participating CNCF projects will deploy their project using a gitops approach
-with flux. This is decribed in more detail in the design details section.
+with flux. This is described in more detail in the design details section.
 
 #### Project maintainer triggers pipeline to measure a release
 
@@ -127,7 +130,6 @@ Calling the webhook will trigger the pipeline. The Report stage will provide
 the results to users of the project.
 
 ### Risks and Mitigations
-
 
 Multiple deployments will produce inaccurate results as we can only measure
 a single project per node. We can set concurrency in the workflow to ensure
@@ -141,12 +143,36 @@ removed. In future we could create nodes on demand and delete on completion.
 
 ## Design Details
 
+### Subscribing to Releases
+
+A YAML file of CNCF projects and their latest release will be stored in the
+tooling repo e.g.
+
+```yaml
+projects:
+  - name: falco
+    feed_url: "https://github.com/falcosecurity/falco/releases.atom"
+    latest_release: "0.37.1"
+    sub_components:
+      - ebpf
+      - modern-ebpf
+      - kmod
+```
+
+A scheduled GitHub Action will run every 30 minutes and check the Atom feed of
+each project for new releases.
+
+If a new release is detected the action will trigger the pipeline for the new
+release and update the YAML file with the new version. This is to ensure each
+release is only triggered once.
+
+If sub components are specified then the pipeline will be triggered once per
+sub component.
 
 ### Trigger
 
-CNCF projects will be given a GitHub webhook they can call to trigger the
-green reviews pipeline. The webhook will accept 3 inputs and trigger a GitHub
-Actions workflow.
+The green reviews pipeline will be triggered by sending a [workflow_dispatch](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch)
+event via its GitHub webhook.
 
 Inputs are
 
