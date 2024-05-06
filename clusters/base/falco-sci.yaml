@@ -521,7 +521,7 @@ data:
             "hide": 2,
             "label": "Power Usage Effectiveness",
             "name": "pue_equinix",
-            "query": "1.46",
+            "query": "1.42",
             "skipUrlSync": false,
             "type": "constant"
           }

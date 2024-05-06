@@ -59,7 +59,7 @@ PUE = Total Facility Energy / IT Equipment Energy =  1 + (Non IT Facility Energy
 
 An ideal PUE is 1.0. Anything that isn't considered a computing device in a data center (e.g. lighting, cooling, etc.) falls into the category of facility energy consumption.
 
-Equinix published this information for their data centers as part of their latest [2022 sustainability report](https://sustainability.equinix.com/wp-content/uploads/2023/05/Equinix-Inc.-2022-Sustainability-Report-Highlights-1.pdf).
+Equinix published this information for their data centers as part of their latest [2023 sustainability report](https://sustainability.equinix.com/wp-content/uploads/2024/04/Equinix-Inc_2023-Sustainability-Report.pdf).
 
 ## Embodied (M)
 
