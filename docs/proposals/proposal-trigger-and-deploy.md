@@ -53,7 +53,7 @@ The high level architecture is shown in this diagram.
 ## Motivation
 
 To automate the trigger of Falco deployment when upstream aka origin repo 
-creates an event. We will then deploy the benchmarking workload for the 
+creates a new release. We will then deploy the benchmarking workload for the 
 project, in this case Falco.
 
 ### Goals
