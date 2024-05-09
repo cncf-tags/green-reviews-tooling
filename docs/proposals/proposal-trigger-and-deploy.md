@@ -106,8 +106,8 @@ curl -X POST \
      -d '{"ref":"main", "inputs": {"cncf_project": "falco", "cncf_project_sub": "modern-ebpf","version":"0.37.0"}}'
 ```
 
-The projects will also be able to call this webhook using a fine grained access
-token we will provide.
+The maintainers of the CNCF projects will also be able to call this webhook
+using a fine grained access token we will provide.
 
 This can be used to trigger the pipeline ad-hoc during development and can be
 added to their CI/CD pipeline if additional trigger points are required.
@@ -117,23 +117,23 @@ added to their CI/CD pipeline if additional trigger points are required.
 #### Project maintainer creates new release to be measured
 
 Our automation detects a new release was published and triggers the green
-reviews pipeline.
+reviews pipeline. The Report stage will provide the results to users of the
+project.
 
 #### Project maintainer deploys their project so it can be measured
 
 Participating CNCF projects will deploy their project using a gitops approach
 with flux. This is described in more detail in the design details section.
 
-#### Project maintainer triggers pipeline to measure a release
+#### Project maintainer triggers pipeline to test a new benchmark
 
-Calling the webhook will trigger the pipeline. The Report stage will provide
-the results to users of the project.
+Calling the webhook will trigger the pipeline allowing the changes to be tested.
 
 ### Risks and Mitigations
 
-Multiple deployments will produce inaccurate results as we can only measure
-a single project per node. We can set concurrency in the workflow to ensure
-only a single instance runs at a time.
+Multiple deployments will produce inaccurate results as we can only accurately
+measure a single project per node. We can set concurrency in the workflow to
+ensure only a single instance runs at a time.
 
 Deployment may fail. What alerting do we need? Do we also need to notify the
 project?
@@ -197,30 +197,15 @@ the `green-reviews-tooling` repo. This token will have
 
 ### Deploy
 
-Flux will be used to deploy the CNCF project. Projects are able to use either
+Flux is used to deploy the CNCF project. Projects are able to use either
 `kustomization` or `helmrelease` resources to deploy their project.
 
-Project resources that should always be deployed in the cluster are stored in
-the current location in the tooling repo, below are format where we might store
-project related configurations
-```
-# for the cncf_project
-clusters/projects/${project_name}
-
-# and for each cncf_project (different configurations)
-clusters/projects/${project_name}/${configuration_name}
-```
-
-e.g. `/clusters/projects/falco/`
-and are reconciled by source-controller.
-
-When the pipeline executes it will look for yaml files in the projects dir.
-If there is a yaml file matching the `cncf_project` input its contents will be
+When the pipeline executes it will look for manifest files in the projects dir.
+If there is a manifest matching the `cncf_project` input its contents will be
 applied using kubectl. The same applies for the `cncf_project_sub` input. 
 
-The `version` param will need to be injected into the files to ensure the
-correct version of the project is deployed. 
-(For these small minor changes we can utilize kustomize)
+The `version` param is injected into the files to ensure the correct version of
+the project is deployed. (For these minor changes we can utilize kustomize)
 
 ```
 projects
@@ -235,9 +220,12 @@ The pipeline will use a GitHub secret that has a kubeconfig to access the
 green reviews cluster. The deploy step in the pipeline will wait for the newly
 created flux resources to be reconciled before proceeding to the run step.
 
-We will have a node to deploy the project and another to run the benchmarks
+We will have a node to deploy Falco and another to run the benchmarks
 so we will use [concurrency](https://docs.github.com/en/actions/using-jobs/using-concurrency)
 to only allow a single execution of the pipeline at any one time.
+
+The separate nodes are a best practice to prevent other components affecting
+the energy measurements.
 
 ### Cleanup
 
