@@ -143,6 +143,8 @@ removed. In future we could create nodes on demand and delete on completion.
 
 ## Design Details
 
+![Pipeline Design](./files/trigger-deploy-pipeline.svg)
+
 ### Subscribing to Releases
 
 A YAML file of CNCF projects and their latest release will be stored in the
