@@ -147,14 +147,13 @@ removed. In future we could create nodes on demand and delete on completion.
 
 ### Subscribing to Releases
 
-A YAML file of CNCF projects and their latest release will be stored in the
+A YAML file of CNCF projects and any sub components will be stored in the
 tooling repo e.g.
 
 ```yaml
+# projects.yaml
 projects:
   - name: falco
-    feed_url: "https://github.com/falcosecurity/falco/releases.atom"
-    latest_release: "0.37.1"
     sub_components:
       - ebpf
       - modern-ebpf
@@ -162,10 +161,11 @@ projects:
 ```
 
 A scheduled GitHub Action will run every 30 minutes and check the Atom feed of
-each project for new releases.
+each project for new releases. To manage the state a GitHub [repository variable](https://docs.github.com/en/actions/learn-github-actions/variables)
+per CNCF project is used to store the latest release version.
 
 If a new release is detected the action will trigger the pipeline for the new
-release and update the YAML file with the new version. This is to ensure each
+release and update the variable with the new version. This is to ensure each
 release is only triggered once.
 
 If sub components are specified then the pipeline will be triggered once per
