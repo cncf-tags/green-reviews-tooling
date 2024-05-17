@@ -1,6 +1,6 @@
 # Proposal-001 - Trigger and Deploy GitHub Action workflow from an upstream CNCF project
 
-To trigger our benchmarking task to run when a particular CNCF project gets certain kinds of event, such as a new `release`.
+Trigger the Green Reviews pipeline to run when a particular CNCF project gets certain kinds of event, such as a new `release`.
 
 - Tracking issue: [#83](https://github.com/cncf-tags/green-reviews-tooling/issues/83)
 - Implementation issue: [#84](https://github.com/cncf-tags/green-reviews-tooling/issues/84)
@@ -39,43 +39,31 @@ rejected, withdrawn, or replaced.
 ## Summary
 
 This proposal focuses on automating the Green Reviews pipeline for Falco by 
-defining a trigger mechanism, involving the Falco team in the implementation, 
-deploying Falco using Flux, and testing the deployment process. In future the 
-pipeline will support more CNCF projects as they are onboarded.
+defining a trigger mechanism, deploying Falco using Flux, and deleting the
+resources at the end of the pipeline run. The pipeline will support more CNCF
+projects as they are onboarded.
 
-The proposal also includes considerations for a phased implementation of the 
-automation, starting with manual triggering followed by automation via a webhook.
-
-The high level architecture is shown in this diagram.
-
-![wg green reviews workflow vision](./files/green-reviews-wg-workflow-vision.webp)
+This proposal doesn't cover running benchmark tests or reporting metrics which
+are described in separate proposals.
 
 ## Motivation
 
-To automate the trigger of Falco deployment when upstream aka origin repo 
-creates a new release. We will then deploy the benchmarking workload for the 
-project, in this case Falco.
+In the current implementation Falco is permanently deployed using Flux. With
+the new deployment approach it is only deployed when there is a new version
+to benchmark.
+
+This lets us use the cluster resources more efficiently and enables benchmarking
+multiple configurations of Falco and more CNCF projects as they are onboarded.
 
 ### Goals
 
-- For adding *new projects* in our SCI benchmarking pipeline
-  - **They** need to specify what their benchmarking pipeline looks like aka 
-    script to be used. See proposal [#2](https://github.com/cncf-tags/green-reviews-tooling/issues/83)
-  - **They** need to define any specific requirement for the project during 
-    the benchmark
-  - **They** need to help in setting up the configurations required to enable 
-    benchmarking job manifests in **Our** repo
-  - **We** need to trigger the pipeline when a new release happens for their project
-  - **We** need to give permission to call out *green-reviews* GitHub action
-  - **We** need to document the solution including how to onboard new CNCF projects
-  - **Our** GitHub actions will look for manifests or other resources to 
-    deploy the benchmarking job
-- We need to make evaluation of SCI score **independent** irrespective of projects.  See proposal [#3](https://github.com/cncf-tags/green-reviews-tooling/issues/83)
-- Our Current Sub-Goals aka current plan to accomplish
-  - Trigger GitHub Action workflow in green-reviews-tooling repo when 
-    a new release of Falco needs to be tested
-  - Deploy correct version of Falco in GitHub Action using Flux
-  - Test the deployment via the Falco trigger
+- Trigger the pipeline when a new release of a project happens
+- Allow additional runs of the pipeline by calling a GitHub webhook
+- Deploy the new version of the project using flux
+- Delete the resources at the end of the pipeline run
+- Communicate changes to the deployment process needing to be made by the Falco
+team
+- Document the solution including how to onboard new projects
 
 ### Non-Goals
 
@@ -84,27 +72,13 @@ project, in this case Falco.
 ### Linked Docs
 
 - **Slack Discussion Thread** [Link](https://cloud-native.slack.com/archives/C060EDHN431/p1712765271470189)
-- **Triggering GitHub Action**: For triggering the workflow AIUI we could use a 
-webhook to trigger a workflow_dispatch event. [Workflow Dispatch](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch). 
-It allows providing custom inputs and as a minimum I think we need the name of the CNCF project and the version to be deployed. [Providing Inputs for event that trigger workflows](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#providing-inputs)
 
 ## Proposal
 
 We will watch for new releases of the project by subscribing to the Atom feed
 of releases that GitHub publish e.g. https://github.com/falcosecurity/falco/releases.atom
 
-Our automation will call a GitHub webhook to trigger the green reviews pipeline
-in our tooling repo.
-
-See this example curl command and related [workflow](./files/trigger-deploy.yml)
-
-```bash
-curl -X POST \
-     -H "Accept: application/vnd.github.v3+json" \
-     -H "Authorization: token $GITHUB_PAT" \
-     https://api.github.com/repos/cncf-tags/green-reviews-tooling/actions/workflows/pipeline.yaml/dispatches \
-     -d '{"ref":"main", "inputs": {"cncf_project": "falco", "cncf_project_sub": "modern-ebpf","version":"0.37.0"}}'
-```
+Our automation will call the GitHub REST API to trigger the pipeline.
 
 The maintainers of the CNCF projects will also be able to call this webhook
 using a fine grained access token we will provide.
@@ -116,14 +90,12 @@ added to their CI/CD pipeline if additional trigger points are required.
 
 #### Project maintainer creates new release to be measured
 
-Our automation detects a new release was published and triggers the green
-reviews pipeline. The Report stage will provide the results to users of the
-project.
+Our automation detects a new release was published and triggers the pipeline.
 
 #### Project maintainer deploys their project so it can be measured
 
 Participating CNCF projects will deploy their project using a gitops approach
-with flux. This is described in more detail in the design details section.
+with flux.
 
 #### Project maintainer triggers pipeline to test a new benchmark
 
@@ -132,11 +104,8 @@ Calling the webhook will trigger the pipeline allowing the changes to be tested.
 ### Risks and Mitigations
 
 Multiple deployments will produce inaccurate results as we can only accurately
-measure a single project per node. We can set concurrency in the workflow to
-ensure only a single instance runs at a time.
-
-Deployment may fail. What alerting do we need? Do we also need to notify the
-project?
+measure a single project per node. We can set [concurrency](https://docs.github.com/en/actions/using-jobs/using-concurrency)
+in the workflow to ensure only a single instance runs at a time.
 
 Uninstall at end of pipeline fails. We can wait till all flux finalizers are
 removed. In future we could create nodes on demand and delete on completion.
@@ -173,8 +142,10 @@ sub component.
 
 ### Trigger
 
-The green reviews pipeline will be triggered by sending a [workflow_dispatch](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch)
-event via its GitHub webhook.
+The green reviews pipeline will be triggered by sending a [workflow_dispatch](https://docs.github.com/en/rest/actions/workflows?apiVersion=2022-11-28#create-a-workflow-dispatch-event)
+event via the GitHub REST API.
+
+See example [workflow](./files/trigger-deploy.yml)
 
 Inputs are
 
@@ -188,8 +159,11 @@ curl -X POST \
      -H "Accept: application/vnd.github.v3+json" \
      -H "Authorization: token $GITHUB_PAT" \
      https://api.github.com/repos/cncf-tags/green-reviews-tooling/actions/workflows/pipeline.yaml/dispatches \
-     -d '{"ref":"main", "inputs": {"cncf_project": "falco", "cncf_project_sub": "modern-ebpf","version":"0.37.0"}}'
+     -d '{"ref":"0.2.0", "inputs": {"cncf_project": "falco", "cncf_project_sub": "modern-ebpf","version":"0.37.0"}}'
 ```
+
+The pipeline is versioned by creating releases of the `green-reviews-tooling`
+repo. The git tag to use is passed via the `ref` param.
 
 The CNCF projects will be given a GitHub fine grained access token limited to
 the `green-reviews-tooling` repo. This token will have
@@ -231,7 +205,7 @@ the energy measurements.
 
 ### Cleanup
 
-On completion of the pipeline whether it was successful or failed the flux
+On completion of the pipeline run whether it was successful or failed the flux
 resources will be deleted via kubectl. The pipeline will wait for the flux
 resources to be deleted before exiting.
 
