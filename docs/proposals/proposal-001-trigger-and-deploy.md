@@ -145,8 +145,6 @@ sub component.
 The green reviews pipeline will be triggered by sending a [workflow_dispatch](https://docs.github.com/en/rest/actions/workflows?apiVersion=2022-11-28#create-a-workflow-dispatch-event)
 event via the GitHub REST API.
 
-See example [workflow](./files/trigger-deploy.yml)
-
 Inputs are
 
 - `cncf_project`: **required** Project to be deployed e.g. `falco`
