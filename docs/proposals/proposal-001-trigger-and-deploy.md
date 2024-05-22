@@ -222,9 +222,9 @@ REST API with the access token we provide.
 ## Alternatives
 
 Initially a solely push based solution was proposed but there was concern this
-would require CNCF projects to make changes to their pipelines.
+would require CNCF projects to make changes to their CI/CD pipelines.
 
-The pull based solution of subscribing to project relases was added. The downside
+The pull based solution of subscribing to project releases was added. The downside
 to this is the delay in triggering the pipeline.
 
 ## Infrastructure Needed
