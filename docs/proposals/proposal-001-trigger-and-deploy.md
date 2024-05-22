@@ -149,7 +149,8 @@ Inputs are
 
 - `cncf_project`: **required** Project to be deployed e.g. `falco`
 - `cncf_project_sub`: **optional** Subcomponent if project has multiple variants
-they wish to test e.g. `modern-ebpf`
+they wish to test e.g. Falco wish to test 3 falco drivers `modern-ebpf`, `kmod`
+and `ebpf`
 - `version`: **required** Version of project to be tested e.g. `0.37.0`
 
 ```sh
@@ -210,39 +211,23 @@ resources to be deleted before exiting.
 This is to ensure that the cluster state is clean before the next execution of
 the pipeline.
 
-### Graduation Criteria (Optional)
+## Drawbacks
 
-<!--
-List criteria which would allow progression from one maturity level to another.
-eg. What needs to have been accomplished/demonstrated to move from Alpha to Beta.
+The pull based approach means there can be up to a 30 minute delay before a new
+release is measured.
 
-If applicable, what is the milestone marker which will allow deprecation of the
-replaced capability?
--->
-
-## Drawbacks (Optional)
-
-<!--
-What other approaches did you consider, and why did you rule them out? These do
-not need to be as detailed as the proposal, but should include enough
-information to express the idea and why it was not acceptable.
--->
+If this is too long the CNCF projects can trigger the pipeline using the GitHub
+REST API with the access token we provide.
 
 ## Alternatives
 
-<!--
-What other approaches did you consider, and why did you rule them out? These do
-not need to be as detailed as the proposal (pros and cons are fine),
-but should include enough information to express the idea and why it was not acceptable
-as well as illustrate why the final solution was selected.
--->
+Initially a solely push based solution was proposed but there was concern this
+would require CNCF projects to make changes to their pipelines.
 
-## Infrastructure Needed (Optional)
+The pull based solution of subscribing to project relases was added. The downside
+to this is the delay in triggering the pipeline.
 
-<!--
-Use this section if you need things from the project/SIG. Examples include a
-new subproject, repos requested, or GitHub details. Listing these here allows a
-SIG to get the process for these resources started right away.
--->
+## Infrastructure Needed
 
-- GitHub access token for CNCF projects
+A GitHub access token for CNCF projects to trigger a Green Review. Either for
+testing changes or to add the trigger to their CI/CD pipeline.
