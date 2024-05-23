@@ -129,7 +129,7 @@ projects:
       - kmod
 ```
 
-A scheduled GitHub Action will run every 30 minutes and check the Atom feed of
+A scheduled GitHub Action will run every hour and check the Atom feed of
 each project for new releases. To manage the state a GitHub [repository variable](https://docs.github.com/en/actions/learn-github-actions/variables)
 per CNCF project is used to store the latest release version.
 
@@ -213,7 +213,7 @@ the pipeline.
 
 ## Drawbacks
 
-The pull based approach means there can be up to a 30 minute delay before a new
+The pull based approach means there can be up to an hour delay before a new
 release is measured.
 
 If this is too long the CNCF projects can trigger the pipeline using the GitHub
