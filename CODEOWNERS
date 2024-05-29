@@ -1,7 +1,1 @@
-* @cncf-tags/tag-env-leads 
-
-.gitignore @cncf-tags/tag-env-wg-green-reviews-leads
-*.md @cncf-tags/tag-env-wg-green-reviews-leads
-*.yaml @cncf-tags/tag-env-wg-green-reviews-leads
-*.tf @cncf-tags/tag-env-wg-green-reviews-leads
-*.sh @cncf-tags/tag-env-wg-green-reviews-leads
+* @cncf-tags/tag-env-wg-green-reviews-leads
