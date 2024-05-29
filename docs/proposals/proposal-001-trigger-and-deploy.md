@@ -192,8 +192,11 @@ projects
 ```
 
 The pipeline will use a GitHub secret that has a kubeconfig to access the
-green reviews cluster. The deploy step in the pipeline will wait for the newly
-created flux resources to be reconciled before proceeding to the run step.
+green reviews cluster and the manifests will be applied using `kubectl apply -f`.
+
+We then need to wait for the flux resources to be reconciled. This is done
+using `kubectl wait` and by waiting for all kustomization or helmrelease
+resources in the target namespace e.g. `falco` to be ready.
 
 We will use [concurrency](https://docs.github.com/en/actions/using-jobs/using-concurrency)
 to only allow a single execution of the pipeline at any one time.
@@ -202,6 +205,9 @@ to only allow a single execution of the pipeline at any one time.
 
 On completion of the pipeline run, whether it was successful or failed, the CNCF
 project resources will be deleted by deleting their flux resources.
+
+A successful pipeline run is once the necessary metrics have been written to
+long term storage. This will be covered by proposal 3 [Report](https://github.com/cncf-tags/green-reviews-tooling/issues/95).
 
 The same logic using the `cncf_project` and `cncf_project_sub` inputs will be
 used to select which manifests should be deleted. The manifests will be deleted
