@@ -195,18 +195,17 @@ The pipeline will use a GitHub secret that has a kubeconfig to access the
 green reviews cluster. The deploy step in the pipeline will wait for the newly
 created flux resources to be reconciled before proceeding to the run step.
 
-We will have a node to deploy Falco and another to run the benchmarks
-so we will use [concurrency](https://docs.github.com/en/actions/using-jobs/using-concurrency)
+We will use [concurrency](https://docs.github.com/en/actions/using-jobs/using-concurrency)
 to only allow a single execution of the pipeline at any one time.
-
-The separate nodes are a best practice to prevent other components affecting
-the energy measurements.
 
 ### Cleanup
 
-On completion of the pipeline run whether it was successful or failed the flux
-resources will be deleted via kubectl. The pipeline will wait for the flux
-resources to be deleted before exiting.
+On completion of the pipeline run, whether it was successful or failed, the CNCF
+project resources will be deleted by deleting their flux resources.
+
+The same logic using the `cncf_project` and `cncf_project_sub` inputs will be
+used to select which manifests should be deleted. The manifests will be deleted
+using `kubectl delete -f --wait` so we wait for finalizers.
 
 This is to ensure that the cluster state is clean before the next execution of
 the pipeline.
