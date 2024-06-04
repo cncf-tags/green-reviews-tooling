@@ -129,8 +129,12 @@ projects:
       - kmod
 ```
 
-A scheduled GitHub Action will run every hour and check the Atom feed of
-each project for new releases. To manage the state a GitHub [repository variable](https://docs.github.com/en/actions/learn-github-actions/variables)
+A scheduled GitHub Action will run weekly and check the Atom feed of
+each project for new releases.
+
+e.g. https://github.com/falcosecurity/falco/releases.atom
+
+To manage the state a GitHub [repository variable](https://docs.github.com/en/actions/learn-github-actions/variables)
 per CNCF project is used to store the latest release version.
 
 If a new release is detected the action will trigger the pipeline for the new
