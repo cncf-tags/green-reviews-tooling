@@ -75,8 +75,8 @@ team
 
 ## Proposal
 
-We will watch for new releases of the project by subscribing to the Atom feed
-of releases that GitHub publish e.g. https://github.com/falcosecurity/falco/releases.atom
+We will watch for new releases of the project via the GitHub REST API
+e.g. https://api.github.com/repos/falcosecurity/falco/releases/latest
 
 Our automation will call the GitHub REST API to trigger the pipeline.
 
@@ -129,10 +129,10 @@ projects:
       - kmod
 ```
 
-A scheduled GitHub Action will run weekly and check the Atom feed of
-each project for new releases.
+A scheduled GitHub Action will run weekly and check the GitHub REST API of each
+project for new releases.
 
-e.g. https://github.com/falcosecurity/falco/releases.atom
+e.g. https://api.github.com/repos/falcosecurity/falco/releases/latest
 
 To manage the state a GitHub [repository variable](https://docs.github.com/en/actions/learn-github-actions/variables)
 per CNCF project is used to store the latest release version.
