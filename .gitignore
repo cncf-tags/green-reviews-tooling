@@ -1,3 +1,7 @@
 infrastructure/equinix-metal/.terraform/
 infrastructure/equinix-metal/terraform.tfvars
 infrastructure/equinix-metal/.terraform.lock.hcl
+website/public/
+website/resources/
+website/node_modules/
+.idea

@@ -1,0 +1,37 @@
+name: Reconciles Project Versions and triggers them
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  get-latest-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '^1.22.3'
+
+      - name: build the binary
+        working-directory: cmd/github-project-update-dispatch
+        run: |
+          go get -d
+          go build -v -o ../../proj-trigger .
+
+      - name: trigger updated projects
+        env:
+          GH_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+          LOG_LEVEL: DEBUG # yet to use this
+        run: |
+          ./proj-trigger -c projects/projects.json
+
