@@ -1,8 +1,0 @@
-[en]
-  languageName = "English"
-  contentDir = "content/en"
-  weight = 10
-  [en.params]
-    languageISO = "EN"
-    languageTag = "en-US"
-    footer = 'Powered by <a class="text-muted" href="https://gethyas.com/">Hyas</a> on <a class="text-muted" href="https://www.netlify.com">Netlify</a>'
