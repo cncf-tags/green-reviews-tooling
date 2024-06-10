@@ -22,18 +22,7 @@ If you are interested in contributing to the project, head over to the [Contribu
 
 ### Documentation
 
-All the documentation for Green Reviews WG is moved to a dedicated website that's publicly available at [https://docs.green-reviews.tag-env-sustainability.cncf.io/](https://docs.green-reviews.tag-env-sustainability.cncf.io/).
-All changes to the documentation must be added to [website/content/docs](./website/content/docs/) folder. Documentation is built on top of the [Doks theme](https://getdoks.org/docs/start-here/getting-started) powered by Hugo. Website is deployed via Netlify.
-
-To run website locally, run the following commands (requires ```npm```):
-
-``` bash
-cd website
-npm run install
-npm run dev
-```
-
-More documentation for further development of the website can be found in [Doks theme docs](https://getdoks.org/docs/start-here/getting-started)😁
+All changes to the documentation must be added to [website/content/docs](./docs/) folder.
 
 ## Roadmap
 
