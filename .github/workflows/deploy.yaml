@@ -1,0 +1,54 @@
+name: deploy
+on:
+  workflow_dispatch:
+    inputs:
+      cncf_project:
+        description: Project to be deployed e.g. falco
+        required: true
+      cncf_project_sub:
+        description: Subcomponent if project has multiple variants they wish to test
+        required: false
+      version:
+        description: Version of project to be tested e.g. 0.37.0
+        required: true
+
+concurrency:
+  group: benchmark
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-kubectl@v4
+        with:
+          version: v1.30.2
+        id: install
+      - run: mkdir ~/.kube && echo ${{ secrets.KUBECONFIG }} > ~/.kube/config
+      - run: |
+          MANIFEST=projects/${{ inputs.cncf_project }}
+          CNCF_PROJECT_SUB=${{ inputs.cncf_project_sub }}
+          if [[ -n $CNCF_PROJECT_SUB ]]; then
+            echo "Sub project provided"
+            MANIFEST=$MANIFEST/$CNCF_PROJECT_SUB.yaml
+          else
+            MANIFEST=$MANIFEST/${{ inputs.cncf_project }}.yaml
+          fi
+
+          if ! test -f "$MANIFEST"; then
+            echo "The provided inputs are invalid."
+            exit 1
+          fi
+
+          export VERSION=${{ inputs.version }}
+          envsubst < $MANIFEST > manifest.yaml
+
+          kubectl apply -f manifest.yaml
+
+          kubectl wait pod \
+          --all \
+          --for=condition=Ready \
+          --namespace=benchmark
+
+      - run: kubectl delete -f manifest.yaml --wait
+        if: always()
