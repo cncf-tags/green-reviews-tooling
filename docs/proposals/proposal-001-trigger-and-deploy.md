@@ -116,17 +116,23 @@ removed. In future we could create nodes on demand and delete on completion.
 
 ### Subscribing to Releases
 
-A YAML file of CNCF projects and any sub components will be stored in the
+A JSON file of CNCF projects and any sub components will be stored in the
 tooling repo e.g.
 
-```yaml
-# projects.yaml
-projects:
-  - name: falco
-    sub_components:
-      - ebpf
-      - modern-ebpf
-      - kmod
+```json
+{
+    "projects": [
+        {
+            "name": "falco",
+            "organization": "falcosecurity",
+            "sub_components": [
+                "ebpf",
+                "modern-ebpf",
+                "kmod"
+            ]
+        }
+    ]
+}
 ```
 
 A scheduled GitHub Action will run weekly and check the GitHub REST API of each
