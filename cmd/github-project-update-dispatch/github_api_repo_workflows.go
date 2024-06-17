@@ -10,16 +10,8 @@ import (
 )
 
 func (obj *GithubRepository) DispatchCall(projData Project, version string) error {
-	projToWorkflowTable := map[string]string{
-		"falco": "falco.yaml",
-	}
 
-	workflowFileName, found := projToWorkflowTable[projData.Name]
-	if !found {
-		return fmt.Errorf("failed to find the workflow file related to project: %s", projData.Name+"/"+projData.Organization)
-	}
-
-	url, header, err := obj.genURLAndHeaders(GHWorkflowDispatchEndpoint, "", workflowFileName)
+	url, header, err := obj.genURLAndHeaders(GHWorkflowDispatchEndpoint, "", "deploy.yaml")
 	if err != nil {
 		return err
 	}
