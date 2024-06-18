@@ -56,7 +56,6 @@ jobs:
           --for=condition=Ready \
           --namespace=benchmark
 
-jobs:
   delete:
     runs-on: ubuntu-22.04
     needs: deploy
