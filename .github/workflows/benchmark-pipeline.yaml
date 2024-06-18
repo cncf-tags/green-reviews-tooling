@@ -1,4 +1,4 @@
-name: deploy
+name: benchmark-pipeline
 on:
   workflow_dispatch:
     inputs:
@@ -25,7 +25,8 @@ jobs:
           version: v1.30.2
         id: install
       - run: mkdir ~/.kube && echo ${{ secrets.KUBECONFIG }} > ~/.kube/config
-      - run: |
+      - name: Select the manifest
+        run: |
           MANIFEST=projects/${{ inputs.cncf_project }}
           CNCF_PROJECT_SUB=${{ inputs.cncf_project_sub }}
           if [[ -n $CNCF_PROJECT_SUB ]]; then
@@ -42,7 +43,12 @@ jobs:
 
           export VERSION=${{ inputs.version }}
           envsubst < $MANIFEST > manifest.yaml
-
+      - uses: actions/upload-artifact@v4
+        with:
+          name: manifest
+          path: manifest.yaml
+      - name: Apply the manifest
+        run: |
           kubectl apply -f manifest.yaml
 
           kubectl wait pod \
@@ -50,5 +56,20 @@ jobs:
           --for=condition=Ready \
           --namespace=benchmark
 
+jobs:
+  delete:
+    runs-on: ubuntu-22.04
+    needs: deploy
+    if: ${{ always() }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-kubectl@v4
+        with:
+          version: v1.30.2
+        id: install
+      - run: mkdir ~/.kube && echo ${{ secrets.KUBECONFIG }} > ~/.kube/config
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: manifest
       - run: kubectl delete -f manifest.yaml --wait
-        if: always()
