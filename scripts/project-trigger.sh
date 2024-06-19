@@ -8,10 +8,10 @@ workflow_organization_name="cncf-tags"
 workflow_project_name="green-reviews-tooling"
 workflow_dispatcher_file_name="dispatch.yaml"
 
-# if [ -z "$gh_token" ]; then
-#     echo "[FATL] GH_TOKEN not set"
-#     exit 20
-# fi
+if [ -z "$gh_token" ]; then
+    echo "[ERR] GH_TOKEN not set"
+    exit 20
+fi
 
 jq -c '.projects[]' "$json_file" | while read -r project; do
     proj_name=$(echo "$project" | jq -r '.name')
@@ -29,6 +29,7 @@ jq -c '.projects[]' "$json_file" | while read -r project; do
     status_code=$?
     if [ $status_code -ne 0 ]; then
         echo "[ERR] fetching latest release for ${proj_name} from ${release_url}. Status code: $status_code"
+        echo "[ERR] Response: $response"
         continue
     fi
 
@@ -37,6 +38,7 @@ jq -c '.projects[]' "$json_file" | while read -r project; do
         echo "[ERR] Could not find the latest version for ${proj_name}"
         continue
     fi
+
     echo "[DBG] Version: $latest_proj_version"
 
     workflow_dispatch=$(curl --fail-with-body -sSL -X POST \
@@ -49,7 +51,7 @@ jq -c '.projects[]' "$json_file" | while read -r project; do
     status_code=$?
     if [ $status_code -ne 0 ]; then
         echo "[ERR] dispatching workflow for ${proj_name}. Status code: $status_code"
-        echo "[DBG] Response: $workflow_dispatch_response"
+        echo "[ERR] Response: $workflow_dispatch"
         continue
     fi
 
