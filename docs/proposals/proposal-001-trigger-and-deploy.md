@@ -57,7 +57,7 @@ multiple configurations of Falco and more CNCF projects as they are onboarded.
 
 ### Goals
 
-- Trigger the pipeline when a new release of a project happens
+- Trigger the pipeline once a day for the latest version of the project
 - Allow additional runs of the pipeline by calling a GitHub webhook
 - Deploy the new version of the project using flux
 - Delete the resources at the end of the pipeline run
@@ -75,7 +75,7 @@ team
 
 ## Proposal
 
-We will watch for new releases of the project via the GitHub REST API
+Once a day we will get the latest release of the project via the GitHub REST API
 e.g. https://api.github.com/repos/falcosecurity/falco/releases/latest
 
 Our automation will call the GitHub REST API to trigger the pipeline.
@@ -135,24 +135,17 @@ tooling repo e.g.
 }
 ```
 
-A scheduled GitHub Action will run weekly and check the GitHub REST API of each
-project for new releases.
+A scheduled GitHub Action will run once a day and check the GitHub REST API of
+each project for its latest release.
 
 e.g. https://api.github.com/repos/falcosecurity/falco/releases/latest
-
-To manage the state a GitHub [repository variable](https://docs.github.com/en/actions/learn-github-actions/variables)
-per CNCF project is used to store the latest release version.
-
-If a new release is detected the action will trigger the pipeline for the new
-release and update the variable with the new version. This is to ensure each
-release is only triggered once.
 
 If sub components are specified then the pipeline will be triggered once per
 sub component.
 
 ### Trigger
 
-The green reviews pipeline will be triggered by sending a [workflow_dispatch](https://docs.github.com/en/rest/actions/workflows?apiVersion=2022-11-28#create-a-workflow-dispatch-event)
+The benchmark pipeline will be triggered by sending a [workflow_dispatch](https://docs.github.com/en/rest/actions/workflows?apiVersion=2022-11-28#create-a-workflow-dispatch-event)
 event via the GitHub REST API.
 
 Inputs are
@@ -167,7 +160,7 @@ and `ebpf`
 curl -X POST \
      -H "Accept: application/vnd.github.v3+json" \
      -H "Authorization: token $GITHUB_PAT" \
-     https://api.github.com/repos/cncf-tags/green-reviews-tooling/actions/workflows/pipeline.yaml/dispatches \
+     https://api.github.com/repos/cncf-tags/green-reviews-tooling/actions/workflows/benchmark-pipeline.yaml/dispatches \
      -d '{"ref":"0.2.0", "inputs": {"cncf_project": "falco", "cncf_project_sub": "modern-ebpf","version":"0.37.0"}}'
 ```
 
