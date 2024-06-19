@@ -8,10 +8,10 @@ workflow_organization_name="cncf-tags"
 workflow_project_name="green-reviews-tooling"
 workflow_dispatcher_file_name="dispatch.yaml"
 
-if [ -z "$gh_token" ]; then
-    echo "[FATL] GH_TOKEN not set"
-    exit 20
-fi
+# if [ -z "$gh_token" ]; then
+#     echo "[FATL] GH_TOKEN not set"
+#     exit 20
+# fi
 
 jq -c '.projects[]' "$json_file" | while read -r project; do
     proj_name=$(echo "$project" | jq -r '.name')
