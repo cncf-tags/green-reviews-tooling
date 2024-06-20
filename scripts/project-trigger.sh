@@ -6,7 +6,7 @@ gh_token=$GH_TOKEN
 git_ref="main"
 workflow_organization_name="cncf-tags"
 workflow_project_name="green-reviews-tooling"
-workflow_dispatcher_file_name="dispatch.yaml"
+workflow_dispatcher_file_name="benchmark-pipeline.yaml"
 
 if [ -z "$gh_token" ]; then
     echo "[ERR] GH_TOKEN not set"
@@ -41,6 +41,7 @@ jq -c '.projects[]' "$json_file" | while read -r project; do
 
     echo "[DBG] Version: $latest_proj_version"
 
+    # TODO(dipankar): need to make the cncf_project_sub to be each individiual call for each sub-component
     workflow_dispatch=$(curl --fail-with-body -sSL -X POST \
         -H "Accept: application/vnd.github+json" \
         -H "Authorization: Bearer $gh_token" \
