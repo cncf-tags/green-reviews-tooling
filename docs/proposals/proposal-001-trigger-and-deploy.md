@@ -135,13 +135,15 @@ tooling repo e.g.
 }
 ```
 
-A scheduled GitHub Action will run once a day and check the GitHub REST API of
-each project for its latest release.
+A scheduled GitHub Action will run once a day at 08:00 UTC and check the GitHub
+REST API of each project for its latest release.
 
 e.g. https://api.github.com/repos/falcosecurity/falco/releases/latest
 
 If sub components are specified then the pipeline will be triggered once per
 sub component.
+
+Note: 08:00 UTC is chosen to be during daylight when solar energy should be available.
 
 ### Trigger
 
