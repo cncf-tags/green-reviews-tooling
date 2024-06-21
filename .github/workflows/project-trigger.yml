@@ -2,7 +2,7 @@ name: Reconciles Project Versions and triggers them
 
 on:
   schedule:
-    - cron: '0 0 * * 0'
+    - cron: '0 8 * * *'
   push:
     branches: [main]
   pull_request:

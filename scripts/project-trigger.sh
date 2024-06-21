@@ -9,7 +9,7 @@ workflow_project_name="green-reviews-tooling"
 workflow_dispatcher_file_name="benchmark-pipeline.yaml"
 
 if [ -z "$gh_token" ]; then
-    echo "[ERR] GH_TOKEN not set"
+    echo "GH_TOKEN not set"
     exit 20
 fi
 
@@ -18,9 +18,9 @@ jq -c '.projects[]' "$json_file" | while read -r project; do
     proj_organization=$(echo "$project" | jq -r '.organization')
     sub_components=$(echo "$project" | jq -r '.sub_components')
 
-    echo "[DBG] Project Name: $proj_name"
-    echo "[DBG] Organization: $proj_organization"
-    echo "[DBG] SubComponents: $sub_components"
+    echo "Project Name: $proj_name"
+    echo "Organization: $proj_organization"
+    echo "SubComponents: $sub_components"
 
     release_url="https://api.github.com/repos/${proj_organization}/${proj_name}/releases/latest"
     
@@ -28,18 +28,18 @@ jq -c '.projects[]' "$json_file" | while read -r project; do
     response=$(curl --fail-with-body -sSL -X GET $release_url)
     status_code=$?
     if [ $status_code -ne 0 ]; then
-        echo "[ERR] fetching latest release for ${proj_name} from ${release_url}. Status code: $status_code"
-        echo "[ERR] Response: $response"
+        echo "fetching latest release for ${proj_name} from ${release_url}. Status code: $status_code"
+        echo "curl Response: $response"
         continue
     fi
 
     latest_proj_version=$(echo "$response" | jq -r '.tag_name')
     if [ -z "$latest_proj_version" ]; then
-        echo "[ERR] Could not find the latest version for ${proj_name}"
+        echo "could not find the latest version for ${proj_name}"
         continue
     fi
 
-    echo "[DBG] Version: $latest_proj_version"
+    echo "latest version: $latest_proj_version"
 
     # TODO(dipankar): need to make the cncf_project_sub to be each individiual call for each sub-component
     workflow_dispatch=$(curl --fail-with-body -sSL -X POST \
@@ -51,11 +51,10 @@ jq -c '.projects[]' "$json_file" | while read -r project; do
 
     status_code=$?
     if [ $status_code -ne 0 ]; then
-        echo "[ERR] dispatching workflow for ${proj_name}. Status code: $status_code"
-        echo "[ERR] Response: $workflow_dispatch"
+        echo "dispatching workflow for ${proj_name}. Status code: $status_code"
+        echo "curl response: $workflow_dispatch"
         continue
     fi
 
-    echo "[INF] workflow_call event [proj: $proj_name]=> $workflow_dispatch"
-    echo "-----------------------------"
+    echo "workflow_call event [proj: $proj_name]=> $workflow_dispatch"
 done
