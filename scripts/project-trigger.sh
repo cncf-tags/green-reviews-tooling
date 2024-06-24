@@ -42,7 +42,7 @@ jq -c '.projects[]' "$json_file" | while read -r project; do
     echo "latest version: $latest_proj_version"
 
     if [ "$sub_components" == "null" ]; then
-        echo "No sub-components for $proj_name. Performing certain task..."
+        echo "$proj_name has no sub components triggering pipeline once"
         workflow_dispatch=$(curl --fail-with-body -sSL -X POST \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer $gh_token" \
@@ -52,14 +52,14 @@ jq -c '.projects[]' "$json_file" | while read -r project; do
 
         status_code=$?
         if [ $status_code -ne 0 ]; then
-            echo "dispatching workflow for ${proj_name}. Status code: $status_code"
+            echo "dispatching workflow for [proj: ${proj_name}, ver: $latest_proj_version] Status code: $status_code"
             echo "curl response: $workflow_dispatch"
             continue
         fi
 
-        echo "workflow_call event [proj: $proj_name]=> $workflow_dispatch"
+        echo "workflow_call event [proj: $proj_name, ver: $latest_proj_version]=> OK"
     else
-        echo "$proj_name has sub-components. Performing tasks for each sub-component..."
+        echo "$proj_name has sub-components triggering pipeline once per sub-component"
         for sub_component in $(echo "$sub_components" | jq -r '.[]'); do
             workflow_dispatch=$(curl --fail-with-body -sSL -X POST \
                 -H "Accept: application/vnd.github+json" \
@@ -70,12 +70,12 @@ jq -c '.projects[]' "$json_file" | while read -r project; do
 
             status_code=$?
             if [ $status_code -ne 0 ]; then
-                echo "dispatching workflow for ${proj_name}. Status code: $status_code"
+                echo "dispatching workflow for [proj: ${proj_name}, component: $sub_component, ver: $latest_proj_version] Status code: $status_code"
                 echo "curl response: $workflow_dispatch"
                 continue
             fi
 
-            echo "workflow_call event [proj: $proj_name]=> $workflow_dispatch"
+            echo "workflow_call event [proj: $proj_name, component: $sub_component, ver: $latest_proj_version]=> OK"
         done
     fi
 done
