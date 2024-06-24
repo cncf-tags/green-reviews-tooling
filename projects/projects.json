@@ -1,0 +1,13 @@
+{
+    "projects": [
+        {
+            "name": "falco",
+            "organization": "falcosecurity",
+            "sub_components": [
+                "ebpf",
+                "modern-ebpf",
+                "kmod"
+            ]
+        }
+    ]
+}
