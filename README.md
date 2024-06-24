@@ -22,7 +22,7 @@ If you are interested in contributing to the project, head over to the [Contribu
 
 ### Documentation
 
-All changes to the documentation must be added to [website/content/docs](./docs/) folder.
+All changes to the documentation must be added to the [docs](./docs/) folder.
 
 ## Roadmap
 
