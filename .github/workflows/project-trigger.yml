@@ -1,0 +1,30 @@
+name: Reconciles Project Versions and triggers them
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  get-latest-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt update -y
+          sudo apt install jq -y
+
+      - name: trigger the workflows
+        working-directory: scripts
+        env:
+          GH_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+        run: |
+          bash project-trigger.sh
