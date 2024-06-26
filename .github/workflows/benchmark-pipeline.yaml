@@ -24,7 +24,7 @@ jobs:
         with:
           version: v1.30.2
         id: install
-      - run: mkdir ~/.kube && echo ${{ secrets.KUBECONFIG }} > ~/.kube/config
+      - run: mkdir ~/.kube && echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
       - name: Select the manifest
         run: |
           MANIFEST=projects/${{ inputs.cncf_project }}
@@ -51,6 +51,8 @@ jobs:
         run: |
           kubectl apply -f manifest.yaml
 
+          sleep 10
+
           kubectl wait pod \
           --all \
           --for=condition=Ready \
@@ -66,7 +68,7 @@ jobs:
         with:
           version: v1.30.2
         id: install
-      - run: mkdir ~/.kube && echo ${{ secrets.KUBECONFIG }} > ~/.kube/config
+      - run: mkdir ~/.kube && echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
 
       - uses: actions/download-artifact@v4
         with:
