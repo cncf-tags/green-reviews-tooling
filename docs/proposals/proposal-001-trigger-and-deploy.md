@@ -57,7 +57,7 @@ multiple configurations of Falco and more CNCF projects as they are onboarded.
 
 ### Goals
 
-- Trigger the pipeline when a new release of a project happens
+- Trigger the pipeline once a day for the latest version of the project
 - Allow additional runs of the pipeline by calling a GitHub webhook
 - Deploy the new version of the project using flux
 - Delete the resources at the end of the pipeline run
@@ -75,8 +75,8 @@ team
 
 ## Proposal
 
-We will watch for new releases of the project by subscribing to the Atom feed
-of releases that GitHub publish e.g. https://github.com/falcosecurity/falco/releases.atom
+Once a day we will get the latest release of the project via the GitHub REST API
+e.g. https://api.github.com/repos/falcosecurity/falco/releases/latest
 
 Our automation will call the GitHub REST API to trigger the pipeline.
 
@@ -116,39 +116,44 @@ removed. In future we could create nodes on demand and delete on completion.
 
 ### Subscribing to Releases
 
-A YAML file of CNCF projects and any sub components will be stored in the
-tooling repo e.g.
+A JSON file of CNCF projects will be stored in the green-reviews-tooling repo.
+Optionally multiple configurations of a CNCF project can be deployed e.g.
 
-```yaml
-# projects.yaml
-projects:
-  - name: falco
-    sub_components:
-      - ebpf
-      - modern-ebpf
-      - kmod
+```json
+{
+    "projects": [
+        {
+            "name": "falco",
+            "organization": "falcosecurity",
+            "config": [
+                "ebpf",
+                "modern-ebpf",
+                "kmod"
+            ]
+        }
+    ]
+}
 ```
 
-A scheduled GitHub Action will run every hour and check the Atom feed of
-each project for new releases. To manage the state a GitHub [repository variable](https://docs.github.com/en/actions/learn-github-actions/variables)
-per CNCF project is used to store the latest release version.
+A scheduled GitHub Action will run once a day at 08:00 UTC and check the GitHub
+REST API of each project for its latest release.
 
-If a new release is detected the action will trigger the pipeline for the new
-release and update the variable with the new version. This is to ensure each
-release is only triggered once.
+e.g. https://api.github.com/repos/falcosecurity/falco/releases/latest
 
-If sub components are specified then the pipeline will be triggered once per
-sub component.
+If configurations are specified then the pipeline will be triggered once per
+configuration.
+
+Note: 08:00 UTC is chosen to be during daylight when solar energy should be available.
 
 ### Trigger
 
-The green reviews pipeline will be triggered by sending a [workflow_dispatch](https://docs.github.com/en/rest/actions/workflows?apiVersion=2022-11-28#create-a-workflow-dispatch-event)
+The benchmark pipeline will be triggered by sending a [workflow_dispatch](https://docs.github.com/en/rest/actions/workflows?apiVersion=2022-11-28#create-a-workflow-dispatch-event)
 event via the GitHub REST API.
 
 Inputs are
 
 - `cncf_project`: **required** Project to be deployed e.g. `falco`
-- `cncf_project_sub`: **optional** Subcomponent if project has multiple variants
+- `config`: **optional** Configuration if project has multiple variants
 they wish to test e.g. Falco wish to test 3 falco drivers `modern-ebpf`, `kmod`
 and `ebpf`
 - `version`: **required** Version of project to be tested e.g. `0.37.0`
@@ -157,8 +162,8 @@ and `ebpf`
 curl -X POST \
      -H "Accept: application/vnd.github.v3+json" \
      -H "Authorization: token $GITHUB_PAT" \
-     https://api.github.com/repos/cncf-tags/green-reviews-tooling/actions/workflows/pipeline.yaml/dispatches \
-     -d '{"ref":"0.2.0", "inputs": {"cncf_project": "falco", "cncf_project_sub": "modern-ebpf","version":"0.37.0"}}'
+     https://api.github.com/repos/cncf-tags/green-reviews-tooling/actions/workflows/benchmark-pipeline.yaml/dispatches \
+     -d '{"ref":"0.2.0", "inputs": {"cncf_project": "falco", "config": "modern-ebpf","version":"0.37.0"}}'
 ```
 
 The pipeline is versioned by creating releases of the `green-reviews-tooling`
@@ -177,7 +182,7 @@ Flux is used to deploy the CNCF project. Projects are able to use either
 
 When the pipeline executes it will look for manifest files in the projects dir.
 If there is a manifest matching the `cncf_project` input its contents will be
-applied using kubectl. The same applies for the `cncf_project_sub` input. 
+applied using kubectl. The same applies for the `config` input.
 
 The `version` param is injected into the files to ensure the correct version of
 the project is deployed. (For these minor changes we can utilize kustomize)
@@ -209,7 +214,7 @@ project resources will be deleted by deleting their flux resources.
 A successful pipeline run is once the necessary metrics have been written to
 long term storage. This will be covered by proposal 3 [Report](https://github.com/cncf-tags/green-reviews-tooling/issues/95).
 
-The same logic using the `cncf_project` and `cncf_project_sub` inputs will be
+The same logic using the `cncf_project` and `cncf_project_config` inputs will be
 used to select which manifests should be deleted. The manifests will be deleted
 using `kubectl delete -f --wait` so we wait for finalizers.
 
