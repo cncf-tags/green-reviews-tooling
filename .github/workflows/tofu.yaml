@@ -1,4 +1,4 @@
-name: OpenTofu
+name: Tofu Apply
 
 on:
   push:

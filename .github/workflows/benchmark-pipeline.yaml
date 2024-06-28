@@ -1,4 +1,5 @@
-name: benchmark-pipeline
+name: Benchmark Pipeline
+
 on:
   workflow_dispatch:
     inputs:
