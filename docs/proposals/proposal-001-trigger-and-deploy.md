@@ -125,7 +125,7 @@ tooling repo e.g.
         {
             "name": "falco",
             "organization": "falcosecurity",
-            "sub_components": [
+            "configurations": [
                 "ebpf",
                 "modern-ebpf",
                 "kmod"
@@ -140,8 +140,8 @@ REST API of each project for its latest release.
 
 e.g. https://api.github.com/repos/falcosecurity/falco/releases/latest
 
-If sub components are specified then the pipeline will be triggered once per
-sub component.
+If configurations are specified then the pipeline will be triggered once per
+configuration.
 
 Note: 08:00 UTC is chosen to be during daylight when solar energy should be available.
 
@@ -153,7 +153,7 @@ event via the GitHub REST API.
 Inputs are
 
 - `cncf_project`: **required** Project to be deployed e.g. `falco`
-- `cncf_project_sub`: **optional** Subcomponent if project has multiple variants
+- `config`: **optional** Configuration if project has multiple variants
 they wish to test e.g. Falco wish to test 3 falco drivers `modern-ebpf`, `kmod`
 and `ebpf`
 - `version`: **required** Version of project to be tested e.g. `0.37.0`
@@ -163,7 +163,7 @@ curl -X POST \
      -H "Accept: application/vnd.github.v3+json" \
      -H "Authorization: token $GITHUB_PAT" \
      https://api.github.com/repos/cncf-tags/green-reviews-tooling/actions/workflows/benchmark-pipeline.yaml/dispatches \
-     -d '{"ref":"0.2.0", "inputs": {"cncf_project": "falco", "cncf_project_sub": "modern-ebpf","version":"0.37.0"}}'
+     -d '{"ref":"0.2.0", "inputs": {"cncf_project": "falco", "config": "modern-ebpf","version":"0.37.0"}}'
 ```
 
 The pipeline is versioned by creating releases of the `green-reviews-tooling`
@@ -182,7 +182,7 @@ Flux is used to deploy the CNCF project. Projects are able to use either
 
 When the pipeline executes it will look for manifest files in the projects dir.
 If there is a manifest matching the `cncf_project` input its contents will be
-applied using kubectl. The same applies for the `cncf_project_sub` input. 
+applied using kubectl. The same applies for the `config` input.
 
 The `version` param is injected into the files to ensure the correct version of
 the project is deployed. (For these minor changes we can utilize kustomize)
@@ -214,7 +214,7 @@ project resources will be deleted by deleting their flux resources.
 A successful pipeline run is once the necessary metrics have been written to
 long term storage. This will be covered by proposal 3 [Report](https://github.com/cncf-tags/green-reviews-tooling/issues/95).
 
-The same logic using the `cncf_project` and `cncf_project_sub` inputs will be
+The same logic using the `cncf_project` and `cncf_project_config` inputs will be
 used to select which manifests should be deleted. The manifests will be deleted
 using `kubectl delete -f --wait` so we wait for finalizers.
 
