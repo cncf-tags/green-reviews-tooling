@@ -125,7 +125,7 @@ Optionally multiple configurations of a CNCF project can be deployed e.g.
         {
             "name": "falco",
             "organization": "falcosecurity",
-            "configurations": [
+            "config": [
                 "ebpf",
                 "modern-ebpf",
                 "kmod"
