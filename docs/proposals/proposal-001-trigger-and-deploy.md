@@ -116,8 +116,8 @@ removed. In future we could create nodes on demand and delete on completion.
 
 ### Subscribing to Releases
 
-A JSON file of CNCF projects and any sub components will be stored in the
-tooling repo e.g.
+A JSON file of CNCF projects will be stored in the green-reviews-tooling repo.
+Optionally multiple configurations of a CNCF project can be deployed e.g.
 
 ```json
 {
