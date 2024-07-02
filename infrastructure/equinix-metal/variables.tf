@@ -122,11 +122,10 @@ variable "worker_nodes" {
       },
       plan = "m3.small.x86"
     },
-    falco-a = {
+    benchmark = {
       elastic_ip = ""
       labels = {
-        cncf-project     = "falco"
-        cncf-project-sub = "falco-driver-modern-ebpf"
+        "node-role.kubernetes.io/benchmark" = "true"
       },
       plan = "m3.small.x86"
     }
