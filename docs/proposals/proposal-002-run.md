@@ -109,7 +109,6 @@ with context. It is really helpful to provide a "source of truth" for the work
 so that people aren't searching all over the place for lost context.
 -->
 
-* [Slack discussion on benchmark test framework](https://cloud-native.slack.com/archives/C060EDHN431/p1708416918423089?thread_ts=1708348336.259699&cid=C060EDHN431)
 
 ## Proposal
 
