@@ -139,7 +139,7 @@ As a project maintainer, I create and run a benchmark test from a separate GitHu
 
 As a Green Reviews maintainer, I can help a CNCF project maintainers to define the Functional Unit of a project so that the project maintainers can create a benchmark test.
 
-**Project maintainer modifies or removes a benchmark test**
+**CNCF Project maintainer modifies or removes a benchmark test**
 
 As a project maintainer, I can edit or remove a benchmark test if it is in a repository owned by the CNCF project itself, or otherwise if it’s in the Green Reviews repository by making a pull request with the changes.
 
