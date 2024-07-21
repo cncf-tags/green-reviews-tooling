@@ -202,7 +202,7 @@ Note: 08:00 UTC is chosen to be during daylight when solar energy should be avai
 
 ### Trigger
 
-The benchmark pipeline will be triggered by sending a [workflow_dispatch](https://docs.github.com/en/rest/actions/workflows?apiVersion=2022-11-28#create-a-workflow-dispatch-event)
+The project workflow will be triggered by sending a [workflow_dispatch](https://docs.github.com/en/rest/actions/workflows?apiVersion=2022-11-28#create-a-workflow-dispatch-event)
 event via the GitHub REST API.
 
 Inputs are
@@ -217,12 +217,13 @@ and `ebpf`
 curl -X POST \
      -H "Accept: application/vnd.github.v3+json" \
      -H "Authorization: token $GITHUB_PAT" \
-     https://api.github.com/repos/cncf-tags/green-reviews-tooling/actions/workflows/benchmark-pipeline.yaml/dispatches \
+     https://api.github.com/repos/cncf-tags/green-reviews-tooling/actions/workflows/falco-pipeline.yaml/dispatches \
      -d '{"ref":"0.2.0", "inputs": {"cncf_project": "falco", "config": "modern-ebpf","version":"0.37.0"}}'
 ```
 
-The pipeline is versioned by creating releases of the `green-reviews-tooling`
-repo. The git tag to use is passed via the `ref` param.
+The workflow is named after the project e.g. `falco-pipeline.yaml` and is
+versioned by creating releases of the `green-reviews-tooling` repo. The git tag
+to use is passed via the `ref` param.
 
 The CNCF projects will be given a GitHub fine grained access token limited to
 the `green-reviews-tooling` repo. This token will have
@@ -261,7 +262,10 @@ resources in the target namespace e.g. `falco` to be ready.
 We will use [concurrency](https://docs.github.com/en/actions/using-jobs/using-concurrency)
 to only allow a single execution of the pipeline at any one time.
 
-### Cleanup
+The Deploy and Delete steps are implemented as separate GitHub Actions jobs so
+they can be reused in multiple project workflows.
+
+### Delete
 
 On completion of the pipeline run, whether it was successful or failed, the CNCF
 project resources will be deleted by deleting their flux resources.
