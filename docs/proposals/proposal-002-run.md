@@ -271,21 +271,11 @@ jobs:
           # the action to take here depends on the Functional Unit of the CNCF project. wait for amount of time, for resources
           kubectl apply -f https://raw.githubusercontent.com/falcosecurity/cncf-green-review-testing/main/kustomize/falco-driver/ebpf/stress-ng.yaml
           wait 15m
-  # other Falco tests:
+      - delete: |
+         kubectl delete -f https://raw.githubusercontent.com/falcosecurity/cncf-green-review-testing/main/kustomize/falco-driver/ebpf/stress-ng.yaml  # other Falco tests:
   # - redis-test e.g. https://github.com/falcosecurity/cncf-green-review-testing/blob/main/kustomize/falco-driver/ebpf/redis.yaml
   # - event-generator-test e.g. https://github.com/falcosecurity/cncf-green-review-testing/blob/main/kustomize/falco-driver/ebpf/falco-event-generator.yaml
   # TODO: should each test be a workflow or a job in a single workflow? as in, one test workflow per cncf project or multiple workflows per cncf project? TBD
-```
-
-And a cleanup/delete pipeline to counteract the above could be as follows:
-```yaml
-# .github/workflows/tests/falco-cleanup-workflow.yaml
-jobs:
-  stress-ng-test:
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          kubectl delete -f https://raw.githubusercontent.com/falcosecurity/cncf-green-review-testing/main/kustomize/falco-driver/ebpf/stress-ng.yaml
 ```
 
 The job has test instructions to apply the upstream Kubernetes manifest which contains a `while` loop that runs `stress-ng`. The manifest already defines where the test should run in the cluster i.e. in which namespace. The functional unit test is time-bound in this case and scoped to 15 minutes. Therefore, we deploy this test, wait for 15 minutes, then delete the manifest to end the loop. The test instructions depend on the functional unit of each CNCF project.
