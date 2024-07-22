@@ -271,7 +271,7 @@ jobs:
 
 The job has test instructions to apply the upstream Kubernetes manifest which contains a `while` loop that runs `stress-ng`. The manifest already defines where the test should run in the cluster i.e. in which namespace. The functional unit test is time-bound in this case and scoped to 15 minutes. Therefore, we deploy this test, wait for 15 minutes, then delete the manifest to end the loop. The test instructions depend on the functional unit of each CNCF project.
 
-In the example above, the Kubernetes manifest that is applied to the cluster is located in a different repository, but this could be located anywhere. This is due to preferences for CNCF project maintainers who may have a own repository with configuration related to the Green Reviews pipeline, as is the case with the Falco project.
+In the example above, the Kubernetes manifest that is applied to the cluster is located in a different repository: this is the case of an externally defined benchmark
 
 Each workflow should ensure that any artefacts that were deployed as part of the test instructions should be deleted at the end of the test run.
 
