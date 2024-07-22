@@ -71,7 +71,7 @@ It is helpful to frame this to answer the question: "What is the problem this pr
 is trying to solve?"
 -->
 
-This proposal is part of the pipeline automation of the Green Reviews tooling for Falco (and new CNCF projects in the future). Currently, we are using Flux to watch the upstream Falco repository and run the benchmark tests constantly. For example, [this benchmark test](https://github.com/falcosecurity/cncf-green-review-testing/blob/main/kustomize/falco-driver/ebpf/stress-ng.yaml#L27-L32) is setup as a Kubernetes Deployment that runs an endless loop of [`stress-ng`](https://wiki.ubuntu.com/Kernel/Reference/stress-ng), which applies stress to the kernel. Instead, this proposal aims to provide a solution for how to deploy the benchmark tests only when they are needed.
+This proposal is part of the pipeline automation of the Green Reviews tooling for Falco (and new CNCF projects in the future). Currently, we are using Flux to watch the upstream Falco repository and run the benchmark tests constantly. For example, [this benchmark test](https://github.com/falcosecurity/cncf-green-review-testing/blob/main/kustomize/falco-driver/ebpf/stress-ng.yaml#L27-L32) is set up as a Kubernetes Deployment that runs an endless loop of [`stress-ng`](https://wiki.ubuntu.com/Kernel/Reference/stress-ng), which applies stress to the kernel. Instead, this proposal aims to provide a solution for how to deploy the benchmark tests only when they are needed.
 
 Secondly, automating the way we run benchmark tests in this pipeline will help to make it easier and faster to add new benchmark tests. It will enable both the WG Green Reviews and CNCF project maintainers to come up with new benchmark tests and run them to get feedback faster.
 
@@ -130,9 +130,13 @@ the system. The goal here is to make this feel real for users without getting
 bogged down.
 -->
 
-**CNCF project maintainer creates a new benchmark test for their project**
+**CNCF project maintainer selects the right benchmark for their project**
 
-As a project maintainer, I create and run a benchmark test from a separate GitHub repository or from the green-reviews-tooling repository, by following the steps indicated in the Green Reviews documentation, so that the project’s benchmark tests runs in the Green Reviews pipeline and so that I can see the project's sustainability metrics.
+Since different CNCF projects need different benchmarks to reproduce the right metrics, as a project maintainer, I would like to select the benchmarks reproducing a k8s context as realistic as possible.
+
+**CNCF project maintainer creates a new benchmark for their project**
+
+If the available benchmarks are not enough to set a realistic context, I would like to create and run my own benchmark
 
 
 **Green Reviews maintainer helps to create a new benchmark test for a specific CNCF project**
@@ -169,9 +173,13 @@ How will this affect the benchmark tests, CNCF Project Maintainers, pipeline mai
 -->
 
 As with every design document, there are multiple risks:
-- extensibility: At the moment Falco is the first and only project that requested a Green Review (very appreciated guinea pig 🙂). When other CNCF projects will request other Green Reviews, we will learn more and adapt the project as needed.
-- scalability: Green Reviews contributors should empower and encourage CNCF project maintainers to create benchmark tests. The right collaboration will enable Green Reviews maintainers to scale to multiple projects (cause they will not need to understand the deployment details of every project) while producing higher quality metrics (cause the project is set up by the experts).
-- validity: this point is less trivial and also conflicting with the one above but worth mention. If every single project defines its own benchmarks how will it be possible to compare different Projects result? This needs [deeper investigation that will be discussed in a separate proposal](https://github.com/cncf-tags/green-reviews-tooling/issues/103.)
+
+- Extensibility: At the moment Falco is the first and only project that requested a Green Review (very appreciated guinea pig 🙂). When other CNCF projects will request other Green Reviews, we will learn more and adapt the project as needed.
+
+- Scalability: Green Reviews contributors should empower and encourage CNCF project maintainers to create benchmark tests. The right collaboration will enable Green Reviews maintainers to scale to multiple projects (cause they will not need to understand the deployment details of every project) while producing higher quality metrics (cause the project is set up by the experts).
+
+- Validity: this point is less trivial and also conflicting with the one above but worth mention. If every single project defines its own benchmarks how will it be possible to compare different Projects result? This needs [deeper investigation that will be discussed in a separate proposal](https://github.com/cncf-tags/green-reviews-tooling/issues/103.)
+
 
 ## Design Details
 
@@ -192,11 +200,12 @@ There are different components defined here and shown in the following diagram.
 
 Let's recap some of the components defined in [Proposal 1](proposal-001-trigger-and-deploy.md):
 1. **Green Reviews pipeline**: the Continuous Integration pipeline which deploys a CNCF project to a test cluster, runs a set of benchmarks while measuring carbon emissions and stores the results. It is implemented by the workflows listed below.
-2. **Cron workflow**: This refers to the initial GitHub Action workflow (described in proposal 1) and which dispatches a project workflow (see next definition).
-3. **Project workflow**: The project workflow is dispatched by the Cron workflow. A project workflow can be, for example, a Falco workflow. A project workflow deploys the project, calls the test workflow (see below), and then cleans up the deployment. A project workflow can be dispatched more than once if there are multiple subcomponents. In addition, a Project workflow, which is also just another GitHub Action workflow, contains a list of GitHub Action Jobs. These are a list of test jobs - more info below.
+2. **Cron workflow**: This refers to the initial GitHub Action workflow (described in proposal 1) and which dispatches a project workflow (see next definition), as well as a delete workflow to clean up the resources created by the project workflow.
+3. **Project workflow**: The project workflow is dispatched by the Cron workflow. A project workflow can be, for example, a Falco workflow. A project workflow deploys the project and calls the test workflow (see below). A project workflow can be dispatched more than once if there are multiple project variants/setups. In addition, a Project workflow, which is also just another GitHub Action workflow, contains a list of GitHub Action Jobs. These are a list of test jobs - more info below.
+4. **Delete/cleanup workflow**: This is the one to make sure that the resources created by the project workflow are deleted so the environments go back to the initial state.
 
 This proposal adds the following components:
-1. **[new] Test job**: A test job is an instance of a GitHub Action Job. It is called right after deploying the CNCF project from the test workflow. The test job runs the test workflow and instructions for a CNCF project. Which benchmark test to run is defined by inputs in the calling workflow: a CNCF project and a subcomponent.
+1. **[new] Test job**: A test job is an instance of a GitHub Action Job. It is called right after deploying the CNCF project from the test workflow. The test job runs the test workflow and instructions for a CNCF project. Which benchmark test to run is defined by inputs in the calling workflow: a CNCF project and a variant.
 2. **[new] Test workflow**: A test workflow is a separate manifest containing the test instructions.
 3. **[new] Test instructions**: Test instructions define what should run tests on the cluster. These are usually related to the tool's Functional Unit as defined by the SCI. It is described further in the sections below.
 
@@ -262,11 +271,21 @@ jobs:
           # the action to take here depends on the Functional Unit of the CNCF project. wait for amount of time, for resources
           kubectl apply -f https://raw.githubusercontent.com/falcosecurity/cncf-green-review-testing/main/kustomize/falco-driver/ebpf/stress-ng.yaml
           wait 15m
-          kubectl delete -f https://raw.githubusercontent.com/falcosecurity/cncf-green-review-testing/main/kustomize/falco-driver/ebpf/stress-ng.yaml
   # other Falco tests:
   # - redis-test e.g. https://github.com/falcosecurity/cncf-green-review-testing/blob/main/kustomize/falco-driver/ebpf/redis.yaml
   # - event-generator-test e.g. https://github.com/falcosecurity/cncf-green-review-testing/blob/main/kustomize/falco-driver/ebpf/falco-event-generator.yaml
   # TODO: should each test be a workflow or a job in a single workflow? as in, one test workflow per cncf project or multiple workflows per cncf project? TBD
+```
+
+And a cleanup/delete pipeline to counteract the above could be as follows:
+```yaml
+# .github/workflows/tests/falco-cleanup-workflow.yaml
+jobs:
+  stress-ng-test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          kubectl delete -f https://raw.githubusercontent.com/falcosecurity/cncf-green-review-testing/main/kustomize/falco-driver/ebpf/stress-ng.yaml
 ```
 
 The job has test instructions to apply the upstream Kubernetes manifest which contains a `while` loop that runs `stress-ng`. The manifest already defines where the test should run in the cluster i.e. in which namespace. The functional unit test is time-bound in this case and scoped to 15 minutes. Therefore, we deploy this test, wait for 15 minutes, then delete the manifest to end the loop. The test instructions depend on the functional unit of each CNCF project.
