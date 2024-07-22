@@ -6,7 +6,7 @@ on:
       cncf_project:
         description: Project to be deployed e.g. falco
         required: true
-      cncf_project_sub:
+      config:
         description: Subcomponent if project has multiple variants they wish to test
         required: false
       version:
@@ -29,10 +29,10 @@ jobs:
       - name: Select the manifest
         run: |
           MANIFEST=projects/${{ inputs.cncf_project }}
-          CNCF_PROJECT_SUB=${{ inputs.cncf_project_sub }}
-          if [[ -n $CNCF_PROJECT_SUB ]]; then
+          CONFIG=${{ inputs.config }}
+          if [[ -n $CONFIG ]]; then
             echo "Sub project provided"
-            MANIFEST=$MANIFEST/$CNCF_PROJECT_SUB.yaml
+            MANIFEST=$MANIFEST/$CONFIG.yaml
           else
             MANIFEST=$MANIFEST/${{ inputs.cncf_project }}.yaml
           fi

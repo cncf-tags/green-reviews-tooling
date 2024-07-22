@@ -2,7 +2,12 @@
     "projects": [
         {
             "name": "falco",
-            "organization": "falcosecurity"
+            "organization": "falcosecurity",
+            "configs": [
+                "ebpf",
+                "modern-ebpf",
+                "kmod"
+            ]
         }
     ]
 }
