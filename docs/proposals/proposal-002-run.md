@@ -169,7 +169,7 @@ How will this affect the benchmark tests, CNCF Project Maintainers, pipeline mai
 -->
 
 As with every design document, there’s a risk that the solution doesn’t cover all cases, especially considering that at Green Reviews we have only had one test case (very appreciated guinea pig 🙂), which is Falco. This proposal needs to at least support that case. When other CNCF projects start using Green Reviews we will learn more and adapt the project as needed.
-
+- extensibility: At the moment Falco is the first and only project that requested a Green Review (very appreciated guinea pig 🙂). When other CNCF projects will request other Green Reviews, we will learn more and adapt the project as needed.
 - scalability: Green Reviews contributors should empower and encourage CNCF project maintainers to create benchmark tests. The right collaboration will enable Green Reviews maintainers to scale to multiple projects (cause they will not need to understand the deployment details of every project) while producing higher quality metrics (cause the project is set up by the experts).
 - validity: this point is less trivial and also conflicting with the one above but worth mention. If every single project defines its own benchmarks how will it be possible to compare different Projects result? This needs [deeper investigation that will be discussed in a separate proposal](https://github.com/cncf-tags/green-reviews-tooling/issues/103.)
 
