@@ -293,7 +293,12 @@ information to express the idea and why it was not acceptable.
 
 ## Alternatives
 
-<!--
+Here a list of the alternatives we considered: 
+
+- **mapping between workflows and CNCF projects**: we have decided for a 1:1 relationship, every project will only have one workflow, again for simplicity. We could add support for 1:many in the future
+
+- **mapping between workflows and jobs**: we have decided a 1:Many relationship, 1 workflow and many jobs, but a different option we evaluated was a 1:1 relationship. We choose for the first option cause it is simpler and gives a clear overview about what jobs are needed for a project workflow
+
 What other approaches did you consider, and why did you rule them out? These do
 not need to be as detailed as the proposal (pros and cons are fine),
 but should include enough information to express the idea and why it was not acceptable
