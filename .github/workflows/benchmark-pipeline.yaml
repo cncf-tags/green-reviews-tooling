@@ -7,7 +7,7 @@ on:
         description: Project to be deployed e.g. falco
         required: true
       config:
-        description: Subcomponent if project has multiple variants they wish to test
+        description: Configuration if project has multiple variants they wish to test
         required: false
       version:
         description: Version of project to be tested e.g. 0.37.0
@@ -31,7 +31,7 @@ jobs:
           MANIFEST=projects/${{ inputs.cncf_project }}
           CONFIG=${{ inputs.config }}
           if [[ -n $CONFIG ]]; then
-            echo "Sub project provided"
+            echo "Configuration provided"
             MANIFEST=$MANIFEST/$CONFIG.yaml
           else
             MANIFEST=$MANIFEST/${{ inputs.cncf_project }}.yaml
