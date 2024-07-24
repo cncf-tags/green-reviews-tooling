@@ -16,7 +16,7 @@ metadata:
   namespace: benchmark
 spec:
   interval: 6h
-  path: ./kustomize
+  path: ./kustomize/falco-driver/kmod
   prune: true
   retryInterval: 2m0s
   sourceRef:
