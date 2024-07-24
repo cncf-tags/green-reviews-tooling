@@ -112,7 +112,62 @@ removed. In future we could create nodes on demand and delete on completion.
 
 ## Design Details
 
-![Pipeline Design](./files/trigger-deploy-pipeline.svg)
+```mermaid
+---
+title: Porposal 001 Triggr & Deploy 
+---
+stateDiagram-v2
+    
+    glreleases: GetLatestReleases()
+    projdispatch: DispatchProjects()
+    K8sCluster: Equinix K8s Cluster (k3s)
+
+    state "GH Workflow Falco" as falco_pipeline {
+        falco_installManifests: DeployManifests()
+        falco_destroyManifests: DeleteResources()
+        falco_s_benchmarking: StartBenchmarking()
+        falco_e_benchmarking: StopBenchmarking()
+
+        falco_installManifests --> falco_s_benchmarking: Start Synthetic Workload and start measuring
+        falco_s_benchmarking --> falco_e_benchmarking: Stop Worload and record the measurements
+        falco_e_benchmarking --> falco_destroyManifests: Destroy resources
+    }
+    state "GH Workflow Project [1:N]" as proj_n_pipeline {
+        installManifests: DeployManifests()
+        destroyManifests: DeleteResources()
+        s_benchmarking: StartBenchmarking()
+        e_benchmarking: StopBenchmarking()
+
+        installManifests --> s_benchmarking: Start Synthetic Workload and start measuring
+        s_benchmarking --> e_benchmarking: Stop Worload and record the measurements
+        e_benchmarking --> destroyManifests: Destroy resources
+    }   
+    
+    state "(Github) CNCF Projects" as cncf_proj {
+        falco: falcosecurity/falco
+        project_[2]
+        project_[N]
+    }
+    
+    [*] --> glreleases: Trigger\nCron @weekly
+    glreleases --> projdispatch: DetailOfProjects
+
+    glreleases --> cncf_proj: GET /releases/latest
+    cncf_proj --> glreleases: [{"tag"="x.y.z"},...]
+    
+    projdispatch --> falco_pipeline: POST /workflows/dispatch
+    projdispatch --> proj_n_pipeline: POST /workflows/dispatch
+
+    
+    falco_pipeline --> K8sCluster
+    proj_n_pipeline --> K8sCluster
+    %% K8sCluster --> falco_pipeline
+    %% K8sCluster --> proj_n_pipeline
+    state join_state <<join>>
+    falco_pipeline --> join_state
+    proj_n_pipeline --> join_state
+    join_state --> [*]
+```
 
 ### Subscribing to Releases
 
