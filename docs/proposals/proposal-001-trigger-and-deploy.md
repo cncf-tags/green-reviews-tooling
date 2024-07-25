@@ -38,7 +38,7 @@ rejected, withdrawn, or replaced.
 
 ## Summary
 
-This proposal focuses on automating the Green Reviews pipeline for Falco by 
+This proposal focuses on automating the Green Reviews pipeline for Falco by
 defining a trigger mechanism, deploying Falco using Flux, and deleting the
 resources at the end of the pipeline run. The pipeline will support more CNCF
 projects as they are onboarded.
@@ -114,58 +114,58 @@ removed. In future we could create nodes on demand and delete on completion.
 
 ```mermaid
 ---
-title: Porposal 001 Triggr & Deploy 
+title: Proposal 001 Trigger & Deploy
 ---
 stateDiagram-v2
-    
-    glreleases: GetLatestReleases()
-    projdispatch: DispatchProjects()
-    K8sCluster: Equinix K8s Cluster (k3s)
 
-    state "GH Workflow Falco" as falco_pipeline {
-        falco_installManifests: DeployManifests()
-        falco_destroyManifests: DeleteResources()
-        falco_s_benchmarking: StartBenchmarking()
-        falco_e_benchmarking: StopBenchmarking()
+    getLatestReleases: GetLatestReleases()
+    projDispatch: DispatchProjects()
+    k8sCluster: Equinix K8s Cluster (k3s)
 
-        falco_installManifests --> falco_s_benchmarking: Start Synthetic Workload and start measuring
-        falco_s_benchmarking --> falco_e_benchmarking: Stop Worload and record the measurements
-        falco_e_benchmarking --> falco_destroyManifests: Destroy resources
+    state "GH Workflow Falco" as falcoPipeline {
+        falcoInstallManifests: DeployManifests()
+        falcoDestroyManifests: DeleteResources()
+        falcoStartBenchmarking: StartBenchmarking()
+        falcoEndBenchmarking: StopBenchmarking()
+
+        falcoInstallManifests --> falcoStartBenchmarking: Start Synthetic Workload and start measuring
+        falcoStartBenchmarking --> falcoEndBenchmarking: Stop Workload and record the measurements
+        falcoEndBenchmarking --> falcoDestroyManifests: Destroy resources
     }
-    state "GH Workflow Project [1:N]" as proj_n_pipeline {
-        installManifests: DeployManifests()
-        destroyManifests: DeleteResources()
-        s_benchmarking: StartBenchmarking()
-        e_benchmarking: StopBenchmarking()
+    state "GH Workflow Project [1:N]" as projNPipeline {
+        projNInstallManifests: DeployManifests()
+        projNDestroyManifests: DeleteResources()
+        projNStartBenchmarking: StartBenchmarking()
+        projNEndBenchmarking: StopBenchmarking()
 
-        installManifests --> s_benchmarking: Start Synthetic Workload and start measuring
-        s_benchmarking --> e_benchmarking: Stop Worload and record the measurements
-        e_benchmarking --> destroyManifests: Destroy resources
-    }   
-    
-    state "(Github) CNCF Projects" as cncf_proj {
+        projNInstallManifests --> projNStartBenchmarking: Start Synthetic Workload and start measuring
+        projNStartBenchmarking --> projNEndBenchmarking: Stop Workload and record the measurements
+        projNEndBenchmarking --> projNDestroyManifests: Destroy resources
+    }
+
+    state "(Github) CNCF Projects" as cncfProjs {
         falco: falcosecurity/falco
         project_[2]
         project_[N]
     }
-    
-    [*] --> glreleases: Trigger\nCron @weekly
-    glreleases --> projdispatch: DetailOfProjects
 
-    glreleases --> cncf_proj: GET /releases/latest
-    cncf_proj --> glreleases: [{"tag"="x.y.z"},...]
-    
-    projdispatch --> falco_pipeline: POST /workflows/dispatch
-    projdispatch --> proj_n_pipeline: POST /workflows/dispatch
+    [*] --> getLatestReleases: Trigger\nCron @daily
+    getLatestReleases --> projDispatch: DetailOfProjects
 
-    
-    falco_pipeline --> K8sCluster
-    proj_n_pipeline --> K8sCluster
-    %% K8sCluster --> falco_pipeline
-    %% K8sCluster --> proj_n_pipeline
+    getLatestReleases --> cncfProjs: GET /releases/latest
+    cncfProjs --> getLatestReleases: [{"tag"="x.y.z"},...]
+
+    projDispatch --> falcoPipeline: POST /workflows/dispatch
+    projDispatch --> projNPipeline: POST /workflows/dispatch
+
+
+    falcoPipeline --> k8sCluster
+    projNPipeline --> k8sCluster
+    %% k8sCluster --> falcoPipeline
+    %% k8sCluster --> projNPipeline
     state join_state <<join>>
-    falco_pipeline --> join_state
-    proj_n_pipeline --> join_state
+    falcoPipeline --> join_state
+    projNPipeline --> join_state
     join_state --> [*]
 ```
 
