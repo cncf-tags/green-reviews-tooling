@@ -70,7 +70,7 @@ It is helpful to frame this to answer the question: "What is the problem this pr
 is trying to solve?"
 -->
 
-This proposal is part of the pipeline automation of the Green Reviews tooling for Falco (and new CNCF projects in the future). Currently, we are using Flux to watch the upstream Falco repository and run the benchmark tests constantly. For example, [this benchmark test](https://github.com/falcosecurity/cncf-green-review-testing/blob/main/kustomize/falco-driver/ebpf/stress-ng.yaml#L27-L32) is set up as a Kubernetes Deployment that runs an endless loop of [`stress-ng`](https://wiki.ubuntu.com/Kernel/Reference/stress-ng), which applies stress to the kernel. Instead, this proposal aims to provide a solution for how to deploy the benchmark tests only when they are needed.
+This proposal is part of the pipeline automation of the Green Reviews tooling for Falco (and new CNCF projects in the future). Currently, we are using Flux to watch the upstream Falco repository and run the benchmark workflow (See definition below) constantly. For example, [this benchmark job](https://github.com/falcosecurity/cncf-green-review-testing/blob/main/kustomize/falco-driver/ebpf/stress-ng.yaml#L27-L32) is set up as a Kubernetes Deployment that runs an endless loop of [`stress-ng`](https://wiki.ubuntu.com/Kernel/Reference/stress-ng), which applies stress to the kernel. Instead, this proposal aims to provide a solution for how to deploy the benchmark workflows only when they are needed.
 
 Secondly, automating the way we run benchmark tests in this pipeline will help to make it easier and faster to add new benchmark tests. It will enable both the WG Green Reviews and CNCF project maintainers to come up with new benchmark tests and run them to get feedback faster.
 
