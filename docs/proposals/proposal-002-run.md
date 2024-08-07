@@ -72,7 +72,7 @@ is trying to solve?"
 
 This proposal is part of the pipeline automation of the Green Reviews tooling for Falco (and new CNCF projects in the future). Currently, we are using Flux to watch the upstream Falco repository and run the benchmark workflow (See definition below) constantly. For example, [this benchmark job](https://github.com/falcosecurity/cncf-green-review-testing/blob/main/kustomize/falco-driver/ebpf/stress-ng.yaml#L27-L32) is set up as a Kubernetes Deployment that runs an endless loop of [`stress-ng`](https://wiki.ubuntu.com/Kernel/Reference/stress-ng), which applies stress to the kernel. Instead, this proposal aims to provide a solution for how to deploy the benchmark workflows only when they are needed.
 
-Secondly, automating the way we run benchmark tests in this pipeline will help to make it easier and faster to add new benchmark tests. It will enable both the WG Green Reviews and CNCF project maintainers to come up with new benchmark tests and run them to get feedback faster.
+Secondly, automating the way we run benchmark workflows in this pipeline will help to make the process easier and faster. It will enable both the WG Green Reviews and CNCF project maintainers to come up with new benchmark jobs and run them to get feedback faster.
 
 ### Goals
 
@@ -82,9 +82,9 @@ know that this has succeeded?
 -->
 
   - Describe the actions to take immediately after the trigger and deployment of the CNCF project defined in [Proposal 1](./proposal-001-trigger-and-deploy.md)
-  - Describe how the pipeline should _fetch_ the benchmark tests either from this repository (`cncf-tags/green-reviews-tooling`) or from an upstream repository (e.g. Falco's [`falcosecurity/cncf-green-review-testing`](https://github.com/falcosecurity/cncf-green-review-testing)).
-  - Describe how the pipeline should _run_ the benchmark tests through GitHub Actions for a specific project e.g. Falco
-  - Communicate the changes needed to be made by the Falco team to change the benchmark test to a GitHub Action file.
+  - Describe how the pipeline should _fetch_ the benchmark jobs either from this repository (`cncf-tags/green-reviews-tooling`) or from an upstream repository (e.g. Falco's [`falcosecurity/cncf-green-review-testing`](https://github.com/falcosecurity/cncf-green-review-testing)).
+  - Describe how the pipeline should _run_ the benchmark workflows through GitHub Actions for a specific project e.g. Falco
+  - Communicate to CNCF Projects interested in a Green Review what is the structure they need to comply in the process of creating a new benchmark job
   - Provide _modularity_ for the benchmark tests.
 
 ### Non-Goals
@@ -150,7 +150,7 @@ As with every design document, there are multiple risks:
 
 - Extensibility: At the moment Falco is the first and only project that requested a Green Review (very appreciated guinea pig 🙂). When other CNCF projects will request other Green Reviews, we will learn more and adapt the project as needed.
 
-- Scalability: Green Reviews contributors should empower and encourage CNCF project maintainers to create benchmark tests. The right collaboration will enable Green Reviews maintainers to scale to multiple projects (cause they will not need to understand the deployment details of every project) while producing higher quality metrics (cause the project is set up by the experts).
+- Scalability: Green Reviews contributors should empower and encourage CNCF project maintainers to create benchmark jobs. The right collaboration will enable Green Reviews maintainers to scale to multiple projects (cause they will not need to understand the deployment details of every project) while producing higher quality metrics (cause the project is set up by the experts).
 
 - Validity: this point is less trivial and also conflicting with the one above but worth mention. If every single project defines its own benchmarks how will it be possible to compare different Projects result? This needs [deeper investigation that will be discussed in a separate proposal](https://github.com/cncf-tags/green-reviews-tooling/issues/103.)
 
@@ -244,6 +244,9 @@ jobs:
       - run: |
           # the action to take here depends on the Functional Unit of the CNCF project. wait for amount of time, for resources
           kubectl apply -f https://raw.githubusercontent.com/falcosecurity/cncf-green-review-testing/main/kustomize/falco-driver/ebpf/stress-ng.yaml
+          # the one above is a workflow with a single benchmark job, but if your workflow needs multiple benchmark job, it is enough to define additional steps:
+          # e.g. for redis-test: kubectl apply -f https://github.com/falcosecurity/cncf-green-review-testing/blob/main/kustomize/falco-driver/ebpf/redis.yaml
+          # for event-generator-test -> kubectl apply -f https://github.com/falcosecurity/cncf-green-review-testing/blob/main/kustomize/falco-driver/ebpf/falco-event-generator.yaml
           wait 15m
       - delete: |
          kubectl delete -f https://raw.githubusercontent.com/falcosecurity/cncf-green-review-testing/main/kustomize/falco-driver/ebpf/stress-ng.yaml  # other Falco tests:
