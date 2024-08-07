@@ -250,8 +250,6 @@ jobs:
           wait 15m
       - delete: |
          kubectl delete -f https://raw.githubusercontent.com/falcosecurity/cncf-green-review-testing/main/kustomize/falco-driver/ebpf/stress-ng.yaml  # other Falco tests:
-  # - redis-test e.g. https://github.com/falcosecurity/cncf-green-review-testing/blob/main/kustomize/falco-driver/ebpf/redis.yaml
-  # - event-generator-test e.g. https://github.com/falcosecurity/cncf-green-review-testing/blob/main/kustomize/falco-driver/ebpf/falco-event-generator.yaml
 ```
 
 The benchmark job has some test instructions/steps. In this case, it applies an upstream Kubernetes manifest. This manifest contains a `while` loop that runs `stress-ng`. The manifest already defines where the test should run in the cluster i.e. in which namespace. The functional unit test is time-bound in this case and scoped to 15 minutes. Therefore, we deploy this test, wait for 15 minutes, then delete the manifest to end the loop. The test steps depend on the functional unit of each CNCF project.
