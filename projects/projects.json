@@ -3,6 +3,7 @@
         {
             "name": "falco",
             "organization": "falcosecurity",
+            "benchmark_path": "",
             "configs": [
                 "ebpf",
                 "modern-ebpf",
