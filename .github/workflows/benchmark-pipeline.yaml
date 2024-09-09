@@ -12,6 +12,9 @@ on:
       version:
         description: Version of project to be tested e.g. 0.37.0
         required: true
+      benchmark_path:
+        description: Path to the benchmark action
+        required: true
 
 concurrency:
   group: benchmark
@@ -58,6 +61,9 @@ jobs:
           --all \
           --for=condition=Ready \
           --namespace=benchmark
+
+  benchmark-job:
+    uses: ${{ inputs.benchmark_path }}
 
   delete:
     runs-on: ubuntu-22.04
