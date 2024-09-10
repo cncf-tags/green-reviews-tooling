@@ -15,7 +15,7 @@ The WG’s workflow vision is that every release requesting a sustainability foo
 1. Spin up the Equinix Metal resources
 2. Install Kubernetes and all the needed observability tools
 3. Install the software that will be assessed
-4. Execute the necessary test cases
+4. Execute the necessary benchmark test cases
 5. Gather sustainability-related metrics
 6. Publish sustainability metrics
 
