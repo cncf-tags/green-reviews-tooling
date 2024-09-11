@@ -16,10 +16,12 @@ fi
 jq -c '.projects[]' "$json_file" | while read -r project; do
     proj_name=$(echo "$project" | jq -r '.name')
     proj_organization=$(echo "$project" | jq -r '.organization')
+    proj_benchmark_path=$(echo "$project" | jq -r '.benchmark_path')
     configs=$(echo "$project" | jq -r '.configs')
 
     echo "Project Name: $proj_name"
     echo "Organization: $proj_organization"
+    echo "Benchmark Path: $proj_benchmark_path"
     echo "Configs: $configs"
 
     release_url="https://api.github.com/repos/${proj_organization}/${proj_name}/releases/latest"
