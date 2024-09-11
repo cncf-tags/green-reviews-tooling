@@ -30,7 +30,11 @@ title can help communicate what the proposal is and should be
 considered as part of any review.
 -->
 
-Step 3 in the automated pipeline to report and store the carbon emission results for a CNCF project. See also step 1: [Trigger and Deploy](./proposal-001-trigger-and-deploy.md) and step 2: [Run benchmark tests](./proposal-002-run.md).
+Step 3 in the automated pipeline to report and store the carbon emission results for a CNCF project. 
+
+See also: 
+- step 1: [Trigger and Deploy](./proposal-001-trigger-and-deploy.md) 
+- step 2: [Run benchmark tests](./proposal-002-run.md).
 
 - Tracking issue: [#95](https://github.com/cncf-tags/green-reviews-tooling/issues/95)
 - Implementation issue: TBD
@@ -42,18 +46,13 @@ Step 3 in the automated pipeline to report and store the carbon emission results
 
 ## Status
 
-Provisional
-
-<!--
-The headings here are just starting points, add more as makes sense for what you
-are proposing.
--->
+WIP
 
 ## Table of Contents
 
 <!-- toc -->
 
-- [Short, descriptive title](#short-descriptive-title)
+- [Proposal 003 - Report project benchmark tests from the automated pipeline](#proposal-003---report-project-benchmark-tests-from-the-automated-pipeline)
   - [Authors](#authors)
   - [Status](#status)
   - [Table of Contents](#table-of-contents)
@@ -64,16 +63,15 @@ are proposing.
     - [Linked Docs](#linked-docs)
   - [Proposal](#proposal)
     - [User Stories (Optional)](#user-stories-optional)
-      - [Story 1](#story-1)
-      - [Story 2](#story-2)
-    - [Notes/Constraints/Caveats (Optional)](#notesconstraintscaveats-optional)
     - [Risks and Mitigations](#risks-and-mitigations)
   - [Design Details](#design-details)
-    - [Graduation Criteria (Optional)](#graduation-criteria-optional)
+    - [Metrics](#metrics)
+    - [Collect](#collect)
+    - [Store](#store)
+    - [Share](#share)
   - [Drawbacks (Optional)](#drawbacks-optional)
   - [Alternatives](#alternatives)
   - [Infrastructure Needed (Optional)](#infrastructure-needed-optional)
-  <!-- /toc -->
 
 ## Summary
 
@@ -113,8 +111,14 @@ List the specific goals of the proposal. What is it trying to achieve? How will 
 know that this has succeeded?
 -->
 
-- Describe the steps and infrastructure needed to report and store the results of the pipeline.
-- Export and store the reported metrics in an accessible format.
+- Describe the two kind of metrics that are going to be stored:
+  - Project-related metrics: specific metrics that a given project might request
+  - Sustainability metrics: the metrics related to the green review
+- Describe the steps and infrastructure needed to report and store the results of the pipeline:
+  - Collect: the action of getting the metrics from their producers
+  - Store: the action of saving the metrics in a state
+  - Share: how to expose the metrics for the CNCF project maintainers
+- For each step describe how the action should be implemented and why
 
 ### Non-Goals
 
@@ -127,7 +131,10 @@ which will be dealt with one day but are not things which need to be dealt with 
 within the scope of this work. This helps make sure everyone is crystal clear on the outcomes.
 -->
 
-- Creating new metrics
+- Create new metrics from scratch 
+- Aggregate existing metrics
+- Provide analytic functionalities on top of the raw metrics
+- Integration with cncf dev-stat on Grafana
 
 ### Linked Docs
 
@@ -157,20 +164,18 @@ the system. The goal here is to make this feel real for users without getting
 bogged down.
 -->
 
-#### Story 1
+**CNCF project maintainer selects project-related metrics** 
 
-#### Story 2
+If the project produces significant metrics that need to be monitored along with the sustainable metrics, I would like to have them reported.
 
-### Notes/Constraints/Caveats (Optional)
+**Green reviews maintainer adds, modifies or removes sustainability metrics**
 
-<!--
-What are the caveats to the proposal?
-What are some important details that didn't come across above?
-Go in to as much detail as necessary here.
-This might be a good place to talk about core concepts and how they relate.
--->
+As a Green Review maintainer, I would like to change the sustainability metrics over time. 
 
-The main risks are that the metrics captured and recorded aren't useful or don't show much.
+**CNCF project maintainer is able to check the metrics for their project**
+
+After the pipeline produces the metrics, I would like to see the result of it in an accessible way.
+
 
 ### Risks and Mitigations
 
@@ -182,7 +187,63 @@ by scaling to support more CNCF Projects.
 How will this affect the benchmark tests, CNCF Project Maintainers, pipeline maintainers, etc?
 -->
 
+As with every design document there are some challanges:
+ 
+- Consistency vs Flexibility: if we change the sustainability metrics overtime it will be difficult to compare different metrics from different green reviews release. However we would rather be flexible in this first phase and possibly change what we store and how if this leads to more correct results. 
+- The three sub-steps of the proposal: Collect, Store and Share are co-dependent. How to collect the data depends on how to store it, and how to store the data depends on how to show it. Since we are still in early phases of the working group, an agile approach will be proposed: a first lean solution will be deployed and, most likely, improved in the future.  
+
 ## Design Details
+
+This section will have the following subsections:
+
+- Metrics: what metrics to collect?
+- Collect: how to collect the metrics?
+- Store: how to store them?
+- Share: how to share the metrics?
+
+### Metrics
+
+As already mentioned we will have two sets of metrics:
+
+1. Project-related metrics
+2. Sustainability metrics
+
+For the project related one Falco has already requested this metrics:
+
+```
+rate(container_cpu_usage_seconds_total[5m])
+container_memory_rss
+container_memory_working_set_bytes
+```
+
+For the Sustainbility metrics we will keep this one:
+
+`kepler_container_joules_total`
+
+### Collect
+
+TBD
+
+A prometheus query?
+A direct curl to the sources?
+
+Evaluate pros and cons
+
+### Store
+
+TBD
+
+Something simple like a markdown file would do.
+Who is writing to the file?
+How to organize the file?
+
+### Share
+
+TBD
+
+Grafana dashboard is needed?
+Is it enough to show the markdown files?
+
 
 <!--
 This section should contain enough information that the specifics of your
@@ -191,46 +252,6 @@ change are understandable. This may include manifests or workflow examples
 about HOW your proposal will be implemented, this is the place to discuss them.
 -->
 
-### Setup
-
-1. Start Kubernetes
-2. [Install and start Prometheus](https://sustainable-computing.io/installation/kepler/#deploy-the-prometheus-operator) 2. `cd kube-prometheus` 3. `kubectl apply --server-side -f manifests/setup` 4. `kubectl apply -f manifests/` 5. Wait… 6. `kubectl -n monitoring port-forward svc/grafana 3000` 7. Open dashboard _localhost:3000_
-3. Install metrics server
-   1. `kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml`
-   2. Patch
-
-```shell
-kubectl patch -n kube-system deployment metrics-server --type=json \
--p '[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
-```
-
-4. Install and start Kepler
-   1. Open a new terminal
-   2. `git clone --depth 1 git@github.com:sustainable-computing-io/kepler.git`
-5. `cd kepler`
-6. `make build-manifest OPTS="PROMETHEUS_DEPLOY"`
-7. `kubectl apply -f _output/generated-manifest/deployment.yaml`
-8. Add [dashboard](https://raw.githubusercontent.com/sustainable-computing-io/kepler/main/grafana-dashboards/Kepler-Exporter.json) to Grafana.
-9. Install and start Falco
-   1. Open a new terminal
-   2. [Install Helm](https://helm.sh/docs/intro/install/)
-   3. `helm repo add falcosecurity https://falcosecurity.github.io/charts`
-   4. `helm repo update`
-   5. `helm install falco falcosecurity/falco --namespace falco --create-namespace --set driver.kind=modern-bpf  --set falco.grpc.enabled=true --set falco.grpc_output.enabled=true`
-   6. `helm install falco-exporter falcosecurity/falco-exporter`
-10. Run Falco tests
-    1. https://github.com/falcosecurity/cncf-green-review-testing/tree/main/benchmark-tests
-11. May need to remove `nodeSelector`
-12. Write out metrics to JSON
-13. Thinking about https://github.com/prometheus/prom2json
-14. These metrics:
-
-    ```
-    rate(container_cpu_usage_seconds_total[5m])
-    container_memory_rss
-    container_memory_working_set_bytes
-    kepler_container_joules_total
-    ```
 
 ## Drawbacks (Optional)
 
