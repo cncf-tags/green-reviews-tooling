@@ -14,7 +14,7 @@ on:
         required: true
       benchmark_path:
         description: Path to the benchmark action
-        required: true
+        required: false # TODO: change to `true` when `"benchmark_path"` is specified in `projects/projects.json`
 
 concurrency:
   group: benchmark
