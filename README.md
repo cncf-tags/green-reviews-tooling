@@ -19,7 +19,7 @@ The WG’s workflow vision is that every release requesting a sustainability foo
 5. Gather sustainability-related metrics
 6. Publish sustainability metrics
 
-If you are curious and want to discover more a good:
+If you are curious and want to discover more, here are some good resources:
 - You can read the deep dive [article](https://tag-env-sustainability.cncf.io/blog/2024-green-reviews-working-group-measuring-sustainability/)
 - You can watch the Kubecon EU '24 [Maintainer Talk](https://www.youtube.com/watch?v=UFa8hxOGKwQ)
 
@@ -57,8 +57,8 @@ The roadmap contains some of the short and long-term goals of the Green Reviews 
 | Timeline | Goals |
 |---|---|
 | Q4 '23 / Before & After KubeCon NA  | Announce Green Reviews WG during KubeCon NA Keynotes  |
-|  | Draft of the implementation for the sustainability footprint measurement workflow (tracking issue) |
-|  | Cluster up and running on Equinix (tracking issue) |
+|  | Draft of the implementation for the sustainability footprint measurement workflow |
+|  | Cluster up and running on Equinix |
 | Q1 '24 / Before KubeCon EU  | Measure the cloud native sustainability footprint of Falco [milestone](https://github.com/cncf-tags/green-reviews-tooling/milestone/1) |
 |  | Present architecture as part of the maintainer track at KubeCon EU  |
 | Q2 - Q3 '24 / Before KubeCon NA  | Automate cloud native sustainability footprint measuring of the Falco project (alpha version) - [Tracking issue](https://github.com/cncf-tags/green-reviews-tooling/issues/83) |
