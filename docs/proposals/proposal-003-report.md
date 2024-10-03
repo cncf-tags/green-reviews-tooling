@@ -43,6 +43,7 @@ See also:
 
 - @chrischinchilla
 - @AntonioDiTuri
+- @rossf7
 
 ## Status
 
@@ -134,7 +135,7 @@ within the scope of this work. This helps make sure everyone is crystal clear on
 - Create new metrics from scratch 
 - Aggregate existing metrics
 - Provide analytic functionalities on top of the raw metrics
-- Integration with cncf dev-stat on Grafana
+- Integration with CNCF [DevStats](https://github.com/cncf/devstats) Grafana
 
 ### Linked Docs
 
@@ -197,6 +198,7 @@ As with every design document there are some challanges:
 This section will have the following subsections:
 
 - Metrics: what metrics to collect?
+- Metadata: what additional data needs to be collected?
 - Collect: how to collect the metrics?
 - Store: how to store them?
 - Share: how to share the metrics?
@@ -211,31 +213,166 @@ As already mentioned we will have two sets of metrics:
 For the project related one Falco has already requested this metrics:
 
 ```
-rate(container_cpu_usage_seconds_total[5m])
+container_cpu_usage_seconds_total
 container_memory_rss
 container_memory_working_set_bytes
 ```
 
-For the Sustainbility metrics we will keep this one:
+These metrics are provided by cAdvisor and scraped from the kubelet.
+
+For the Sustainability metrics we will keep this one:
 
 `kepler_container_joules_total`
 
+### Metadata
+
+As well as the metrics we will collect additional metadata about the pipeline run. This is to provide context on how the results were measured and to allow results to be compared over time.
+
+This metadata will include at least these attributes and more may be added over time.
+
+- Project name
+- Project version (which release was benchmarked)
+- Datetime (when the benchmark was performed)
+- Project configuration (which configuration was benchmarked)
+- Additional info
+  - Pipeline version
+  - Kubernetes version
+  - Kepler version
+  - Equinix Metal instance type
+
 ### Collect
 
-TBD
+The Green Reviews pipeline collects the metrics values for the pipeline run so they can be stored. 
 
-A prometheus query?
-A direct curl to the sources?
+**Note:** 2 options are presented for comparision. The proposal will be updated once an option has been selected.
 
-Evaluate pros and cons
+#### Query Prometheus
+
+Query Prometheus directly by running PromQL queries.
+
+**Strengths**
+
+- All metrics are available in Prometheus.
+- PromQL queries can be executed against the Prometheus serve.
+
+**Weaknesses**
+
+- Dependency on having Prometheus installed in the cluster.
+- Executing PromQL queries may need higher level tooling like the Prometheus Go SDK.
+
+#### Scrape the metrics endpoint directly
+
+Collect metrics by making curl requests to the `/metrics` endpoints.
+
+**Strengths**
+
+- Simple.
+- Minimal dependencies just needs curl.
+
+**Weaknesses**
+
+- Need to scrape both kepler and kubelet metrics endpoints.
+- No ability to make PromQL queries.
 
 ### Store
 
-TBD
+Once the results have been calculated they need to be stored along with the additional metadata. For the data format JSON and Markdown are both options.
 
-Something simple like a markdown file would do.
-Who is writing to the file?
-How to organize the file?
+Markdown allows the results to be presented in a more user friendly manner. Whereas JSON is easier to parse programatically. Storing in both formats is an option. This increases the amount of storage needed but the results are per pipeline run so we are not expecting high data volumes (famous last words! :).
+
+Once the results have been generated in the chosen data format we need a long term storage option. If in-cluster storage is used we also need an external backup.
+
+**Note:** 4 options are presented for comparision. The proposal will be updated once an option has been selected.
+
+- Git
+- Object Storage (S3 compatible)
+- In Cluster Storage (with external backup)
+- External database (CNCF DevStats Postgres cluster)
+
+#### Git
+
+**Strengths**
+
+- Simple and no infra to manage.
+- Results are publicly accessible.
+
+**Weaknesses**
+
+- Static data.
+- Not interactive so no ability to compare results.
+
+#### Object Storage (S3 compatible)
+
+**Strengths**
+
+- Simple.
+- External backup outside of the cluster.
+
+**Weaknesses**
+
+- Data is private and not publicly accessible.
+- Not interactive so no ability to compare results.
+
+2 hosting options.
+
+**AWS S3**
+
+**Strengths**
+
+- Simple and no infra to manage.
+- We already have S3 bucket in CNCF AWS account for storing cluster OpenTofu state files.
+
+**Weaknesses**
+
+- Proprietary cloud service.
+- Need to check we can use existing bucket for storing more data.
+
+**MinIO**
+
+Run [Equinix Metal node](https://deploy.equinix.com/developers/guides/minio/) running [MinIO](https://github.com/minio/minio). 
+
+**Strengths**
+
+- S3 compatible but not a proprietary service.
+- Open Source (AGPL license).
+
+**Weaknesses**
+
+- Involves running an additional Equinix Metal server.
+- Still needs external backup in case server fails.
+
+#### In Cluster Storage with external backup
+
+Current cluster runs K3s which can be configured to use [local storage](https://docs.k3s.io/storage).
+We would still need an external backup but we could use object storage for this.
+
+**Strengths**
+
+- Cluster already has Prometheus and Grafana deployed.
+- Dynamic queries like comparing results can be implemented.
+
+**Weaknesses**
+
+- We still need an external backup of the results.
+- Needs a cluster with at least one node running 24/7.
+
+#### CNCF DevStats Postgres Cluster
+
+We have the long term goal of presenting the Green Reviews results in the CNCF [DevStats](https://github.com/cncf/devstats) Grafana dashboards.
+
+Displaying the results in DevStats Grafana is out of scope of this proposal but storing the results in the DevStats Postgres database would be an intermediate step in this direction.
+
+**Note:** WIP: We are discussing with the DevStats team if this is an option and if so how it would work.
+
+**Strengths**
+
+- Results are stored outside of the cluster.
+- Dynamic queries like comparing results can be implemented.
+- Gets us closer to displaying results in DevStats Grafana.
+
+**Weaknesses**
+
+- Dependency on external team and may need changes on their side.
 
 ### Share
 
