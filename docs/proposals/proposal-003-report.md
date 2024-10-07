@@ -244,7 +244,7 @@ This metadata will include at least these attributes and more may be added over 
 
 The Green Reviews pipeline collects the metrics values for the pipeline run so they can be stored. 
 
-**Note:** 2 options are presented for comparision. The proposal will be updated once an option has been selected.
+**Note:** 2 options are presented for comparison. The proposal will be updated once an option has been selected.
 
 #### Query Prometheus
 
@@ -276,13 +276,13 @@ Collect metrics by making curl requests to the `/metrics` endpoints.
 
 ### Store
 
-Once the results have been calculated they need to be stored along with the additional metadata. For the data format JSON and Markdown are both options.
+Once the results have been calculated they need to be stored along with the additional metadata. For the data format JSON and Markdown are both options. Depending on the long term storage option selected other options may be possiblle, e.g. relational database if Postgres is used. 
 
 Markdown allows the results to be presented in a more user friendly manner. Whereas JSON is easier to parse programatically. Storing in both formats is an option. This increases the amount of storage needed but the results are per pipeline run so we are not expecting high data volumes (famous last words! :).
 
 Once the results have been generated in the chosen data format we need a long term storage option. If in-cluster storage is used we also need an external backup.
 
-**Note:** 4 options are presented for comparision. The proposal will be updated once an option has been selected.
+**Note:** 4 options are presented for comparison. The proposal will be updated once an option has been selected.
 
 - Git
 - Object Storage (S3 compatible)
@@ -349,11 +349,12 @@ We would still need an external backup but we could use object storage for this.
 **Strengths**
 
 - Cluster already has Prometheus and Grafana deployed.
+- Existing Grafana dashboard can be adapted to support the collected results.
 - Dynamic queries like comparing results can be implemented.
 
 **Weaknesses**
 
-- We still need an external backup of the results.
+- We still need an external backup of the results (we could use S3 for this).
 - Needs a cluster with at least one node running 24/7.
 
 #### CNCF DevStats Postgres Cluster
