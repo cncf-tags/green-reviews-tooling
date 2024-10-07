@@ -272,7 +272,7 @@ Collect metrics by making curl requests to the `/metrics` endpoints.
 **Weaknesses**
 
 - Need to scrape both kepler and kubelet metrics endpoints.
-- No ability to make PromQL queries.
+- No ability to make PromQL queries e.g. to calculate a rate of change. We can only use the raw values we scrape.
 
 ### Store
 
