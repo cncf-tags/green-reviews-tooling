@@ -253,7 +253,7 @@ Query Prometheus directly by running PromQL queries.
 **Strengths**
 
 - All metrics are available in Prometheus.
-- PromQL queries can be executed against the Prometheus serve.
+- PromQL queries can be executed against the Prometheus server.
 
 **Weaknesses**
 
