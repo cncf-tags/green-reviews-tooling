@@ -210,7 +210,7 @@ As already mentioned we will have two sets of metrics:
 1. Project-related metrics
 2. Sustainability metrics
 
-For the project related one Falco has already requested this metrics:
+For the project-related metrics, Falco has requested the following:
 
 ```
 container_cpu_usage_seconds_total
