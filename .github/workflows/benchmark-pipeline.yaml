@@ -7,14 +7,15 @@ on:
         description: Project to be deployed e.g. falco
         required: true
       config:
-        description: Configuration if project has multiple variants they wish to test
+        description: Configuration if project has multiple variants they wish to test e.g. ebpf
         required: false
       version:
         description: Version of project to be tested e.g. 0.37.0
         required: true
       benchmark_path:
         description: Path to the benchmark action
-        required: false # TODO: change to `true` when `"benchmark_path"` is specified in `projects/projects.json`
+        type: string
+        required: true
 
 concurrency:
   group: benchmark
@@ -63,11 +64,15 @@ jobs:
           --namespace=benchmark
 
   benchmark-job:
-    uses: ${{ inputs.benchmark_path }}
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: jenseng/dynamic-uses@v1
+        with:
+          uses: ${{ inputs.benchmark_path }}
 
   delete:
     runs-on: ubuntu-22.04
-    needs: deploy
+    needs: [deploy, benchmark-job]
     if: ${{ always() }}
     steps:
       - uses: actions/checkout@v4

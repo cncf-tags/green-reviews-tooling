@@ -3,7 +3,7 @@
         {
             "name": "falco",
             "organization": "falcosecurity",
-            "benchmark_path": "",
+            "benchmark_path": ".github/workflows/benchmark-workflows/falco.yml@nm/add-benchmark-path",
             "configs": [
                 "ebpf",
                 "modern-ebpf",

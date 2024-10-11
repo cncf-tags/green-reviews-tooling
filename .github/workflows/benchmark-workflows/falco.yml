@@ -1,0 +1,9 @@
+name: Benchmark Workflow for Falco
+
+on: workflow_dispatch
+
+jobs:
+  stress-ng-test:
+    runs-on: ubuntu-22.04
+    steps:
+      - run: echo "done"
