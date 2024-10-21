@@ -6,4 +6,5 @@ jobs:
   stress-ng-test:
     runs-on: ubuntu-22.04
     steps:
-      - run: echo "done"
+      - run: |
+          echo "github.ref_name: ${{ github.ref_name }}"
