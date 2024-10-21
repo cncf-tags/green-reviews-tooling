@@ -68,7 +68,7 @@ jobs:
     steps:
       - uses: jenseng/dynamic-uses@v1
         with:
-          uses: ${{ inputs.benchmark_path }}
+          uses: ${{ inputs.benchmark_path }}@${{ github.ref_name }}
 
   delete:
     runs-on: ubuntu-22.04
