@@ -65,10 +65,13 @@ jobs:
 
   benchmark-job:
     runs-on: ubuntu-22.04
+    needs: [deploy]
     steps:
+      - name: Checkout into repository
+        uses: actions/checkout@v4
       - uses: jenseng/dynamic-uses@v1
         with:
-          uses: ${{ inputs.benchmark_path }}@${{ github.ref_name }}
+          uses: ${{ inputs.benchmark_path }}
 
   delete:
     runs-on: ubuntu-22.04
