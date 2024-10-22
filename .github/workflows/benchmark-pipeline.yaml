@@ -65,6 +65,7 @@ jobs:
 
   benchmark-job:
     runs-on: ubuntu-22.04
+    needs: [deploy]
     steps:
       - uses: jenseng/dynamic-uses@v1
         with:
