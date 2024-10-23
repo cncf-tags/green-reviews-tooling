@@ -20,6 +20,19 @@ concurrency:
   group: benchmark
 
 jobs:
+  print_summary:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add to Summary
+        run: |
+          echo "## Workflow Input Parameters" >> $GITHUB_STEP_SUMMARY
+          echo "| Parameter | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| cncf_project | ${{ github.event.inputs.cncf_project }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| config | ${{ github.event.inputs.config }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| version | ${{ github.event.inputs.version }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| benchmark_path | ${{ github.event.inputs.benchmark_path }} |" >> $GITHUB_STEP_SUMMARY
+
   deploy:
     runs-on: ubuntu-22.04
     steps:
