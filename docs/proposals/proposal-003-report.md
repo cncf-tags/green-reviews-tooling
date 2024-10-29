@@ -135,7 +135,6 @@ within the scope of this work. This helps make sure everyone is crystal clear on
 - Create new metrics from scratch 
 - Aggregate existing metrics
 - Provide analytic functionalities on top of the raw metrics
-- Integration with CNCF [DevStats](https://github.com/cncf/devstats) Grafana
 
 ### Linked Docs
 
@@ -220,7 +219,7 @@ container_memory_working_set_bytes
 
 These metrics are provided by cAdvisor and scraped from the kubelet.
 
-For the Sustainability metrics we will keep this one:
+For the Sustainability metrics we will store:
 
 `kepler_container_joules_total`
 
@@ -276,30 +275,95 @@ Collect metrics by making curl requests to the `/metrics` endpoints.
 
 ### Store
 
-Once the results have been calculated they need to be stored along with the additional metadata. For the data format JSON and Markdown are both options. Depending on the long term storage option selected other options may be possiblle, e.g. relational database if Postgres is used. 
+Once the results have been calculated they need to be stored along with the additional metadata. 
 
-Markdown allows the results to be presented in a more user friendly manner. Whereas JSON is easier to parse programatically. Storing in both formats is an option. This increases the amount of storage needed but the results are per pipeline run so we are not expecting high data volumes (famous last words! :).
+As an interim step we will write the results to Git at the end of the pipeline run. Long term storage options are considered in the next section. Depending on the option chosen additional design details may be required e.g. database schema for Postgres.
 
-Once the results have been generated in the chosen data format we need a long term storage option. If in-cluster storage is used we also need an external backup.
+To commit the results to the green-reviews-tooling repo we use a GitHub Bot account and a separate branch to avoid generating conflicts in the main branch.
 
-**Note:** 4 options are presented for comparison. The proposal will be updated once an option has been selected.
+An example JSON file is shown below.
 
-- Git
+```json
+{
+    "run_id": 11538809294,
+    "benchmark": {
+        "workflow_name": "falco.yml"
+    },
+    "cncf_project": {
+        "name": "falco",
+        "org": "falcosecurity",
+        "config": "ebpf",
+        "version": "0.39.1"
+    },
+    "meta": {
+        "equinix_metal_instance_type": "m3.small.x86",
+        "kepler_version": "0.7.12",
+        "kubernetes_version": "1.29.0",
+        "pipeline_version": "0.1.0"
+    },
+    "results": {
+        "metrics": [
+            {
+                "name": "container_cpu_usage_seconds_total",
+                "value": 25.800365357198253
+            },
+            {
+                "name": "container_memory_rss",
+                "value": 953597074.2857143
+            },
+            {
+                "name": "container_memory_working_set_bytes",
+                "value": 1070605165.7142856
+            },
+            {
+                "name": "kepler_container_joules_total",
+                "value": 7867.507499998423
+            }
+        ],
+        "sci": {
+            "components": {
+                "energy_consumption": {
+                    "units": "kWh",
+                    "value": 0.0041
+                },
+                "emissions_factor": {
+                    "region": "France",
+                    "units": "gCO2eq/kWh",
+                    "value": 78.81
+                },
+                "embodied_carbon": {
+                    "units": "gCO2eq",
+                    "value": 3.92
+                },
+                "pue": {
+                    "provider": "Equinix",
+                    "value": 1.42 
+                }
+            },
+            "units": "gCO2eq",
+            "value":  4.03
+        }
+    },
+    "start_time": "2024-10-27T09:00:00Z",
+    "end_time": "2024-10-27T09:15:00Z"
+}
+```
+
+**Notes:**
+- `run_id` is the ID of the GitHub Actions pipeline run.
+- `metrics` section contains the raw metric values collected by the pipeline.
+- `sci` section has both the overall SCI score and its component parts.
+- `start_time` and `end_time` stores the time and duration of the pipeline run.
+
+### Long Term Storage Options
+
+Once the results have been generated in the chosen data format we need a long term storage option.
+
+**Note:** 3 options are presented for comparison. The proposal will be updated once an option has been selected.
+
 - Object Storage (S3 compatible)
 - In Cluster Storage (with external backup)
 - External database (CNCF DevStats Postgres cluster)
-
-#### Git
-
-**Strengths**
-
-- Simple and no infra to manage.
-- Results are publicly accessible.
-
-**Weaknesses**
-
-- Static data.
-- Not interactive so no ability to compare results.
 
 #### Object Storage (S3 compatible)
 
