@@ -21,71 +21,71 @@ concurrency:
   group: benchmark
 
 jobs:
-  deploy:
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: azure/setup-kubectl@v4
-        with:
-          version: v1.30.2
-        id: install
-      - run: mkdir ~/.kube && echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
-      - name: Select the manifest
-        run: |
-          MANIFEST=projects/${{ inputs.cncf_project }}
-          CONFIG=${{ inputs.config }}
-          if [[ -n $CONFIG ]]; then
-            echo "Configuration provided"
-            MANIFEST=$MANIFEST/$CONFIG.yaml
-          else
-            MANIFEST=$MANIFEST/${{ inputs.cncf_project }}.yaml
-          fi
+  # deploy:
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: azure/setup-kubectl@v4
+  #       with:
+  #         version: v1.30.2
+  #       id: install
+  #     - run: mkdir ~/.kube && echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+  #     - name: Select the manifest
+  #       run: |
+  #         MANIFEST=projects/${{ inputs.cncf_project }}
+  #         CONFIG=${{ inputs.config }}
+  #         if [[ -n $CONFIG ]]; then
+  #           echo "Configuration provided"
+  #           MANIFEST=$MANIFEST/$CONFIG.yaml
+  #         else
+  #           MANIFEST=$MANIFEST/${{ inputs.cncf_project }}.yaml
+  #         fi
 
-          if ! test -f "$MANIFEST"; then
-            echo "The provided inputs are invalid."
-            exit 1
-          fi
+  #         if ! test -f "$MANIFEST"; then
+  #           echo "The provided inputs are invalid."
+  #           exit 1
+  #         fi
 
-          export VERSION=${{ inputs.version }}
-          envsubst < $MANIFEST > manifest.yaml
-      - uses: actions/upload-artifact@v4
-        with:
-          name: manifest
-          path: manifest.yaml
-      - name: Apply the manifest
-        run: |
-          kubectl apply -f manifest.yaml
+  #         export VERSION=${{ inputs.version }}
+  #         envsubst < $MANIFEST > manifest.yaml
+  #     - uses: actions/upload-artifact@v4
+  #       with:
+  #         name: manifest
+  #         path: manifest.yaml
+  #     - name: Apply the manifest
+  #       run: |
+  #         kubectl apply -f manifest.yaml
 
-          sleep 10
+  #         sleep 10
 
-          kubectl wait pod \
-          --all \
-          --for=condition=Ready \
-          --namespace=benchmark
+  #         kubectl wait pod \
+  #         --all \
+  #         --for=condition=Ready \
+  #         --namespace=benchmark
 
   benchmark-job:
     runs-on: ubuntu-22.04
-    needs: [deploy]
+    # needs: [deploy]
     steps:
-      - name: Checkout into repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - run: echo "$PWD"
       - uses: jenseng/dynamic-uses@v1
         with:
           uses: ${{ inputs.benchmark_path }}
 
-  delete:
-    runs-on: ubuntu-22.04
-    needs: [deploy, benchmark-job]
-    if: ${{ always() }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: azure/setup-kubectl@v4
-        with:
-          version: v1.30.2
-        id: install
-      - run: mkdir ~/.kube && echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+  # delete:
+  #   runs-on: ubuntu-22.04
+  #   needs: [benchmark-job]
+  #   if: ${{ always() }}
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: azure/setup-kubectl@v4
+  #       with:
+  #         version: v1.30.2
+  #       id: install
+  #     - run: mkdir ~/.kube && echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: manifest
-      - run: kubectl delete -f manifest.yaml --wait
+  #     - uses: actions/download-artifact@v4
+  #       with:
+  #         name: manifest
+  #     - run: kubectl delete -f manifest.yaml --wait
