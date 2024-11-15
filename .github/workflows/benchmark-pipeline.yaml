@@ -6,15 +6,23 @@ on:
       cncf_project:
         description: Project to be deployed e.g. falco
         required: true
+        type: string
       config:
         description: Configuration if project has multiple variants they wish to test
         required: false
+        type: string
       version:
         description: Version of project to be tested e.g. 0.37.0
         required: true
-      benchmark_path:
-        description: Path to the benchmark action
-        required: false # TODO: change to `true` when `"benchmark_path"` is specified in `projects/projects.json`
+        type: string
+      benchmark_job_url:
+        description: URL of the benchmark job
+        required: true
+        type: string
+      benchmark_job_duration:
+        description: Duration of the benchmark job
+        required: true
+        type: number
 
 concurrency:
   group: benchmark
@@ -31,10 +39,12 @@ jobs:
           echo "| cncf_project | ${{ github.event.inputs.cncf_project }} |" >> $GITHUB_STEP_SUMMARY
           echo "| config | ${{ github.event.inputs.config }} |" >> $GITHUB_STEP_SUMMARY
           echo "| version | ${{ github.event.inputs.version }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| benchmark_path | ${{ github.event.inputs.benchmark_path }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| benchmark_job_url | ${{ github.event.inputs.benchmark_job_url }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| benchmark_job_duration | ${{ github.event.inputs.benchmark_job_duration }} |" >> $GITHUB_STEP_SUMMARY
+
 
   deploy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: azure/setup-kubectl@v4
@@ -76,11 +86,38 @@ jobs:
           --namespace=benchmark
 
   benchmark-job:
-    uses: ${{ inputs.benchmark_path }}
+    runs-on: ubuntu-24.04
+    needs: deploy
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-kubectl@v4
+        with:
+          version: v1.30.2
+        id: install
+      - run: mkdir ~/.kube && echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+      - name: Run the benchmark job
+        run: |
+          kubectl apply -f ${{ inputs.benchmark_job_url }}
+
+          kubectl wait pod \
+          --all \
+          --for=condition=Ready
+
+      - name: Wait for the benchmark job to complete
+        run: |
+          sleep ${{ inputs.benchmark_job_duration }}m
+
+      # - name: Download the benchmark results
+      #   run: |
+      #     kubectl cp benchmark:/results results
+
+      - name: Delete the benchmark job
+        run: |
+          kubectl delete -f ${{ inputs.benchmark_job_url }} --wait
 
   delete:
-    runs-on: ubuntu-22.04
-    needs: deploy
+    runs-on: ubuntu-24.04
+    needs: benchmark-job
     if: ${{ always() }}
     steps:
       - uses: actions/checkout@v4
