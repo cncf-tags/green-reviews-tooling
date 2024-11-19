@@ -19,7 +19,7 @@ on:
         description: URL of the benchmark job
         required: true
         type: string
-      benchmark_job_duration:
+      benchmark_job_duration_mins:
         description: Duration of the benchmark job
         required: true
         type: number
@@ -40,7 +40,7 @@ jobs:
           echo "| config | ${{ github.event.inputs.config }} |" >> $GITHUB_STEP_SUMMARY
           echo "| version | ${{ github.event.inputs.version }} |" >> $GITHUB_STEP_SUMMARY
           echo "| benchmark_job_url | ${{ github.event.inputs.benchmark_job_url }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| benchmark_job_duration | ${{ github.event.inputs.benchmark_job_duration }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| benchmark_job_duration_mins | ${{ github.event.inputs.benchmark_job_duration_mins }} |" >> $GITHUB_STEP_SUMMARY
 
 
   deploy:
@@ -105,11 +105,7 @@ jobs:
 
       - name: Wait for the benchmark job to complete
         run: |
-          sleep ${{ inputs.benchmark_job_duration }}m
-
-      # - name: Download the benchmark results
-      #   run: |
-      #     kubectl cp benchmark:/results results
+          sleep ${{ inputs.benchmark_job_duration_mins }}m
 
       - name: Delete the benchmark job
         run: |
