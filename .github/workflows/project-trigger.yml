@@ -3,11 +3,6 @@ name: Project Trigger
 on:
   schedule:
     - cron: '0 8 * * *'
-  pull_request:
-    branches:
-    - main
-    paths:
-    - 'scripts/**'
   workflow_dispatch:
 
 concurrency:
