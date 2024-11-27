@@ -4,7 +4,7 @@
             "name": "falco",
             "organization": "falcosecurity",
             "benchmark": {
-                "k8s_manifest_url": "https://raw.githubusercontent.com/falcosecurity/cncf-green-review-testing/refs/heads/main/benchmark-tests/falco-benchmark-tests.yaml",
+                "k8s_manifest_url": "https://raw.githubusercontent.com/falcosecurity/cncf-green-review-testing/e93136094735c1a52cbbef3d7e362839f26f4944/benchmark-tests/falco-benchmark-tests.yaml",
                 "duration_mins": 15
             },
             "configs": [
