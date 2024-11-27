@@ -355,6 +355,65 @@ An example JSON file is shown below.
 - `sci` section has both the overall SCI score and its component parts.
 - `start_time` and `end_time` stores the time and duration of the pipeline run.
 
+If we go for a Postgres solution, the schema to store the same data could be something like this:
+
+```mermaid
+---
+title: Benchmark schema
+---
+erDiagram
+    BENCHMARK_RUN }|--|| BENCHMARK_CONFIG : with
+    BENCHMARK_RUN }|--|| PROJECT_CONFIG : with
+    BENCHMARK_METRIC }|--|| BENCHMARK_RUN : belongs-to
+```
+
+| Table name  | benchmark_run | |
+| ------------- | ------------- | -- |
+| run_id | primary key | 11538809294 |
+| workflow_name | varchar | "falco.yml" |
+| start_time | timestamp | "2024-10-27T09:00:00Z" |
+| end_time | timestamp |  "2024-10-27T09:15:00Z" |
+| sci_energy_consumption | float not null | 0.0041 |
+| sci_emissions_factor | float | 78.81 |
+| sci_embodied_carbon | float | 3.92 |
+| sci_pue | float | 1.42 |
+| sci_total | float | 4.03 |
+| benchmark_config_id | foreign key | 123 |
+| project_config_id | foreign key | 456 |
+
+| Table name  | benchmark_config | |
+| ------------- | ------------- | -- |
+| config_id | primary key | 123 |
+| equinix_metal_instance_type | varchar |  "m3.small.x86" |
+| kepler_version | varchar | "0.7.12" |
+| kubernetes_version | varchar | "1.29.0" |
+| pipeline_version | varchar | "0.1.0" |
+
+| Table name  | project_config | |
+| ------------- | ------------- | -- |
+| config_id | primary key | 456 |
+| project_name | varchar | "falco" |
+| project_org | varchar | "falcosecurity" |
+| project_config | varchar | "ebpf" |
+| project_version | varchar | "0.39.1" |
+
+
+| Table name  | benchmark_metric | |
+| ------------- | ------------- | -- |
+| metrics_id | primary key | 789 |
+| benchmark_run_id | foreign key | 11538809294 |
+| key_name | text not null | "container_cpu_usage_seconds_total" |
+| metrics_value | float no null | 25.800365357198253 |
+
+
+Notes:
+- `sci_energy_consumption` is the most important value because it will allow CNCF projects to compare performance between runs.
+- In the database it's not necessary to store the unit for the different values, we just make sure it's well documented and stick to the same unit every time.
+- We store the benchmark configurations in a separate table because these will most of the times be the same, so we can deduplicate the data. We can then also identify what bencharking runs we performed with which environment, if we later change the setup.
+- The same with the project configuration (maybe not quite so with the project version, though...).
+- The `benchmark_metrics` table contains data which we want to collect differently per project and is not fixed, so we use 
+
+
 ### Long Term Storage Options
 
 Once the results have been generated in the chosen data format we need a long term storage option.
