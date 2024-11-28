@@ -6,9 +6,11 @@ on:
       cncf_project:
         description: Project to be deployed e.g. falco
         required: true
-        type: string
+        type: choice
+        options:
+          - falco
       config:
-        description: Configuration if project has multiple variants they wish to test
+        description: Configuration if project has multiple variants they wish to test (defaults to all)
         required: false
         type: string
       version:
