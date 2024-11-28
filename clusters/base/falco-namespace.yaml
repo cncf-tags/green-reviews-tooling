@@ -1,0 +1,5 @@
+# TODO: Remove this after merging https://github.com/falcosecurity/cncf-green-review-testing/pull/22
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: falco
