@@ -103,7 +103,8 @@ jobs:
 
           kubectl wait pod \
           --all \
-          --for=condition=Ready
+          --for=condition=Ready \
+          --namespace=falco # TODO: Revert to "benchmark" this after merging https://github.com/falcosecurity/cncf-green-review-testing/pull/22
 
       - name: Wait for the benchmark job to complete
         run: |
