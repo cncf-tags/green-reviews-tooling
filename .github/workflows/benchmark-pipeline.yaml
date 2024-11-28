@@ -6,9 +6,11 @@ on:
       cncf_project:
         description: Project to be deployed e.g. falco
         required: true
-        type: string
+        type: choice
+        options:
+          - falco
       config:
-        description: Configuration if project has multiple variants they wish to test
+        description: Configuration if project has multiple variants they wish to test (defaults to all)
         required: false
         type: string
       version:
@@ -83,7 +85,7 @@ jobs:
           kubectl wait pod \
           --all \
           --for=condition=Ready \
-          --namespace=benchmark
+          --namespace=falco # TODO: Revert to "benchmark" this after merging https://github.com/falcosecurity/cncf-green-review-testing/pull/22
 
   benchmark-job:
     runs-on: ubuntu-24.04
