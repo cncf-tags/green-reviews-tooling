@@ -70,7 +70,7 @@ jq -c '.projects[]' "$json_file" | while read -r project; do
                 -H "Authorization: Bearer $gh_token" \
                 -H "X-GitHub-Api-Version: 2022-11-28" \
                 "https://api.github.com/repos/$workflow_organization_name/$workflow_project_name/actions/workflows/$workflow_dispatcher_file_name/dispatches" \
-                -d "{\"ref\":\"${git_ref}\",\"inputs\":{\"cncf_project\":\"${proj_name}\",\"benchmark_job_url\":\"${proj_benchmark_manifest_url}\",\"benchmark_job_duration_mins\":\"${proj_benchmark_duration}\",\"config\":\"${config}\",\"version\":\"${latest_proj_version}\"}}")
+                -d "{\"ref\":\"${git_ref}\",\"inputs\":{\"cncf_project\":\"${proj_name}\",\"benchmark_job_url\":\"${proj_benchmark_manifest_url}\",\"benchmark_job_duration_mins\":\"${proj_benchmark_duration_mins}\",\"config\":\"${config}\",\"version\":\"${latest_proj_version}\"}}")
 
             status_code=$?
             if [ $status_code -ne 0 ]; then
