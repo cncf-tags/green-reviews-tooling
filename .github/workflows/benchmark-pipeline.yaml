@@ -80,12 +80,12 @@ jobs:
         run: |
           kubectl apply -f manifest.yaml
 
-          sleep 10
+          sleep 20
 
           kubectl wait pod \
           --all \
           --for=condition=Ready \
-          --namespace=falco # TODO: Revert to "benchmark" this after merging https://github.com/falcosecurity/cncf-green-review-testing/pull/22
+          --namespace=benchmark
 
   benchmark-job:
     runs-on: ubuntu-24.04
@@ -100,6 +100,8 @@ jobs:
       - name: Run the benchmark job
         run: |
           kubectl apply -f ${{ inputs.benchmark_job_url }}
+          
+          sleep 20
 
           kubectl wait pod \
           --all \
