@@ -28,6 +28,7 @@ on:
 
 concurrency:
   group: benchmark
+  cancel-in-progress: false
 
 jobs:
   print_summary:
@@ -43,7 +44,6 @@ jobs:
           echo "| version | ${{ github.event.inputs.version }} |" >> $GITHUB_STEP_SUMMARY
           echo "| benchmark_job_url | ${{ github.event.inputs.benchmark_job_url }} |" >> $GITHUB_STEP_SUMMARY
           echo "| benchmark_job_duration_mins | ${{ github.event.inputs.benchmark_job_duration_mins }} |" >> $GITHUB_STEP_SUMMARY
-
 
   deploy:
     runs-on: ubuntu-24.04
@@ -100,7 +100,7 @@ jobs:
       - name: Run the benchmark job
         run: |
           kubectl apply -f ${{ inputs.benchmark_job_url }}
-          
+
           sleep 20
 
           kubectl wait pod \
