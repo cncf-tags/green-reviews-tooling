@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sustainability-tool
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sustainability-tool
+  template:
+    metadata:
+      labels:
+        app: sustainability-tool
+    spec:
+      containers:
+        - name: sustainability-tool
+          image: ghcr.io/<YOUR_ORG>/sustainability-tool:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
