@@ -1,0 +1,6 @@
+{
+  "name": "green-reviews-tooling",
+  "engineVersion": "v0.15.1",
+  "sdk": "go",
+  "source": "."
+}
