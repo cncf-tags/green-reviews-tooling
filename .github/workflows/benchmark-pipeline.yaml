@@ -45,90 +45,21 @@ jobs:
           echo "| benchmark_job_url | ${{ github.event.inputs.benchmark_job_url }} |" >> $GITHUB_STEP_SUMMARY
           echo "| benchmark_job_duration_mins | ${{ github.event.inputs.benchmark_job_duration_mins }} |" >> $GITHUB_STEP_SUMMARY
 
-  deploy:
+  benchmark:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - uses: azure/setup-kubectl@v4
+      - run: echo "${{ secrets.KUBECONFIG }}" > ./kube-config
+      - uses: dagger/dagger-for-github@v7
         with:
-          version: v1.30.2
-        id: install
-      - run: mkdir ~/.kube && echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
-      - name: Select the manifest
-        run: |
-          MANIFEST=projects/${{ inputs.cncf_project }}
-          CONFIG=${{ inputs.config }}
-          if [[ -n $CONFIG ]]; then
-            echo "Configuration provided"
-            MANIFEST=$MANIFEST/$CONFIG.yaml
-          else
-            MANIFEST=$MANIFEST/${{ inputs.cncf_project }}.yaml
-          fi
-
-          if ! test -f "$MANIFEST"; then
-            echo "The provided inputs are invalid."
-            exit 1
-          fi
-
-          export VERSION=${{ inputs.version }}
-          envsubst < $MANIFEST > manifest.yaml
-      - uses: actions/upload-artifact@v4
-        with:
-          name: manifest
-          path: manifest.yaml
-      - name: Apply the manifest
-        run: |
-          kubectl apply -f manifest.yaml
-
-          sleep 20
-
-          kubectl wait pod \
-          --all \
-          --for=condition=Ready \
-          --namespace=benchmark
-
-  benchmark-job:
-    runs-on: ubuntu-24.04
-    needs: deploy
-    steps:
-      - uses: actions/checkout@v4
-      - uses: azure/setup-kubectl@v4
-        with:
-          version: v1.30.2
-        id: install
-      - run: mkdir ~/.kube && echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
-      - name: Run the benchmark job
-        run: |
-          kubectl apply -f ${{ inputs.benchmark_job_url }}
-
-          sleep 20
-
-          kubectl wait pod \
-          --all \
-          --for=condition=Ready \
-          --namespace=falco # TODO: Revert to "benchmark" this after merging https://github.com/falcosecurity/cncf-green-review-testing/pull/22
-
-      - name: Wait for the benchmark job to complete
-        run: |
-          sleep ${{ inputs.benchmark_job_duration_mins }}m
-
-      - name: Delete the benchmark job
-        run: |
-          kubectl delete -f ${{ inputs.benchmark_job_url }} --wait
-
-  delete:
-    runs-on: ubuntu-24.04
-    needs: benchmark-job
-    if: ${{ always() }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: azure/setup-kubectl@v4
-        with:
-          version: v1.30.2
-        id: install
-      - run: mkdir ~/.kube && echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: manifest
-      - run: kubectl delete -f manifest.yaml --wait
+          module: "."
+          version: "0.15.1"
+          args: benchmark-pipeline
+              --source='.'
+              --kubeconfig='/src/kube-config'
+              --cncf-project='${{ inputs.cncf_project }}'
+              --config='${{ inputs.config }}'
+              --version='${{ inputs.version }}'
+              --benchmark-job-url='${{ inputs.benchmark_job_url }}'
+              --benchmark-job-duration-mins=${{ inputs.benchmark_job_duration_mins }}
+      - run: rm ./kube-config
