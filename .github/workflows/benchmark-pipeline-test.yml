@@ -1,0 +1,24 @@
+name: Benchmark Pipeline Test
+
+on:
+  push:
+
+concurrency:
+  group: benchmark
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dagger/dagger-for-github@v7
+        with:
+          module: "."
+          version: "0.15.1"
+          args: benchmark-pipeline-test
+              --source='.'
+              --cncf-project='falco'
+              --config='modern-ebpf'
+              --version='0.39.2'
+              --benchmark-job-url='https://raw.githubusercontent.com/falcosecurity/cncf-green-review-testing/e93136094735c1a52cbbef3d7e362839f26f4944/benchmark-tests/falco-benchmark-tests.yaml'
+              --benchmark-job-duration-mins=2
