@@ -51,12 +51,13 @@ dagger call setup-cluster --source=. --kubeconfig=/src/kind-in-cluster
 - Run the pipeline and execute tests on completion
 
 ```sh
-dagger call benchmark-pipeline-test --source=. --kubeconfig=/src/kind-in-cluster
-   --cncf-project='falco'
-   --config='modern-ebpf'
-   --version='0.39.2'
-   --benchmark-job-url='https://raw.githubusercontent.com/falcosecurity/cncf-green-review-testing/e93136094735c1a52cbbef3d7e362839f26f4944/benchmark-tests/falco-benchmark-tests.yaml'
-   --benchmark-job-duration-mins=2
+dagger call benchmark-pipeline-test \
+    --source=. --kubeconfig=/src/kind-in-cluster \
+    --cncf-project='falco' \
+    --config='modern-ebpf' \
+    --version='0.39.2' \
+    --benchmark-job-url='https://raw.githubusercontent.com/falcosecurity/cncf-green-review-testing/e93136094735c1a52cbbef3d7e362839f26f4944/benchmark-tests/falco-benchmark-tests.yaml' \
+    --benchmark-job-duration-mins=2
 ```
 
 ## Debugging
