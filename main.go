@@ -12,6 +12,7 @@ import (
 
 const (
 	clusterName = "green-reviews-test"
+	sourceDir   = "src"
 )
 
 type GreenReviewsTooling struct{}
@@ -125,11 +126,11 @@ func newPipeline(ctx context.Context, source *dagger.Directory, kubeconfig strin
 
 func build(src *dagger.Directory) *dagger.Container {
 	return dag.Container().
-		WithDirectory("/src", src).
-		Directory("/src").
+		WithDirectory(sourceDir, src).
+		Directory(sourceDir).
 		DockerBuild().
-		WithMountedDirectory("/src", src).
-		WithWorkdir("/src")
+		WithMountedDirectory(sourceDir, src).
+		WithWorkdir(sourceDir)
 }
 
 func getKubeconfig(configFilePath string) (*dagger.File, error) {
@@ -138,7 +139,7 @@ func getKubeconfig(configFilePath string) (*dagger.File, error) {
 		return nil, err
 	}
 
-	filePath := "/.kube/config"
+	filePath := pipeline.KubeconfigPath
 	dir := dag.Directory().WithNewFile(filePath, string(contents))
 	return dir.File(filePath), nil
 }
@@ -146,9 +147,7 @@ func getKubeconfig(configFilePath string) (*dagger.File, error) {
 func startK3sCluster(ctx context.Context) (*dagger.File, error) {
 	k3s := dag.K3S(clusterName)
 	kServer := k3s.Server()
-
-	kServer, err := kServer.Start(ctx)
-	if err != nil {
+	if _, err := kServer.Start(ctx); err != nil {
 		return nil, err
 	}
 	return k3s.Config(), nil
