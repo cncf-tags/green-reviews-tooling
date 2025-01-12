@@ -14,44 +14,53 @@ import (
 )
 
 const (
-	benchmarkNamespace = "benchmark"
-	falcoNamespace     = "falco" // TODO Remove when no longer used.
+	KubeconfigPath = "/.kube/config"
+
+	benchmarkNamespace    = "benchmark"
+	bustCacheEnvVar       = "BUST_CACHE"
+	falcoNamespace        = "falco" // TODO Remove when no longer used.
+	kubeconfigEnvVar      = "KUBECONFIG"
+	manifestFilename      = "/tmp/manifest.yaml"
+	manifestFileExtension = "%s.yaml"
+	projectsDir           = "/projects"
+	versionPlaceholder    = "$VERSION"
 )
 
 type Pipeline struct {
 	container  *dagger.Container
-	dir        *dagger.Directory
 	kubeconfig *dagger.File
+	source     *dagger.Directory
 }
 
-func New(container *dagger.Container, dir *dagger.Directory, kubeconfig *dagger.File) (*Pipeline, error) {
+func New(container *dagger.Container, source *dagger.Directory, kubeconfig *dagger.File) (*Pipeline, error) {
 	return &Pipeline{
 		container:  container,
-		dir:        dir,
 		kubeconfig: kubeconfig,
+		source:     source,
 	}, nil
 }
 
 // Benchmark measures the sustainability footprint of CNCF projects.
+// See README and docs directory for more details.
 func (p *Pipeline) Benchmark(ctx context.Context,
 	cncfProject,
 	config,
 	version,
 	benchmarkJobURL string,
 	benchmarkJobDurationMins int) (*dagger.Container, error) {
-	_, err := p.benchmark(ctx, cncfProject, config, version, benchmarkJobURL, benchmarkJobDurationMins)
-	if err != nil {
+	if _, err := p.benchmark(ctx, cncfProject, config, version, benchmarkJobURL, benchmarkJobDurationMins); err != nil {
 		log.Printf("benchmark failed: %v", err)
 	}
 
-	_, err = p.delete(ctx, cncfProject, config, benchmarkJobURL)
-	if err != nil {
+	if _, err := p.delete(ctx, cncfProject, config, benchmarkJobURL); err != nil {
 		return nil, err
 	}
 
 	return p.container, nil
 }
 
+// Terminal returns dagger interactive terminal configured with kubeconfig
+// for trouble shooting.
 func (p *Pipeline) Terminal(ctx context.Context) (*dagger.Container, error) {
 	return p.withKubeconfig().Terminal(), nil
 }
@@ -63,42 +72,41 @@ func (p *Pipeline) benchmark(ctx context.Context,
 	benchmarkJobURL string,
 	benchmarkJobDurationMins int) (*dagger.Container, error) {
 	// Create CNCF project resources.
-	_, err := p.deploy(ctx, cncfProject, config, version)
-	if err != nil {
+	if _, err := p.deploy(ctx, cncfProject, config, version); err != nil {
 		return nil, err
 	}
 
 	// Create benchmark job resources.
-	_, err = p.exec(ctx, cmd.Apply(benchmarkJobURL))
-	if err != nil {
+	if _, err := p.exec(ctx, cmd.Apply(benchmarkJobURL)); err != nil {
 		return nil, err
 	}
 
 	// Wait for pods to be ready.
-	_, err = p.exec(ctx, cmd.WaitForNamespace(benchmarkNamespace))
-	if err != nil {
+	if _, err := p.exec(ctx, cmd.WaitForReadyPods(benchmarkNamespace)); err != nil {
 		return nil, err
 	}
 
 	// TODO Remove once benchmark job resources created in benchmark namespace.
-	_, err = p.exec(ctx, cmd.WaitForNamespace(falcoNamespace))
-	if err != nil {
+	if _, err := p.exec(ctx, cmd.WaitForReadyPods(falcoNamespace)); err != nil {
 		return nil, err
 	}
 
-	p.echo(ctx, fmt.Sprintf("waiting %d minutes for benchmark to complete", benchmarkJobDurationMins))
+	if _, err := p.echo(ctx, fmt.Sprintf("waiting %d minutes for benchmark to complete", benchmarkJobDurationMins)); err != nil {
+		return nil, err
+	}
 
 	time.Sleep(time.Duration(benchmarkJobDurationMins) * time.Minute)
 
-	p.echo(ctx, "benchmark complete")
+	if _, err := p.echo(ctx, "benchmark complete"); err != nil {
+		return nil, err
+	}
 
 	return p.container, nil
 }
 
 func (p *Pipeline) delete(ctx context.Context, cncfProject, config, benchmarkJobURL string) (*dagger.Container, error) {
 	// Delete benchmark job resources.
-	_, err := p.exec(ctx, cmd.Delete(benchmarkJobURL))
-	if err != nil {
+	if _, err := p.exec(ctx, cmd.Delete(benchmarkJobURL)); err != nil {
 		log.Printf("failed to delete benchmark job: %v", err)
 	}
 
@@ -108,8 +116,7 @@ func (p *Pipeline) delete(ctx context.Context, cncfProject, config, benchmarkJob
 	}
 
 	// Delete CNCF project resources.
-	_, err = p.execWithNewFile(ctx, fileName, fileContents, cmd.Delete(fileName))
-	if err != nil {
+	if _, err := p.execWithNewFile(ctx, fileName, fileContents, cmd.Delete(fileName)); err != nil {
 		return nil, err
 	}
 
@@ -122,27 +129,29 @@ func (p *Pipeline) deploy(ctx context.Context, cncfProject, config, version stri
 		return nil, err
 	}
 
-	_, err = p.execWithNewFile(ctx, fileName, fileContents, cmd.Apply(fileName))
-	if err != nil {
+	if _, err = p.execWithNewFile(ctx, fileName, fileContents, cmd.Apply(fileName)); err != nil {
 		return nil, err
 	}
 
-	// Allow time for pods to be created.
+	// Allow time for pods to be created. This is needed because there is a
+	// delay while flux reconciles the manifest. Without it the following
+	// kubectl wait command will fail.
 	time.Sleep(15 * time.Second)
 
-	_, err = p.exec(ctx, cmd.WaitForNamespace(benchmarkNamespace))
-	if err != nil {
+	if _, err := p.exec(ctx, cmd.WaitForReadyPods(benchmarkNamespace)); err != nil {
 		return nil, err
 	}
 
 	return p.container, nil
 }
 
+// echo outputs the message to stdout by running an echo command in the
+// container. This is the dagger approach for logging to console output.
 func (p *Pipeline) echo(ctx context.Context, msg string) (string, error) {
 	// Bust cache to ensure commands are run.
-	return p.container.WithEnvVariable("BUST_CACHE", time.Now().String()).
-		WithExec([]string{"echo", fmt.Sprintf("'%s'", msg)}).
-		Stdout(ctx)
+	return p.container.WithEnvVariable(bustCacheEnvVar, time.Now().String()).
+		WithExec(cmd.Echo(msg)).
+		Stderr(ctx)
 }
 
 func (p *Pipeline) exec(ctx context.Context, args []string) (string, error) {
@@ -153,7 +162,7 @@ func (p *Pipeline) exec(ctx context.Context, args []string) (string, error) {
 
 func (p *Pipeline) execWithDir(ctx context.Context, manifestPath string, args []string) (string, error) {
 	dirPath := path.Dir(manifestPath)
-	dir := p.dir.Directory(dirPath)
+	dir := p.source.Directory(dirPath)
 	return p.withKubeconfig().
 		WithDirectory(dirPath, dir).
 		WithExec(args).
@@ -169,25 +178,25 @@ func (p *Pipeline) execWithNewFile(ctx context.Context, name, contents string, a
 
 func (p *Pipeline) getManifestFile(ctx context.Context, project, config, version string) (string, string, error) {
 	manifestPath := getManifestPath(project, config)
-	manifest, err := p.dir.File(manifestPath).Contents(ctx)
+	manifest, err := p.source.File(manifestPath).Contents(ctx)
 	if err != nil {
 		return "", "", err
 	}
 
-	return "/tmp/manifest.yaml", strings.ReplaceAll(manifest, "$VERSION", version), nil
+	return manifestFilename, strings.ReplaceAll(manifest, versionPlaceholder, version), nil
 }
 
 func (p *Pipeline) withKubeconfig() *dagger.Container {
 	return p.container.
 		// Bust cache to ensure commands are run.
-		WithEnvVariable("BUST_CACHE", time.Now().String()).
-		WithEnvVariable("KUBECONFIG", "/.kube/config").
-		WithFile("/.kube/config", p.kubeconfig)
+		WithEnvVariable(bustCacheEnvVar, time.Now().String()).
+		WithEnvVariable(kubeconfigEnvVar, KubeconfigPath).
+		WithFile(KubeconfigPath, p.kubeconfig)
 }
 
 func getManifestPath(project, config string) string {
 	if config == "" {
 		config = project
 	}
-	return filepath.Join("/projects", project, fmt.Sprintf("%s.yaml", config))
+	return filepath.Join(projectsDir, project, fmt.Sprintf(manifestFileExtension, config))
 }
