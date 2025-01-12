@@ -21,6 +21,13 @@ func Delete(manifest string) []string {
 	}
 }
 
+func Echo(msg string) []string {
+	return []string{
+		"echo",
+		"'" + msg + "'",
+	}
+}
+
 func FluxInstall() []string {
 	return []string{
 		"flux",
@@ -73,7 +80,7 @@ func Patch(resource, name, namespace, path, value string) []string {
 	}
 }
 
-func WaitForNamespace(namespace string) []string {
+func WaitForReadyPods(namespace string) []string {
 	return []string{
 		"kubectl",
 		"wait",

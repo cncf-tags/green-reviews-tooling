@@ -17,8 +17,7 @@ const (
 // CI/CD and local development.
 func (p *Pipeline) SetupCluster(ctx context.Context) (*dagger.Container, error) {
 	// Install flux.
-	_, err := p.exec(ctx, cmd.FluxInstall())
-	if err != nil {
+	if _, err := p.exec(ctx, cmd.FluxInstall()); err != nil {
 		return nil, err
 	}
 
@@ -27,36 +26,31 @@ func (p *Pipeline) SetupCluster(ctx context.Context) (*dagger.Container, error) 
 	if err != nil {
 		return nil, err
 	}
-	_, err = p.exec(ctx, cmd.LabelNode(nodeName, nodeLabels()))
-	if err != nil {
+	if _, err = p.exec(ctx, cmd.LabelNode(nodeName, nodeLabels())); err != nil {
 		return nil, err
 	}
 
 	// Apply cluster manifests.
 	for _, manifest := range clusterManifests() {
-		_, err = p.execWithDir(ctx, manifest, cmd.Apply(manifest))
-		if err != nil {
+		if _, err = p.execWithDir(ctx, manifest, cmd.Apply(manifest)); err != nil {
 			return nil, err
 		}
 	}
 
 	// Patch helmrelease values to ensure all pods will start.
 	for _, patch := range localSetupPatches() {
-		_, err = p.exec(ctx, patch)
-		if err != nil {
+		if _, err = p.exec(ctx, patch); err != nil {
 			return nil, err
 		}
 	}
 
-	// Kepler depends on kube-prometheus-stack.
-	_, err = p.exec(ctx, cmd.FluxReconcile("helmrelease", "kepler"))
-	if err != nil {
+	// Kepler depends on kube-prometheus-stack so we wait till its reconciled.
+	if _, err = p.exec(ctx, cmd.FluxReconcile("helmrelease", "kepler")); err != nil {
 		return nil, err
 	}
 
 	// Wait until all pods are ready.
-	_, err = p.exec(ctx, cmd.WaitForNamespace(monitoringNamespace))
-	if err != nil {
+	if _, err = p.exec(ctx, cmd.WaitForReadyPods(monitoringNamespace)); err != nil {
 		return nil, err
 	}
 
