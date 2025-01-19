@@ -48,7 +48,7 @@ func (m *GreenReviewsTooling) BenchmarkPipelineTest(ctx context.Context,
 	// +default="0.39.2"
 	version,
 	// +optional
-	// +default="https://raw.githubusercontent.com/falcosecurity/cncf-green-review-testing/e93136094735c1a52cbbef3d7e362839f26f4944/benchmark-tests/falco-benchmark-tests.yaml"
+	// +default="https://raw.githubusercontent.com/falcosecurity/cncf-green-review-testing/2551137b1a09bd0594f76b09e82e08c98f95efd3/benchmark-tests/falco-benchmark-tests.yaml"
 	benchmarkJobURL,
 	// +optional
 	kubeconfig string,
