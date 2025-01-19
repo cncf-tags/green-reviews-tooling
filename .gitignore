@@ -6,4 +6,4 @@ infrastructure/equinix-metal/.terraform.lock.hcl
 /internal/dagger
 /internal/querybuilder
 /internal/telemetry
-kind-in-cluster
+green-reviews-test-kubeconfig
