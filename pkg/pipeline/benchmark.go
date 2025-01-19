@@ -18,7 +18,6 @@ const (
 
 	benchmarkNamespace    = "benchmark"
 	bustCacheEnvVar       = "BUST_CACHE"
-	falcoNamespace        = "falco" // TODO Remove when no longer used.
 	kubeconfigEnvVar      = "KUBECONFIG"
 	manifestFilename      = "/tmp/manifest.yaml"
 	manifestFileExtension = "%s.yaml"
@@ -83,11 +82,6 @@ func (p *Pipeline) benchmark(ctx context.Context,
 
 	// Wait for pods to be ready.
 	if _, err := p.exec(ctx, cmd.WaitForReadyPods(benchmarkNamespace)); err != nil {
-		return nil, err
-	}
-
-	// TODO Remove once benchmark job resources created in benchmark namespace.
-	if _, err := p.exec(ctx, cmd.WaitForReadyPods(falcoNamespace)); err != nil {
 		return nil, err
 	}
 
