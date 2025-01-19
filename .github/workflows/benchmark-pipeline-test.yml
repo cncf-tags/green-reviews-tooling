@@ -3,17 +3,11 @@ name: Benchmark Pipeline Test
 on:
   push:
 
-jobs:
-  lint:
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
-        with:
-          go-version-file: go.mod
-      - uses: golangci/golangci-lint-action@v5
+concurrency:
+  group: benchmark
 
-  pipeline-test:
+jobs:
+  pipeline:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
