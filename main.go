@@ -125,7 +125,8 @@ func newPipeline(ctx context.Context, source *dagger.Directory, kubeconfig strin
 }
 
 func build(src *dagger.Directory) *dagger.Container {
-	return dag.Container().
+	client := dagger.Connect()
+	return client.Container().
 		WithDirectory(sourceDir, src).
 		Directory(sourceDir).
 		DockerBuild().
@@ -134,18 +135,20 @@ func build(src *dagger.Directory) *dagger.Container {
 }
 
 func getKubeconfig(configFilePath string) (*dagger.File, error) {
+	client := dagger.Connect()
 	contents, err := os.ReadFile(configFilePath)
 	if err != nil {
 		return nil, err
 	}
 
 	filePath := pipeline.KubeconfigPath
-	dir := dag.Directory().WithNewFile(filePath, string(contents))
+	dir := client.Directory().WithNewFile(filePath, string(contents))
 	return dir.File(filePath), nil
 }
 
 func startK3sCluster(ctx context.Context) (*dagger.File, error) {
-	k3s := dag.K3S(clusterName)
+	client := dagger.Connect()
+	k3s := client.K3S(clusterName)
 	kServer := k3s.Server()
 	if _, err := kServer.Start(ctx); err != nil {
 		return nil, err
