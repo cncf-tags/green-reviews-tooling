@@ -19,20 +19,20 @@ install:
 	helm upgrade --install \
 		--namespace=dagger \
 		--create-namespace \
-		dagger oci://registry.dagger.io/dagger-helm
+		dagger oci://registry.dagger.io/dagger-helm && \
 	kubectl wait \
 		--for condition=Ready \
 		--timeout=60s pod \
 		--selector=name=dagger-dagger-helm-engine \
-		--namespace=dagger
-	$(eval DAGGER_ENGINE_POD_NAME := $(shell kubectl get pod \
+		--namespace=dagger && \
+	DAGGER_ENGINE_POD_NAME=$$(kubectl get pod \
 			--selector=name=dagger-dagger-helm-engine \
 			--namespace=dagger \
-			--output=jsonpath='{.items[0].metadata.name}'))
-	$(eval _EXPERIMENTAL_DAGGER_RUNNER_HOST="kube-pod://$(DAGGER_ENGINE_POD_NAME)?namespace=dagger")
-	@echo "Install complete - add env vars to your shell"
-	@echo "export DAGGER_ENGINE_POD_NAME=\"$(DAGGER_ENGINE_POD_NAME)\""
-	@echo "export _EXPERIMENTAL_DAGGER_RUNNER_HOST=\"$(_EXPERIMENTAL_DAGGER_RUNNER_HOST)\""
+			--output=jsonpath='{.items[0].metadata.name}') && \
+	_EXPERIMENTAL_DAGGER_RUNNER_HOST="kube-pod://$$DAGGER_ENGINE_POD_NAME?namespace=dagger" && \
+	echo "Install complete - add env vars to your shell" && \
+	echo "export DAGGER_ENGINE_POD_NAME=\"$$DAGGER_ENGINE_POD_NAME\"" && \
+	echo "export _EXPERIMENTAL_DAGGER_RUNNER_HOST=\"$$_EXPERIMENTAL_DAGGER_RUNNER_HOST\""
 
 # Bootstrap cluster with flux and monitoring stack
 .PHONY: setup
