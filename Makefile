@@ -1,6 +1,6 @@
 # Default target
 .PHONY: all
-all: verify lint
+all: verify
 
 KUBECONFIG = green-reviews-test-kubeconfig
 
@@ -13,11 +13,6 @@ debug:
 .PHONY: develop
 develop:
 	dagger develop
-
-# Run go linter
-.PHONY: lint
-lint:
-	golangci-lint run ./...
 
 # Install dagger
 install:
@@ -58,4 +53,3 @@ verify:
 	helm version
 	kubectl version --client
 	yq --version
-	golangci-lint --version

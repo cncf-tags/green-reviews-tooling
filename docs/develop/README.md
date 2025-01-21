@@ -14,11 +14,10 @@ These additional tools need to be installed.
 - `kubectl` https://kubernetes.io/docs/tasks/tools/
 - `helm` https://helm.sh/docs/helm/helm_install/
 - `yq` https://github.com/mikefarah/yq/#install
-- `golang-ci` https://golangci-lint.run/welcome/install/#local-installation
 
 ## Setup
 
-- Verify CLIs are installed and run Go linter.
+- Verify CLIs are installed
 
 ```sh
 make
