@@ -1,8 +1,14 @@
-### Setup
+# Local setup
 
 1. Start Kubernetes
-2. [Install and start Prometheus](https://sustainable-computing.io/installation/kepler/#deploy-the-prometheus-operator) 2. `cd kube-prometheus` 3. `kubectl apply --server-side -f manifests/setup` 4. `kubectl apply -f manifests/` 5. Wait… 6. `kubectl -n monitoring port-forward svc/grafana 3000` 7. Open dashboard _localhost:3000_
-3. Install metrics server
+2. [Install and start Prometheus](https://sustainable-computing.io/installation/kepler/#deploy-the-prometheus-operator)
+   1. `cd kube-prometheus`
+   2. `kubectl apply --server-side -f manifests/setup`
+   3. `kubectl apply -f manifests/`
+   4. Wait…
+   5. `kubectl -n monitoring port-forward svc/grafana 3000`
+   6. Open dashboard _localhost:3000_
+4. Install metrics server
    1. `kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml`
    2. Patch
 
@@ -27,14 +33,14 @@ kubectl patch -n kube-system deployment metrics-server --type=json \
    6. `helm install falco-exporter falcosecurity/falco-exporter`
 10. Run Falco tests
     1. https://github.com/falcosecurity/cncf-green-review-testing/tree/main/benchmark-tests
-11. May need to remove `nodeSelector`
-12. Write out metrics to JSON
-13. Thinking about https://github.com/prometheus/prom2json
-14. These metrics:
+    2. May need to remove `nodeSelector`
+    3. Write out metrics to JSON
+    4. Thinking about https://github.com/prometheus/prom2json
+    5. These metrics:
 
-    ```
-    rate(container_cpu_usage_seconds_total[5m])
-    container_memory_rss
-    container_memory_working_set_bytes
-    kepler_container_joules_total
-    ```
+      ```
+      rate(container_cpu_usage_seconds_total[5m])
+      container_memory_rss
+      container_memory_working_set_bytes
+      kepler_container_joules_total
+      ```
