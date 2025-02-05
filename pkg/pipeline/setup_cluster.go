@@ -60,6 +60,8 @@ func (p *Pipeline) SetupCluster(ctx context.Context) (*dagger.Container, error) 
 	return p.container, nil
 }
 
+// getNodeName gets the name of the cluster node. In CI all clusters are single
+// node.
 func (p *Pipeline) getNodeName(ctx context.Context) (string, error) {
 	stdout, err := p.exec(ctx, cmd.GetNodeNames())
 	if err != nil {
@@ -74,6 +76,7 @@ func (p *Pipeline) getNodeName(ctx context.Context) (string, error) {
 	return parts[0], nil
 }
 
+// clusterManifests are applied to bootstrap the monitoring stack.
 func clusterManifests() []string {
 	return []string{
 		// Namespace must be created first for dependencies.
@@ -99,6 +102,7 @@ func localSetupPatches() [][]string {
 	}
 }
 
+// nodeLabels are added to ensure they match label selectors in k8s manifests.
 func nodeLabels() map[string]string {
 	return map[string]string{
 		"cncf-project":                      "wg-green-reviews",
