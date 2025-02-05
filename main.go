@@ -61,6 +61,7 @@ func (m *GreenReviewsTooling) BenchmarkPipelineTest(ctx context.Context,
 	}
 
 	if kubeconfig == "" {
+		// This is a new k3s container so bootstrap flux and the monitoring stack.
 		_, err = p.SetupCluster(ctx)
 		if err != nil {
 			return nil, err
@@ -103,6 +104,7 @@ func (m *GreenReviewsTooling) Terminal(ctx context.Context,
 	return p.Terminal(ctx)
 }
 
+// newPipeline creates a new benchmark pipeline.
 func newPipeline(ctx context.Context, source *dagger.Directory, kubeconfig string) (*pipeline.Pipeline, error) {
 	var configFile *dagger.File
 	var err error
@@ -110,11 +112,14 @@ func newPipeline(ctx context.Context, source *dagger.Directory, kubeconfig strin
 	container := build(source)
 
 	if kubeconfig == "" {
+		// No kubeconfig so start a new k3s container using the k3s dagger
+		// module. See https://daggerverse.dev/mod/github.com/marcosnils/daggerverse/k3s
 		configFile, err = startK3sCluster(ctx)
 		if err != nil {
 			return nil, err
 		}
 	} else {
+		// Connect to an existing cluster via a kubeconfig.
 		configFile, err = getKubeconfig(kubeconfig)
 		if err != nil {
 			return nil, err
@@ -124,6 +129,8 @@ func newPipeline(ctx context.Context, source *dagger.Directory, kubeconfig strin
 	return pipeline.New(container, source, configFile)
 }
 
+// build builds a container image from the Dockerfile with any CLIs needed by
+// the pipeline such as kubectl.
 func build(src *dagger.Directory) *dagger.Container {
 	return dag.Container().
 		WithDirectory(sourceDir, src).
@@ -133,6 +140,7 @@ func build(src *dagger.Directory) *dagger.Container {
 		WithWorkdir(sourceDir)
 }
 
+// getKubeconfig returns a dagger file object pointing as the cluster kubeconfig.
 func getKubeconfig(configFilePath string) (*dagger.File, error) {
 	contents, err := os.ReadFile(configFilePath)
 	if err != nil {
@@ -144,6 +152,8 @@ func getKubeconfig(configFilePath string) (*dagger.File, error) {
 	return dir.File(filePath), nil
 }
 
+// startK3sCluster starts a new k3s container using the k3s dagger module and
+// returns its kubeconfig.
 func startK3sCluster(ctx context.Context) (*dagger.File, error) {
 	k3s := dag.K3S(clusterName)
 	kServer := k3s.Server()
