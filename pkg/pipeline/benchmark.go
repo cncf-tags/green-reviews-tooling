@@ -25,6 +25,8 @@ const (
 	versionPlaceholder    = "$VERSION"
 )
 
+// Pipeline contains dagger objects that store the state of the pipeline and
+// allow it to interact with the dagger container.
 type Pipeline struct {
 	container  *dagger.Container
 	kubeconfig *dagger.File
@@ -64,6 +66,8 @@ func (p *Pipeline) Terminal(ctx context.Context) (*dagger.Container, error) {
 	return p.withKubeconfig().Terminal(), nil
 }
 
+// benchmark creates the CNCF project resource, applies the benchmark tests and
+// waits for the benchmark to complete.
 func (p *Pipeline) benchmark(ctx context.Context,
 	cncfProject,
 	config,
@@ -98,6 +102,7 @@ func (p *Pipeline) benchmark(ctx context.Context,
 	return p.container, nil
 }
 
+// delete cleans up the cluster at the end of the pipeline run.
 func (p *Pipeline) delete(ctx context.Context, cncfProject, config, benchmarkJobURL string) (*dagger.Container, error) {
 	// Delete benchmark job resources.
 	if _, err := p.exec(ctx, cmd.Delete(benchmarkJobURL)); err != nil {
@@ -117,6 +122,7 @@ func (p *Pipeline) delete(ctx context.Context, cncfProject, config, benchmarkJob
 	return p.container, nil
 }
 
+// deploy deploys the CNCF project by applying the flux manifest.
 func (p *Pipeline) deploy(ctx context.Context, cncfProject, config, version string) (*dagger.Container, error) {
 	fileName, fileContents, err := p.getManifestFile(ctx, cncfProject, config, version)
 	if err != nil {
@@ -148,12 +154,15 @@ func (p *Pipeline) echo(ctx context.Context, msg string) (string, error) {
 		Stderr(ctx)
 }
 
+// exec configures the container with the kubeconfig and executes a command.
 func (p *Pipeline) exec(ctx context.Context, args []string) (string, error) {
 	return p.withKubeconfig().
 		WithExec(args).
 		Stdout(ctx)
 }
 
+// execWithDir is the same as exec but mounts a directory so manifests can be
+// applied.
 func (p *Pipeline) execWithDir(ctx context.Context, manifestPath string, args []string) (string, error) {
 	dirPath := path.Dir(manifestPath)
 	dir := p.source.Directory(dirPath)
@@ -163,6 +172,8 @@ func (p *Pipeline) execWithDir(ctx context.Context, manifestPath string, args []
 		Stdout(ctx)
 }
 
+// execWithNewFile is the same as exec but mounts a manifest file so it can be
+// applied.
 func (p *Pipeline) execWithNewFile(ctx context.Context, name, contents string, args []string) (string, error) {
 	return p.withKubeconfig().
 		WithNewFile(name, contents).
@@ -170,6 +181,7 @@ func (p *Pipeline) execWithNewFile(ctx context.Context, name, contents string, a
 		Stdout(ctx)
 }
 
+// getManifestFile gets the manifest and ensures the version is correct.
 func (p *Pipeline) getManifestFile(ctx context.Context, project, config, version string) (string, string, error) {
 	manifestPath := getManifestPath(project, config)
 	manifest, err := p.source.File(manifestPath).Contents(ctx)
@@ -180,14 +192,17 @@ func (p *Pipeline) getManifestFile(ctx context.Context, project, config, version
 	return manifestFilename, strings.ReplaceAll(manifest, versionPlaceholder, version), nil
 }
 
+// withKubeconfig adds the kubeconfig to the dagger container.
 func (p *Pipeline) withKubeconfig() *dagger.Container {
 	return p.container.
-		// Bust cache to ensure commands are run.
+		// Bust cache with dynamic value to ensure layers are rebuilt and
+		// commands are not cached by container engine.
 		WithEnvVariable(bustCacheEnvVar, time.Now().String()).
 		WithEnvVariable(kubeconfigEnvVar, KubeconfigPath).
 		WithFile(KubeconfigPath, p.kubeconfig)
 }
 
+// getManifestPath get the correct path in the projects dir.
 func getManifestPath(project, config string) string {
 	if config == "" {
 		config = project
