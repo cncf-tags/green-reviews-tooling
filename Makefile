@@ -15,6 +15,7 @@ develop:
 	dagger develop
 
 # Install dagger
+.PHONY: install
 install:
 	helm upgrade --install \
 		--namespace=dagger \
