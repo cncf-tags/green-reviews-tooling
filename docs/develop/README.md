@@ -27,7 +27,7 @@ make
 
 ```sh
 kind create cluster
-kind get kubeconfig | yq e '.clusters[0].cluster.server = "https://kubernetes.default"' - > green-reviews-test-kubeconfig
+kind get kubeconfig | yq eval '.clusters[0].cluster.server = "https://kubernetes.default"' - > green-reviews-test-kubeconfig
 ```
 
 - Install dagger engine. 
