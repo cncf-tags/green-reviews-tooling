@@ -1,7 +1,9 @@
 {
   "name": "green-reviews-tooling",
-  "engineVersion": "v0.15.1",
-  "sdk": "go",
+  "engineVersion": "v0.15.4",
+  "sdk": {
+    "source": "go"
+  },
   "dependencies": [
     {
       "name": "k3s",
