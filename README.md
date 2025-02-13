@@ -52,17 +52,4 @@ All changes to the documentation must be added to the [docs](./docs/) folder.
 
 ## Roadmap
 
-The roadmap contains some of the short and long-term goals of the Green Reviews WG. Timelines are estimates and may change.
-
-| Timeline | Goals |
-|---|---|
-| Q4 '23 / Before & After KubeCon NA  | Announce Green Reviews WG during KubeCon NA Keynotes  |
-|  | Draft of the implementation for the sustainability footprint measurement workflow |
-|  | Cluster up and running on Equinix |
-| Q1 '24 / Before KubeCon EU  | Measure the cloud native sustainability footprint of Falco [milestone](https://github.com/cncf-tags/green-reviews-tooling/milestone/1) |
-|  | Present architecture as part of the maintainer track at KubeCon EU  |
-| Q2 - Q3 '24 / Before KubeCon NA  | Automate cloud native sustainability footprint measuring of the Falco project (alpha version) - [Tracking issue](https://github.com/cncf-tags/green-reviews-tooling/issues/83) |
-| Q4 '24 / After KubeCon NA | TBD: below possible ideas | 
-|  | Experiment with a different Energy metrics provider like [Scaphandre](https://github.com/hubblo-org/scaphandre) and compare results
-|  | Identify new project |  
-|  | Reproduce workflow with next CNCF Project |
+The [roadmap](https://github.com/orgs/cncf-tags/projects/5/views/7) contains some of the goals of the Green Reviews WG. Timelines are estimates and may change.
