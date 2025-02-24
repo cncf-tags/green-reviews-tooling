@@ -21,6 +21,7 @@ const (
 	kubeconfigEnvVar      = "KUBECONFIG"
 	manifestFilename      = "/tmp/manifest.yaml"
 	manifestFileExtension = "%s.yaml"
+	podWaitDuration       = "15s"
 	projectsDir           = "/projects"
 	versionPlaceholder    = "$VERSION"
 )
@@ -136,7 +137,15 @@ func (p *Pipeline) deploy(ctx context.Context, cncfProject, config, version stri
 	// Allow time for pods to be created. This is needed because there is a
 	// delay while flux reconciles the manifest. Without it the following
 	// kubectl wait command will fail.
-	time.Sleep(15 * time.Second)
+	if _, err := p.echo(ctx, fmt.Sprintf("waiting %s to let deployment complete", podWaitDuration)); err != nil {
+		return nil, err
+	}
+
+	waitDuration, err := time.ParseDuration(podWaitDuration)
+	if err != nil {
+		return nil, err
+	}
+	time.Sleep(waitDuration)
 
 	if _, err := p.exec(ctx, cmd.WaitForReadyPods(benchmarkNamespace)); err != nil {
 		return nil, err
