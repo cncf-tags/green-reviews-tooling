@@ -6,8 +6,8 @@ metadata:
 spec:
   interval: 6h
   ref:
-    branch: main
-  url: https://github.com/falcosecurity/cncf-green-review-testing
+    branch: fix/use-debian-image
+  url: https://github.com/rossf7/cncf-green-review-testing
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -26,8 +26,8 @@ spec:
   timeout: 3m0s
   wait: true
   images:
-    - name: docker.io/falcosecurity/falco-no-driver
-      newTag: $VERSION
+    - name: docker.io/falcosecurity/falco
+      newTag: $VERSION-debian
     - name: docker.io/falcosecurity/falco-driver-loader
       newTag: $VERSION
   commonMetadata:
