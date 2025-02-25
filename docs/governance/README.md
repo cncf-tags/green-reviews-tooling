@@ -1,4 +1,4 @@
-# Governance
+# Planning Features
 
 This document attempts to describe the governance framework adopting for contributing to this repo.
 Please let us know if something is not clear or if you like to propose any kind of improvements.
