@@ -1,6 +1,6 @@
 # Planning Features
 
-This document attempts to describe the governance framework adopting for contributing to this repo.
+This document describes the feature planning process for contributing to this repo.
 Please let us know if something is not clear or if you like to propose any kind of improvements.
 
 The working group follows the Roadmap that can be find in the root Readme. 
