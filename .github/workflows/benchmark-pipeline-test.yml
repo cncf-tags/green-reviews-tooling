@@ -3,9 +3,6 @@ name: Benchmark Pipeline Test
 on:
   push:
 
-concurrency:
-  group: benchmark
-
 jobs:
   pipeline:
     runs-on: ubuntu-24.04
