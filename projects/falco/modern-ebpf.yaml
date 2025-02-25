@@ -6,8 +6,8 @@ metadata:
 spec:
   interval: 6h
   ref:
-    branch: fix/use-debian-image
-  url: https://github.com/rossf7/cncf-green-review-testing
+    branch: main
+  url: https://github.com/falcosecurity/cncf-green-review-testing
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
