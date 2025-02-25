@@ -45,7 +45,7 @@ func (m *GreenReviewsTooling) BenchmarkPipelineTest(ctx context.Context,
 	// +default="modern-ebpf"
 	config,
 	// +optional
-	// +default="0.39.2"
+	// +default="0.40.0"
 	version,
 	// +optional
 	// +default="https://raw.githubusercontent.com/falcosecurity/cncf-green-review-testing/2551137b1a09bd0594f76b09e82e08c98f95efd3/benchmark-tests/falco-benchmark-tests.yaml"
