@@ -53,7 +53,7 @@ jobs:
       - uses: dagger/dagger-for-github@v7
         with:
           module: "."
-          version: "0.15.4"
+          version: "0.16.1"
           args: benchmark-pipeline
               --source='.'
               --kubeconfig='/src/kube-config'
