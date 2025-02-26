@@ -3,6 +3,7 @@ package pipeline
 import (
 	"context"
 	"fmt"
+	"github.com/cncf-tags/green-reviews-tooling/pkg/monitoring"
 	"log"
 	"path"
 	"path/filepath"
@@ -52,6 +53,10 @@ func (p *Pipeline) Benchmark(ctx context.Context,
 	benchmarkJobDurationMins int) (*dagger.Container, error) {
 	if _, err := p.benchmark(ctx, cncfProject, config, version, benchmarkJobURL, benchmarkJobDurationMins); err != nil {
 		log.Printf("benchmark failed: %v", err)
+	}
+
+	if err := monitoring.FetchMetrics(ctx); err != nil {
+		log.Printf("failed to fetch metrics: %v", err)
 	}
 
 	if _, err := p.delete(ctx, cncfProject, config, benchmarkJobURL); err != nil {
