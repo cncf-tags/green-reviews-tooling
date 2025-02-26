@@ -26,8 +26,8 @@ spec:
   timeout: 3m0s
   wait: true
   images:
-    - name: docker.io/falcosecurity/falco-no-driver
-      newTag: $VERSION
+    - name: docker.io/falcosecurity/falco
+      newTag: $VERSION-debian
     - name: docker.io/falcosecurity/falco-driver-loader
       newTag: $VERSION
   commonMetadata:
