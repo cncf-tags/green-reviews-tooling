@@ -3,12 +3,13 @@ package pipeline
 import (
 	"context"
 	"fmt"
-	"github.com/cncf-tags/green-reviews-tooling/pkg/monitoring"
 	"log"
 	"path"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/cncf-tags/green-reviews-tooling/pkg/monitoring"
 
 	"github.com/cncf-tags/green-reviews-tooling/internal/dagger"
 	"github.com/cncf-tags/green-reviews-tooling/pkg/cmd"
@@ -55,7 +56,7 @@ func (p *Pipeline) Benchmark(ctx context.Context,
 		log.Printf("benchmark failed: %v", err)
 	}
 
-	if err := monitoring.FetchMetrics(ctx); err != nil {
+	if err := monitoring.ComputeBenchmarkingResults(ctx); err != nil {
 		log.Printf("failed to fetch metrics: %v", err)
 	}
 
