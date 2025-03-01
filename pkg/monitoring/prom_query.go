@@ -3,12 +3,13 @@ package monitoring
 import (
 	"context"
 	"fmt"
-	"github.com/prometheus/client_golang/api"
-	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
-	promModel "github.com/prometheus/common/model"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/prometheus/client_golang/api"
+	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
+	promModel "github.com/prometheus/common/model"
 )
 
 type Query struct {
@@ -78,9 +79,7 @@ func NewQuery(opts ...MetricsClientOption) (*Query, error) {
 	return q, nil
 }
 
-// TODO: we need to format the data and then send it we want to make the responsibility of metrics confined to this package
-
-func (q *Query) WithRange(ctx context.Context, query string, dtInMinutes int) (promModel.Value, error) {
+func (q *Query) WithTimeRange(ctx context.Context, query string, dtInMinutes int) (promModel.Value, error) {
 	_ctx, cancel := context.WithTimeout(ctx, q.clientTimeout)
 	defer cancel()
 
@@ -90,7 +89,7 @@ func (q *Query) WithRange(ctx context.Context, query string, dtInMinutes int) (p
 		Step:  time.Minute,
 	}
 
-	result, warnings, err := q.c.QueryRange(_ctx, fmt.Sprintf("rate(%s[%dm])", query, dtInMinutes), r)
+	result, warnings, err := q.c.QueryRange(_ctx, query, r)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query prometheus: %w", err)
 	}
