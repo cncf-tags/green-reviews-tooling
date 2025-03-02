@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/cncf-tags/green-reviews-tooling/pkg/monitoring"
+
 	"github.com/cncf-tags/green-reviews-tooling/internal/dagger"
 	"github.com/cncf-tags/green-reviews-tooling/pkg/cmd"
 )
@@ -52,6 +54,10 @@ func (p *Pipeline) Benchmark(ctx context.Context,
 	benchmarkJobDurationMins int) (*dagger.Container, error) {
 	if _, err := p.benchmark(ctx, cncfProject, config, version, benchmarkJobURL, benchmarkJobDurationMins); err != nil {
 		log.Printf("benchmark failed: %v", err)
+	}
+
+	if err := monitoring.ComputeBenchmarkingResults(ctx); err != nil {
+		log.Printf("failed to fetch metrics: %v", err)
 	}
 
 	if _, err := p.delete(ctx, cncfProject, config, benchmarkJobURL); err != nil {
