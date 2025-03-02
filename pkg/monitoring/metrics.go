@@ -11,8 +11,7 @@ import (
 
 func ComputeBenchmarkingResults(ctx context.Context) error {
 	q, err := NewQuery(
-		WithClientTimeout(10*time.Second),
-		WithPrometheusAddress("http://kube-prometheus-stack-prometheus.monitoring:9090/"),
+		WithClientTimeout(10 * time.Second),
 	)
 	if err != nil {
 		return err

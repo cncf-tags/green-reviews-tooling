@@ -18,18 +18,10 @@ type Query struct {
 }
 
 type option struct {
-	prometheusAddress string
-	clientTimeout     time.Duration
+	clientTimeout time.Duration
 }
 
 type MetricsClientOption func(*option) error
-
-func WithPrometheusAddress(address string) func(*option) error {
-	return func(o *option) error {
-		o.prometheusAddress = address
-		return nil
-	}
-}
 
 func WithClientTimeout(timeout time.Duration) func(*option) error {
 	return func(o *option) error {
@@ -37,8 +29,6 @@ func WithClientTimeout(timeout time.Duration) func(*option) error {
 		return nil
 	}
 }
-
-// TODO: need to get the logger if dagger provides one!!
 
 func NewQuery(opts ...MetricsClientOption) (*Query, error) {
 	q := new(Query)
@@ -50,12 +40,7 @@ func NewQuery(opts ...MetricsClientOption) (*Query, error) {
 		}
 	}
 
-	addr, dur := "", time.Duration(0)
-	if o.prometheusAddress != "" {
-		addr = o.prometheusAddress
-	} else {
-		addr = "http://localhost:9090" // TODO: need to make a meaningful default for testing purposes
-	}
+	addr, dur := "http://kube-prometheus-stack-prometheus.monitoring:9090", time.Duration(0)
 
 	if o.clientTimeout != 0 {
 		dur = o.clientTimeout
