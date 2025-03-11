@@ -1,6 +1,6 @@
 terraform {
   required_providers {
-    equinix = {
+    oci = {
       source  = "oracle/oci"
       version = "6.29.0"
     }
