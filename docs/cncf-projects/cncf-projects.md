@@ -1,16 +1,15 @@
----
-title: "Collaboration with CNCF Projects"
-description: "This section provides details around collaboration between CNCF TAG ENV Green Reviews WG and CNCF projects."
-summary: ""
-date: 2023-09-07T16:04:48+02:00
-lastmod: 2023-09-07T16:04:48+02:00
-draft: false
-slug: cncf-projects-collaboration
-weight: 810
-toc: true
----
+# Collaboration with CNCF Projects
 
-This project aims to provide an architectural reference for how to assess the sustainability footprint of a cloud-native application (including the SCI) using cloud-native tooling. The community cluster aims to provide a playground for emerging metrics related to environmental sustainability, such as the [Software Carbon Intensity (SCI) specification](https://sci-guide.greensoftware.foundation). The Green Reviews pipeline is also inspired by the process established by [TAG Security’s Security Assessment (TSSA)](https://github.com/cncf/tag-security/tree/main/assessments) for CNCF Projects.
+Some notes about this project:
+* This project aims to provide an architectural reference for how to assess the sustainability footprint of a cloud-native application (including the SCI) using cloud-native tooling.
+* The community cluster aims to provide a playground for emerging metrics related to environmental sustainability, such as the [Software Carbon Intensity (SCI) specification](https://sci-guide.greensoftware.foundation).
+* The Green Reviews pipeline is also inspired by the process established by [TAG Security’s Security Assessment (TSSA)](https://github.com/cncf/tag-security/tree/main/assessments) for CNCF Projects.
+
+## Add a CNCF Project to the pipeline
+
+We would like to generate the SCI score for more CNCF Projects. Our goal is to set an example for how to monitor the sustainability footprint of cloud-native applications and tooling.
+
+Please [open an issue](https://github.com/cncf-tags/green-reviews-tooling/issues/new/choose) in our repository to register your interest in adding a CNCF Project to the pipeline. We look forward to hearing from the community.
 
 ## CNCF Project Maintainer Responsibilities
 
@@ -26,4 +25,6 @@ CNCF Projects are welcome to flag their interest to collaborate with the Green R
 
 ## Project 1: Falco
 
-Falco is the first project to go through the TAG ENV Green Review pipeline - more info [here](./falco.md).
+Falco is the first project to go through the TAG ENV Green Review pipeline.
+
+One thing that has worked well is that Falco created a separate repository, [cncf-green-review-testing](https://github.com/falcosecurity/cncf-green-review-testing), to facilitate this collaboration.

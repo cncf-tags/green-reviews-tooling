@@ -1,7 +1,6 @@
 # Contributing Guide
 
-First and foremost, thank you for contributing to this project led by the
-[CNCF Environmental Sustainability TAG](https://github.com/cncf/tag-env-sustainability)!
+Thank you for contributing to this project!
 We really appreciate your time and willingness to contribute. The [Green Reviews
 Working Group](https://github.com/cncf/tag-env-sustainability/tree/main/working-groups/green-reviews)
 is an entirely volunteer-led open-source project where we innovate
@@ -11,6 +10,10 @@ everyone who operates in a cloud-native environment.
 Read on to learn more about the project and how to contribute. As always, please
 don't hesitate to ask if anything is unclear. We value questions, guidance, and
 suggestions - they help us build the right thing.
+
+## Learn through our docs
+
+Checkout our [docs](./docs/README.md) if you are interested in contributing and/or using the pipeline.
 
 ## Finding Work
 
@@ -26,9 +29,8 @@ Then, familiarise yourself with the current work and priorities, or find someone
 
 When you feel ready to contribute:
 
-- Check the Backlog in the [issue board](https://github.com/orgs/cncf/projects/10/views/12). More pressing issues are labeled with `good first issue` or `help wanted`.
-- If you would like to make a feature request or raise a bug, feel free to [open an issue](https://github.com/cncf-tags/green-reviews-tooling/issues/new).
-- _If all else fails_, you could reach out to the [Green Review WG leads](https://github.com/cncf/tag-env-sustainability/tree/main/working-groups/green-reviews#chairs) directly with any queries. However, the public communication channels listed above are preferred so that we can load-balance the work.
+- Check the Backlog in the [issue board](https://github.com/orgs/cncf-tags/projects/5). More pressing issues are labeled with `good first issue` or `help wanted`.
+- If you would like to make a feature request or raise a bug, feel free to [open an issue](https://github.com/cncf-tags/green-reviews-tooling/issues/new/choose).
 
 We encourage all communication to remain public by going through the communications channels listed above so that everyone can stay informed!
 
