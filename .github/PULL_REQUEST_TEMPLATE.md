@@ -1,7 +1,6 @@
 <!--  Thanks for sending a pull request!  Here are some tips for you:
 
 - If this is your first time, please read our contributor guidelines: https://github.com/cncf-tags/green-reviews-tooling/blob/main/CONTRIBUTING.md
-- If you want *faster* PR reviews, read the Kubernetes Best Practices: https://git.k8s.io/community/contributors/guide/pull-requests.md#best-practices-for-faster-reviews
 -->
 
 #### What type of PR is this?

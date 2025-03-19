@@ -2,7 +2,7 @@
 
 The CNCF Green Reviews Working Group (WG) is an open-source, community-led project that is part of the [CNCF Environmental Sustainability Technical Advisory Group (TAG ENV)](https://github.com/cncf/tag-env-sustainability).
 
-The aim of the Green Reviews WG is to set up infrastructure to measure the sustainability footprint of [CNCF Projects](https://www.cncf.io/projects). 
+The aim of the Green Reviews WG is to set up infrastructure to measure the sustainability footprint of [CNCF Projects](https://www.cncf.io/projects).
 
 Measuring the sustainability footprint of software is not an easy task. Our vision is that the WG will compute the sustainability data for every release of a CNCF project that requests a sustainability footprint assessment. To achieve such a vision, our goal is to develop a workflow that can integrate well with the existing software lifecycle of other CNCF projects.
 
@@ -23,7 +23,7 @@ If you are curious and want to discover more, here are some good resources:
 - You can read the deep dive [article](https://tag-env-sustainability.cncf.io/blog/2024-green-reviews-working-group-measuring-sustainability/)
 - You can watch the Kubecon EU '24 [Maintainer Talk](https://www.youtube.com/watch?v=UFa8hxOGKwQ)
 
-## Releases 
+## Releases
 
 | Release | Date | Notes
 |---|---|---|
@@ -37,8 +37,7 @@ If you are curious and want to discover more, here are some good resources:
 Here are some resources to learn about the project:
 
 - **Charter**: The [Green Reviews WG Charter](https://github.com/cncf/tag-env-sustainability/blob/main/working-groups/green-reviews/charter.md) outlines the WG's motivation, scope, goals, non-goals, and deliverables.
-- **Issue Board**: Checkout the project's [Backlog](https://github.com/orgs/cncf/projects/10/views/12) to find something to work on.
-- **Design Document** (***Archived - please refer [Documentation section](#documentation) for latest updates***): The [WG's design document](https://docs.google.com/document/d/19fzZW-IMv2kDNatKFHeHh7wqcEN0e2N60wzxvCGZd48/edit?usp=sharing) is a live document created and maintained by the open-source contributors of the WG. Everyone is welcome to contribute ideas, questions, comments, suggestions, and take ownership of the project's implementation.
+- **Issue Board**: Checkout the project's [Backlog](https://github.com/orgs/cncf-tags/projects/5) to find something to work on.
 
 ### Contributing
 
