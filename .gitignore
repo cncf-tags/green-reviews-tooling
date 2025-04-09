@@ -1,6 +1,11 @@
 infrastructure/equinix-metal/.terraform/
 infrastructure/equinix-metal/terraform.tfvars
 infrastructure/equinix-metal/.terraform.lock.hcl
+infrastructure/oracle-cloud/.terraform.lock.hcl
+infrastructure/oracle-cloud/terraform.tfvars
+infrastructure/oracle-cloud/terraform.tfstate
+infrastructure/oracle-cloud/terraform.tfstate.backup
+infrastructure/oracle-cloud/.terraform/
 .idea
 /dagger.gen.go
 /internal/dagger
