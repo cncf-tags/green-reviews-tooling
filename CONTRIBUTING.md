@@ -15,6 +15,8 @@ suggestions - they help us build the right thing.
 
 Checkout our [docs](./docs/README.md) if you are interested in contributing and/or using the pipeline.
 
+Want to dive directly into it? [Here](docs/develop/README.md) you can learn how to run the project locally using Dagger.
+
 ## Finding Work
 
 Here are some suggestions for how to find work to contribute to the project.

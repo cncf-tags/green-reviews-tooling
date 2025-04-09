@@ -41,9 +41,11 @@ Here are some resources to learn about the project:
 
 ### Contributing
 
-All contributions are welcome, including code contributions, issues, suggestions, questions, product direction, collaborations, etc.
+All contributions are welcome, including code contributions, issues, suggestions, questions, product direction, collaborations, improvements to the documentation, etc.
 
 If you are interested in contributing to the project, head over to the [Contributing Guide](./CONTRIBUTING.md)!
+
+Read [this](docs/develop/README.md) page on *how to run the project locally*.
 
 ### Documentation
 
