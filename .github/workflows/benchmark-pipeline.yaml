@@ -48,6 +48,7 @@ jobs:
           echo "| version | ${{ github.event.inputs.version }} |" >> $GITHUB_STEP_SUMMARY
           echo "| benchmark_job_url | ${{ github.event.inputs.benchmark_job_url }} |" >> $GITHUB_STEP_SUMMARY
           echo "| benchmark_job_duration_mins | ${{ github.event.inputs.benchmark_job_duration_mins }} |" >> $GITHUB_STEP_SUMMARY
+        working-directory: "."
 
   benchmark:
     runs-on: ubuntu-24.04
