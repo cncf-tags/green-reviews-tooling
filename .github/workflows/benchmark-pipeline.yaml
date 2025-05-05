@@ -53,6 +53,7 @@ jobs:
   benchmark:
     runs-on: ubuntu-24.04
     env:
+      TF_LOG: INFO
       TF_VAR_api_key_fingerprint: ${{ secrets.API_KEY_FINGERPRINT }}
       TF_VAR_compartment_ocid: ${{ secrets.COMPARTMENT_OCID }}
       TF_VAR_ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}
@@ -93,7 +94,7 @@ jobs:
       - uses: dagger/dagger-for-github@v7
         with:
           module: "."
-          version: "0.15.4"
+          version: "0.18.5"
           args: setup-cluster
               --source='.'
               --kubeconfig='/src/kube-config'
@@ -101,7 +102,7 @@ jobs:
       - uses: dagger/dagger-for-github@v7
         with:
           module: "."
-          version: "0.15.4"
+          version: "0.18.5"
           args: benchmark-pipeline
               --source='.'
               --kubeconfig='/src/kube-config'
