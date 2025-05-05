@@ -185,7 +185,7 @@ resource "null_resource" "fetch_kubeconfig" {
   }
   
   provisioner "local-exec" {
-    command = "sed -i '' 's|server: https://0.0.0.0:6443|server: https://${oci_core_instance.bm_instance.public_ip}:6443|g' ./kube-config"
+    command = "sed -i.bak 's|server: https://0.0.0.0:6443|server: https://${oci_core_instance.bm_instance.public_ip}:6443|g' ./kube-config && rm -f ./kube-config.bak"
   }
 }
 
