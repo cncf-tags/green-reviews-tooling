@@ -110,5 +110,6 @@ jobs:
               --benchmark-job-url='${{ inputs.benchmark_job_url }}'
               --benchmark-job-duration-mins=${{ inputs.benchmark_job_duration_mins }}
 
-      - name: tofu plan
+      - name: tofu destroy
+        if: always()
         run: tofu destroy -auto-approve
