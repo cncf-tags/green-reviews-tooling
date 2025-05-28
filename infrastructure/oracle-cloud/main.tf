@@ -1,3 +1,6 @@
+# Followed TF docs for the Oracle Cloud Infrastructure (OCI) Provider. 
+# Reference docs: https://docs.oracle.com/en-us/iaas/Content/dev/terraform/home.htm
+
 terraform {
   required_providers {
     oci = {
@@ -11,6 +14,9 @@ terraform {
   }
 }
 
+
+# Configure the OCI provider with an API Key
+# tenancy_ocid is the compartment OCID for the root compartment
 provider "oci" {
   tenancy_ocid     = var.tenancy_ocid
   user_ocid        = var.user_ocid
