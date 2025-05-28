@@ -55,8 +55,10 @@ jobs:
     env:
       TF_LOG: INFO
       TF_VAR_api_key_fingerprint: ${{ secrets.API_KEY_FINGERPRINT }}
+      # See Compartment OCID docs: https://docs.oracle.com/en-us/iaas/Content/GSG/Tasks/contactingsupport_topic-Locating_Oracle_Cloud_Infrastructure_IDs.htm#Finding_the_OCID_of_a_Compartment
       TF_VAR_compartment_ocid: ${{ secrets.COMPARTMENT_OCID }}
       TF_VAR_ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}
+      # See Tenancy OCID docs: https://docs.oracle.com/en-us/iaas/Content/GSG/Tasks/contactingsupport_topic-Locating_Oracle_Cloud_Infrastructure_IDs.htm#Finding_Your_Tenancy_OCID_Oracle_Cloud_Identifier
       TF_VAR_tenancy_ocid: ${{ secrets.TENANCY_OCID }}
       TF_VAR_user_ocid: ${{ secrets.USER_OCID }}
     steps:
@@ -112,6 +114,6 @@ jobs:
               --benchmark-job-url='${{ inputs.benchmark_job_url }}'
               --benchmark-job-duration-mins=${{ inputs.benchmark_job_duration_mins }}
 
-      - name: tofu destroy
+      - name: Run `tofu destroy` to destroy the cluster so that it runs on-demand
         if: always()
         run: tofu destroy -auto-approve
