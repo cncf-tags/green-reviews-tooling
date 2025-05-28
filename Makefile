@@ -30,10 +30,12 @@ install:
 			--selector=name=dagger-dagger-helm-engine \
 			--namespace=dagger \
 			--output=jsonpath='{.items[0].metadata.name}') && \
-	_EXPERIMENTAL_DAGGER_RUNNER_HOST="kube-pod://$$DAGGER_ENGINE_POD_NAME?namespace=dagger" && \
-	echo "Install complete - add env vars to your shell" && \
-	echo "export DAGGER_ENGINE_POD_NAME=\"$$DAGGER_ENGINE_POD_NAME\"" && \
-	echo "export _EXPERIMENTAL_DAGGER_RUNNER_HOST=\"$$_EXPERIMENTAL_DAGGER_RUNNER_HOST\""
+	_EXPERIMENTAL_DAGGER_RUNNER_HOST="kube-pod://$$DAGGER_ENGINE_POD_NAME?namespace=dagger" || \
+	(echo "Failed to install Dagger. Please check the logs." && exit 1)
+	@echo "-------- Dagger installed successfully --------"
+	@echo " Install complete - add env vars to your shell"
+	@echo "  export DAGGER_ENGINE_POD_NAME=\"$$DAGGER_ENGINE_POD_NAME\""
+	@echo "  export _EXPERIMENTAL_DAGGER_RUNNER_HOST=\"$$_EXPERIMENTAL_DAGGER_RUNNER_HOST\""
 
 # Bootstrap cluster with flux and monitoring stack
 .PHONY: setup
