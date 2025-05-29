@@ -9,8 +9,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cncf-tags/green-reviews-tooling/pkg/monitoring"
-
 	"github.com/cncf-tags/green-reviews-tooling/internal/dagger"
 	"github.com/cncf-tags/green-reviews-tooling/pkg/cmd"
 )
@@ -56,7 +54,13 @@ func (p *Pipeline) Benchmark(ctx context.Context,
 		log.Printf("benchmark failed: %v", err)
 	}
 
-	if err := monitoring.ComputeBenchmarkingResults(ctx); err != nil {
+	q, err := NewQuery()
+	if err != nil {
+		log.Printf("failed to create prometheus query: %v", err)
+		return nil, err
+	}
+
+	if _, err := p.computeBenchmarkingResults(ctx, q); err != nil {
 		log.Printf("failed to fetch metrics: %v", err)
 	}
 
