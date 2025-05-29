@@ -2,7 +2,6 @@ package pipeline
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/prometheus/common/model"
@@ -60,10 +59,8 @@ func (p *Pipeline) computeBenchmarkingResults(ctx context.Context, q *Query, ben
 		})
 	}
 
-	if b, err := json.MarshalIndent(res, "", "  "); err == nil {
-		p.echo(ctx, string(b))
-	} else {
-		return nil, fmt.Errorf("failed to marshal benchmarking results: %w", err)
+	for _, r := range res {
+		p.echo(ctx, fmt.Sprintf("Query: %s, Type: %s, Value: %s", r.Query, r.QueryType, r.QueryValue))
 	}
 
 	return res, nil
