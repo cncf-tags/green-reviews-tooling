@@ -22,7 +22,7 @@ func NewQuery() (*Query, error) {
 		Client: &http.Client{
 			Timeout: 10 * time.Second, // Default timeout, can be overridden
 		},
-		Address: "http://kube-prometheus-stack-prometheus.monitoring:9090",
+		Address: "http://monitoring-kube-prometheus-prometheus.monitoring:9090",
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create prometheus client: %w", err)
