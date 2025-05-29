@@ -16,7 +16,7 @@ type MetericsCollectorResult struct {
 
 type BenchmarkingCollectorResults []MetericsCollectorResult
 
-func (p *Pipeline) computeBenchmarkingResults(ctx context.Context, q *Query) (BenchmarkingCollectorResults, error) {
+func (p *Pipeline) computeBenchmarkingResults(ctx context.Context, q *Query, benchmarkJobDurationMins int) (BenchmarkingCollectorResults, error) {
 
 	queryMap := []struct {
 		mType model.ValueType
@@ -24,18 +24,18 @@ func (p *Pipeline) computeBenchmarkingResults(ctx context.Context, q *Query) (Be
 		mVal  string
 	}{
 		{
-			query: "rate(container_cpu_usage_seconds_total[15m])",
+			query: fmt.Sprintf("rate(container_cpu_usage_seconds_total[%dm])", benchmarkJobDurationMins),
 		},
 		{
-			query: "avg_over_time(container_memory_rss[15m])",
+			query: fmt.Sprintf("avg_over_time(container_memory_rss[%dm])", benchmarkJobDurationMins),
 		},
 		{
-			query: "avg_over_time(container_memory_working_set_bytes[15m])",
+			query: fmt.Sprintf("avg_over_time(container_memory_working_set_bytes[%dm])", benchmarkJobDurationMins),
 		},
 	}
 
 	for idx := range queryMap {
-		d, warns, qErr := q.WithTimeRange(ctx, queryMap[idx].query, 15)
+		d, warns, qErr := q.WithTimeRange(ctx, queryMap[idx].query, benchmarkJobDurationMins+1)
 		if qErr != nil {
 			return nil, qErr
 		}
@@ -63,7 +63,7 @@ func (p *Pipeline) computeBenchmarkingResults(ctx context.Context, q *Query) (Be
 	if b, err := json.MarshalIndent(res, "", "  "); err == nil {
 		p.echo(ctx, string(b))
 	} else {
-		p.echo(ctx, fmt.Sprintf("Failed to serialize metricsCollectorRes: %v", err))
+		return nil, fmt.Errorf("failed to marshal benchmarking results: %w", err)
 	}
 
 	return res, nil
