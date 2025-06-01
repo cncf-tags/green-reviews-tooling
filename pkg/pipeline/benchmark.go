@@ -49,12 +49,14 @@ func (p *Pipeline) Benchmark(ctx context.Context,
 	config,
 	version,
 	benchmarkJobURL string,
-	benchmarkJobDurationMins int) (*dagger.Container, error) {
+	benchmarkJobDurationMins int,
+	prometheus_url string) (*dagger.Container, error) {
 	if _, err := p.benchmark(ctx, cncfProject, config, version, benchmarkJobURL, benchmarkJobDurationMins); err != nil {
 		log.Printf("benchmark failed: %v", err)
 	}
 
-	q, err := NewQuery()
+	q, err := NewQuery(prometheus_url)
+
 	if err != nil {
 		log.Printf("failed to create prometheus query: %v", err)
 		return nil, err

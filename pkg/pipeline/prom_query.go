@@ -15,14 +15,14 @@ type Query struct {
 	c v1.API
 }
 
-func NewQuery() (*Query, error) {
+func NewQuery(promURL string) (*Query, error) {
 	q := new(Query)
 
 	client, err := api.NewClient(api.Config{
 		Client: &http.Client{
 			Timeout: 10 * time.Second, // Default timeout, can be overridden
 		},
-		Address: "http://monitoring-kube-prometheus-prometheus.monitoring:9090",
+		Address: promURL,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create prometheus client: %w", err)
