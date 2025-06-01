@@ -4,6 +4,7 @@ package main
 
 import (
 	"context"
+	"log"
 	"os"
 
 	"github.com/cncf-tags/green-reviews-tooling/internal/dagger"
@@ -26,13 +27,14 @@ func (m *GreenReviewsTooling) BenchmarkPipeline(ctx context.Context,
 	version,
 	benchmarkJobURL,
 	kubeconfig string,
+	prometheus_url string,
 	benchmarkJobDurationMins int) (*dagger.Container, error) {
 	p, err := newPipeline(ctx, source, kubeconfig)
 	if err != nil {
 		return nil, err
 	}
 
-	return p.Benchmark(ctx, cncfProject, config, version, benchmarkJobURL, benchmarkJobDurationMins)
+	return p.Benchmark(ctx, cncfProject, config, version, benchmarkJobURL, benchmarkJobDurationMins, prometheus_url)
 }
 
 // BenchmarkPipelineTest tests the pipeline.
@@ -53,6 +55,8 @@ func (m *GreenReviewsTooling) BenchmarkPipelineTest(ctx context.Context,
 	// +optional
 	kubeconfig string,
 	// +optional
+	prometheus_url string,
+	// +optional
 	// +default=2
 	benchmarkJobDurationMins int) (*dagger.Container, error) {
 	p, err := newPipeline(ctx, source, kubeconfig)
@@ -68,12 +72,18 @@ func (m *GreenReviewsTooling) BenchmarkPipelineTest(ctx context.Context,
 		}
 	}
 
+	if prometheus_url == "" {
+		log.Printf("Missing prometheus url from makefile", err)
+		return nil, err
+	}
+
 	return p.Benchmark(ctx,
 		cncfProject,
 		config,
 		version,
 		benchmarkJobURL,
-		benchmarkJobDurationMins)
+		benchmarkJobDurationMins,
+		prometheus_url)
 }
 
 // SetupCluster installs cluster components in an empty cluster for CI/CD and

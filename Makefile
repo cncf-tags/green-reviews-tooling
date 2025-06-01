@@ -45,8 +45,8 @@ setup:
 # Test pipeline with default values
 .PHONY: test
 test:
-	dagger call benchmark-pipeline-test \
-		--source=. --kubeconfig=/src/$(KUBECONFIG)
+	@export PROMETHEUS_URL="http://monitoring-kube-prometheus-prometheus.monitoring:9090" && \
+	dagger call benchmark-pipeline-test --source=. --kubeconfig=/src/$(KUBECONFIG) --prometheus_url=$$PROMETHEUS_URL
 
 # Verify tools are installed
 .PHONY: verify
