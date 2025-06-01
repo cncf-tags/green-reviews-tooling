@@ -2,6 +2,8 @@ name: Benchmark Pipeline Test
 
 on:
   push:
+  pull_request:
+    branches: [ main ]
 
 jobs:
   pipeline:
@@ -11,6 +13,6 @@ jobs:
       - uses: dagger/dagger-for-github@v7
         with:
           module: "."
-          version: "0.15.4"
+          version: "0.18.9"
           args: benchmark-pipeline-test
               --source='.'
