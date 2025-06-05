@@ -30,6 +30,9 @@ concurrency:
   group: benchmark
   cancel-in-progress: false
 
+env:
+  DAGGER_VERSION: "0.18.9"
+
 defaults:
   run:
     working-directory: infrastructure/oracle-cloud
@@ -96,7 +99,7 @@ jobs:
       - uses: dagger/dagger-for-github@v7
         with:
           module: "."
-          version: "0.18.5"
+          version: ${{ env.DAGGER_VERSION }}
           args: setup-cluster
               --source='.'
               --kubeconfig='/src/kube-config'
@@ -104,7 +107,7 @@ jobs:
       - uses: dagger/dagger-for-github@v7
         with:
           module: "."
-          version: "0.18.5"
+          version: ${{ env.DAGGER_VERSION }}
           args: benchmark-pipeline
               --source='.'
               --kubeconfig='/src/kube-config'
