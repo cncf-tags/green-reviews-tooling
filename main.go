@@ -4,7 +4,7 @@ package main
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"os"
 
 	"github.com/cncf-tags/green-reviews-tooling/internal/dagger"
@@ -73,8 +73,7 @@ func (m *GreenReviewsTooling) BenchmarkPipelineTest(ctx context.Context,
 	}
 
 	if prometheus_url == "" {
-		log.Printf("Missing prometheus url from makefile", err)
-		return nil, err
+		return nil, fmt.Errorf("Missing env:$PROMETHEUS_URL when invoking BenchmarkPipelineTest.")
 	}
 
 	return p.Benchmark(ctx,
