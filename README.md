@@ -6,9 +6,9 @@ The aim of the Green Reviews WG is to set up infrastructure to measure the susta
 
 Measuring the sustainability footprint of software is not an easy task. Our vision is that the WG will compute the sustainability data for every release of a CNCF project that requests a sustainability footprint assessment. To achieve such a vision, our goal is to develop a workflow that can integrate well with the existing software lifecycle of other CNCF projects.
 
-A good way to practically understand the first version of the workflow that the WG is designing is to take a look at the following architecture diagram:
+A good way to practically understand the first version of the workflow that the WG is designing is to take a look at this simplified architecture diagram:
 
-![green reviews workflow](./docs/images/workflow-vision.png)
+![green reviews project overview](./docs/images/project-overview.png)
 
 The WG’s workflow vision is that every release requesting a sustainability footprint assessment will trigger a Github Action specified in the Green Reviews repo that will start a benchmarking pipeline. The pipeline’s job is to:
 
