@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"path"
 	"path/filepath"
 	"strings"
@@ -62,9 +63,12 @@ func (p *Pipeline) Benchmark(ctx context.Context,
 		return nil, err
 	}
 
-	if _, err := p.computeBenchmarkingResults(ctx, q, benchmarkJobDurationMins); err != nil {
+	if results, err := p.computeBenchmarkingResults(ctx, q, benchmarkJobDurationMins); err != nil {
 		log.Printf("failed to fetch metrics: %v", err)
 		return nil, err
+	} else {
+		p.echo(ctx, "Benchmarking results:")
+		results.WriteJSON(os.Stdout)
 	}
 
 	if _, err := p.delete(ctx, cncfProject, config, benchmarkJobURL); err != nil {
