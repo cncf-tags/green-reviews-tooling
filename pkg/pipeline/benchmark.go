@@ -2,9 +2,9 @@ package pipeline
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
-	"os"
 	"path"
 	"path/filepath"
 	"strings"
@@ -24,6 +24,7 @@ const (
 	manifestFileExtension = "%s.yaml"
 	podWaitDuration       = "15s"
 	projectsDir           = "/projects"
+	resultsFilename       = "/tmp/benchmark_results.json"
 	versionPlaceholder    = "$VERSION"
 )
 
@@ -67,8 +68,11 @@ func (p *Pipeline) Benchmark(ctx context.Context,
 		log.Printf("failed to fetch metrics: %v", err)
 		return nil, err
 	} else {
-		p.echo(ctx, "Benchmarking results:")
-		results.WriteJSON(os.Stdout)
+		p.echo(ctx, "Benchmarking results computed successfully")
+		if err := p.saveResults(ctx, results); err != nil {
+			log.Printf("failed to save results: %v", err)
+			return nil, err
+		}
 	}
 
 	if _, err := p.delete(ctx, cncfProject, config, benchmarkJobURL); err != nil {
@@ -234,4 +238,30 @@ func getManifestPath(project, config string) string {
 		config = project
 	}
 	return filepath.Join(projectsDir, project, fmt.Sprintf(manifestFileExtension, config))
+}
+
+// saveResults saves the benchmark results to a file in the container
+func (p *Pipeline) saveResults(ctx context.Context, results any) error {
+	// Convert results to JSON
+	jsonData, err := json.Marshal(results)
+	if err != nil {
+		return fmt.Errorf("failed to marshal results: %w", err)
+	}
+
+	// Save to file in container and update the container reference
+	p.container = p.container.
+		WithEnvVariable(bustCacheEnvVar, time.Now().String()).
+		WithNewFile(resultsFilename, string(jsonData))
+
+	// Verify file was created
+	_, err = p.container.
+		WithExec([]string{"ls", "-la", resultsFilename}).
+		Stdout(ctx)
+
+	return err
+}
+
+// GetResults returns the benchmark results file from the container
+func (p *Pipeline) GetResults(ctx context.Context) (*dagger.File, error) {
+	return p.container.File(resultsFilename), nil
 }

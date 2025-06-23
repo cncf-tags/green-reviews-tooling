@@ -58,7 +58,7 @@ func (m *GreenReviewsTooling) BenchmarkPipelineTest(ctx context.Context,
 	prometheus_url string,
 	// +optional
 	// +default=2
-	benchmarkJobDurationMins int) (*dagger.Container, error) {
+	benchmarkJobDurationMins int) (*dagger.File, error) {
 	p, err := newPipeline(ctx, source, kubeconfig)
 	if err != nil {
 		return nil, err
@@ -76,13 +76,19 @@ func (m *GreenReviewsTooling) BenchmarkPipelineTest(ctx context.Context,
 		return nil, fmt.Errorf("Missing env:$PROMETHEUS_URL when invoking BenchmarkPipelineTest.")
 	}
 
-	return p.Benchmark(ctx,
+	_, err = p.Benchmark(ctx,
 		cncfProject,
 		config,
 		version,
 		benchmarkJobURL,
 		benchmarkJobDurationMins,
 		prometheus_url)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get the results file from the container
+	return p.GetResults(ctx)
 }
 
 // SetupCluster installs cluster components in an empty cluster for CI/CD and
