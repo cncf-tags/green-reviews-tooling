@@ -87,7 +87,6 @@ func (m *GreenReviewsTooling) BenchmarkPipelineTest(ctx context.Context,
 		return nil, err
 	}
 
-	// Get the results file from the container
 	return p.GetResults(ctx)
 }
 

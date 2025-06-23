@@ -69,7 +69,7 @@ func (p *Pipeline) Benchmark(ctx context.Context,
 		return nil, err
 	} else {
 		p.echo(ctx, "Benchmarking results computed successfully")
-		if err := p.saveResults(ctx, results); err != nil {
+		if err := p.saveResults(results); err != nil {
 			log.Printf("failed to save results: %v", err)
 			return nil, err
 		}
@@ -241,7 +241,7 @@ func getManifestPath(project, config string) string {
 }
 
 // saveResults saves the benchmark results to a file in the container
-func (p *Pipeline) saveResults(ctx context.Context, results any) error {
+func (p *Pipeline) saveResults(results any) error {
 	// Convert results to JSON
 	jsonData, err := json.Marshal(results)
 	if err != nil {
@@ -253,15 +253,9 @@ func (p *Pipeline) saveResults(ctx context.Context, results any) error {
 		WithEnvVariable(bustCacheEnvVar, time.Now().String()).
 		WithNewFile(resultsFilename, string(jsonData))
 
-	// Verify file was created
-	_, err = p.container.
-		WithExec([]string{"ls", "-la", resultsFilename}).
-		Stdout(ctx)
-
-	return err
+	return nil
 }
 
-// GetResults returns the benchmark results file from the container
 func (p *Pipeline) GetResults(ctx context.Context) (*dagger.File, error) {
 	return p.container.File(resultsFilename), nil
 }

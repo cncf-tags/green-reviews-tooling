@@ -3,6 +3,7 @@
 all: verify
 
 KUBECONFIG = green-reviews-test-kubeconfig
+BENCHMARK_OUTPUT = benchmark_results.json
 
 # Get a terminal for debugging
 .PHONY: debug
@@ -46,10 +47,7 @@ setup:
 .PHONY: test
 test:
 	@export PROMETHEUS_URL="http://monitoring-kube-prometheus-prometheus.monitoring:9090" && \
-	dagger call benchmark-pipeline-test --source=. --kubeconfig=/src/$(KUBECONFIG) --prometheus_url=$$PROMETHEUS_URL export --path=benchmark_results.json && \
-	echo "========== BENCHMARK RESULTS ==========" && \
-	cat benchmark_results.json && \
-	echo "\n========================================"
+	dagger call benchmark-pipeline-test --source=. --kubeconfig=/src/$(KUBECONFIG) --prometheus_url=$$PROMETHEUS_URL export --path=$(BENCHMARK_OUTPUT)
 
 # Verify tools are installed
 .PHONY: verify
