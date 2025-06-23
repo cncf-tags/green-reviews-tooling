@@ -46,7 +46,10 @@ setup:
 .PHONY: test
 test:
 	@export PROMETHEUS_URL="http://monitoring-kube-prometheus-prometheus.monitoring:9090" && \
-	dagger call benchmark-pipeline-test --source=. --kubeconfig=/src/$(KUBECONFIG) --prometheus_url=$$PROMETHEUS_URL
+	dagger call benchmark-pipeline-test --source=. --kubeconfig=/src/$(KUBECONFIG) --prometheus_url=$$PROMETHEUS_URL export --path=benchmark_results.json && \
+	echo "========== BENCHMARK RESULTS ==========" && \
+	cat benchmark_results.json && \
+	echo "\n========================================"
 
 # Verify tools are installed
 .PHONY: verify
