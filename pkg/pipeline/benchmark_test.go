@@ -13,8 +13,9 @@ func (p *Pipeline) BenchmarkTest(ctx context.Context,
 	config,
 	version,
 	benchmarkJobURL string,
-	benchmarkJobDurationMins int) (*dagger.Container, error) {
-	if _, err := p.Benchmark(ctx, cncfProject, config, version, benchmarkJobURL, benchmarkJobDurationMins); err != nil {
+	benchmarkJobDurationMins int,
+	prometheus_url string) (*dagger.Container, error) {
+	if _, err := p.Benchmark(ctx, cncfProject, config, version, benchmarkJobURL, benchmarkJobDurationMins, prometheus_url); err != nil {
 		log.Printf("benchmark failed: %v", err)
 	}
 

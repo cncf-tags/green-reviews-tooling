@@ -3,6 +3,7 @@
 all: verify
 
 KUBECONFIG = green-reviews-test-kubeconfig
+BENCHMARK_OUTPUT = benchmark_results.json
 
 # Get a terminal for debugging
 .PHONY: debug
@@ -23,7 +24,7 @@ install:
 		dagger oci://registry.dagger.io/dagger-helm && \
 	kubectl wait \
 		--for condition=Ready \
-		--timeout=60s pod \
+		--timeout=120s pod \
 		--selector=name=dagger-dagger-helm-engine \
 		--namespace=dagger && \
 	DAGGER_ENGINE_POD_NAME=$$(kubectl get pod \
@@ -31,9 +32,10 @@ install:
 			--namespace=dagger \
 			--output=jsonpath='{.items[0].metadata.name}') && \
 	_EXPERIMENTAL_DAGGER_RUNNER_HOST="kube-pod://$$DAGGER_ENGINE_POD_NAME?namespace=dagger" && \
-	echo "Install complete - add env vars to your shell" && \
-	echo "export DAGGER_ENGINE_POD_NAME=\"$$DAGGER_ENGINE_POD_NAME\"" && \
-	echo "export _EXPERIMENTAL_DAGGER_RUNNER_HOST=\"$$_EXPERIMENTAL_DAGGER_RUNNER_HOST\""
+	echo "-------- Dagger installed successfully --------" && \
+	echo " Install complete - add env vars to your shell" && \
+	echo "  export DAGGER_ENGINE_POD_NAME=\"$$DAGGER_ENGINE_POD_NAME\"" && \
+	echo "  export _EXPERIMENTAL_DAGGER_RUNNER_HOST=\"$$_EXPERIMENTAL_DAGGER_RUNNER_HOST\""
 
 # Bootstrap cluster with flux and monitoring stack
 .PHONY: setup
@@ -44,8 +46,8 @@ setup:
 # Test pipeline with default values
 .PHONY: test
 test:
-	dagger call benchmark-pipeline-test \
-		--source=. --kubeconfig=/src/$(KUBECONFIG)
+	@export PROMETHEUS_URL="http://monitoring-kube-prometheus-prometheus.monitoring:9090" && \
+	dagger call benchmark-pipeline-test --source=. --kubeconfig=/src/$(KUBECONFIG) --prometheus_url=$$PROMETHEUS_URL export --path=$(BENCHMARK_OUTPUT)
 
 # Verify tools are installed
 .PHONY: verify

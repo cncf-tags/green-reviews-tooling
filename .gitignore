@@ -9,3 +9,4 @@ infrastructure/oracle-cloud/.terraform/
 /internal/querybuilder
 /internal/telemetry
 green-reviews-test-kubeconfig
+benchmark_results.json
