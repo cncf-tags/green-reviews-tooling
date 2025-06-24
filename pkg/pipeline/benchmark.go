@@ -64,7 +64,12 @@ func (p *Pipeline) Benchmark(ctx context.Context,
 		return nil, err
 	}
 
-	if results, err := p.computeBenchmarkingResults(ctx, q, benchmarkJobDurationMins); err != nil {
+	if results, err := p.computeBenchmarkingResults(
+		ctx,
+		q,
+		benchmarkJobDurationMins,
+		benchmarkNamespace,
+	); err != nil {
 		log.Printf("failed to fetch metrics: %v", err)
 		return nil, err
 	} else {
