@@ -114,15 +114,18 @@ func (p *Pipeline) computeBenchmarkingResults(
 	queries := []string{
 		fmt.Sprintf(
 			`rate(container_cpu_usage_seconds_total{namespace="%s"}[%dm])`,
-			benchmarkJobDurationMins, benchmarkNamespace,
+			benchmarkNamespace,
+			benchmarkJobDurationMins,
 		),
 		fmt.Sprintf(
 			`avg_over_time(container_memory_rss{namespace="%s"}[%dm])`,
-			benchmarkJobDurationMins, benchmarkNamespace,
+			benchmarkNamespace,
+			benchmarkJobDurationMins,
 		),
 		fmt.Sprintf(
 			`avg_over_time(container_memory_working_set_bytes{namespace="%s"}[%dm])`,
-			benchmarkJobDurationMins, benchmarkNamespace,
+			benchmarkNamespace,
+			benchmarkJobDurationMins,
 		),
 	}
 
