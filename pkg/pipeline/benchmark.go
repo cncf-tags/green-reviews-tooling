@@ -64,20 +64,21 @@ func (p *Pipeline) Benchmark(ctx context.Context,
 		return nil, err
 	}
 
-	if results, err := p.computeBenchmarkingResults(
+	results, err := p.computeBenchmarkingResults(
 		ctx,
 		q,
 		benchmarkJobDurationMins,
 		benchmarkNamespace,
-	); err != nil {
+	)
+	if err != nil {
 		log.Printf("failed to fetch metrics: %v", err)
 		return nil, err
-	} else {
-		p.echo(ctx, "Benchmarking results computed successfully")
-		if err := p.saveResults(results); err != nil {
-			log.Printf("failed to save results: %v", err)
-			return nil, err
-		}
+	}
+
+	p.echo(ctx, "Benchmarking results computed successfully")
+	if err := p.saveResults(results); err != nil {
+		log.Printf("failed to save results: %v", err)
+		return nil, err
 	}
 
 	if _, err := p.delete(ctx, cncfProject, config, benchmarkJobURL); err != nil {
