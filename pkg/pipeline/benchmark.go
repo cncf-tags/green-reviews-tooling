@@ -2,6 +2,7 @@ package pipeline
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"path"
@@ -23,6 +24,7 @@ const (
 	manifestFileExtension = "%s.yaml"
 	podWaitDuration       = "15s"
 	projectsDir           = "/projects"
+	resultsFilename       = "/tmp/benchmark_results.json"
 	versionPlaceholder    = "$VERSION"
 )
 
@@ -49,9 +51,34 @@ func (p *Pipeline) Benchmark(ctx context.Context,
 	config,
 	version,
 	benchmarkJobURL string,
-	benchmarkJobDurationMins int) (*dagger.Container, error) {
+	benchmarkJobDurationMins int,
+	prometheus_url string) (*dagger.Container, error) {
 	if _, err := p.benchmark(ctx, cncfProject, config, version, benchmarkJobURL, benchmarkJobDurationMins); err != nil {
 		log.Printf("benchmark failed: %v", err)
+	}
+
+	q, err := NewQuery(prometheus_url)
+
+	if err != nil {
+		log.Printf("failed to create prometheus query: %v", err)
+		return nil, err
+	}
+
+	results, err := p.computeBenchmarkingResults(
+		ctx,
+		q,
+		benchmarkJobDurationMins,
+		benchmarkNamespace,
+	)
+	if err != nil {
+		log.Printf("failed to fetch metrics: %v", err)
+		return nil, err
+	}
+
+	p.echo(ctx, "Benchmarking results computed successfully")
+	if err := p.saveResults(results); err != nil {
+		log.Printf("failed to save results: %v", err)
+		return nil, err
 	}
 
 	if _, err := p.delete(ctx, cncfProject, config, benchmarkJobURL); err != nil {
@@ -217,4 +244,24 @@ func getManifestPath(project, config string) string {
 		config = project
 	}
 	return filepath.Join(projectsDir, project, fmt.Sprintf(manifestFileExtension, config))
+}
+
+// saveResults saves the benchmark results to a file in the container
+func (p *Pipeline) saveResults(results any) error {
+	// Convert results to JSON
+	jsonData, err := json.Marshal(results)
+	if err != nil {
+		return fmt.Errorf("failed to marshal results: %w", err)
+	}
+
+	// Save to file in container and update the container reference
+	p.container = p.container.
+		WithEnvVariable(bustCacheEnvVar, time.Now().String()).
+		WithNewFile(resultsFilename, string(jsonData))
+
+	return nil
+}
+
+func (p *Pipeline) GetResults(ctx context.Context) (*dagger.File, error) {
+	return p.container.File(resultsFilename), nil
 }
