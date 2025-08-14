@@ -27,14 +27,14 @@ func (m *GreenReviewsTooling) BenchmarkPipeline(ctx context.Context,
 	version,
 	benchmarkJobURL,
 	kubeconfig string,
-	prometheus_url string,
+	prometheusURL string,
 	benchmarkJobDurationMins int) (*dagger.Container, error) {
 	p, err := newPipeline(ctx, source, kubeconfig)
 	if err != nil {
 		return nil, err
 	}
 
-	return p.Benchmark(ctx, cncfProject, config, version, benchmarkJobURL, benchmarkJobDurationMins, prometheus_url)
+	return p.Benchmark(ctx, cncfProject, config, version, benchmarkJobURL, benchmarkJobDurationMins, prometheusURL)
 }
 
 // BenchmarkPipelineTest tests the pipeline.
@@ -55,6 +55,7 @@ func (m *GreenReviewsTooling) BenchmarkPipelineTest(ctx context.Context,
 	// +optional
 	kubeconfig string,
 	// +optional
+	// +default="http://monitoring-kube-prometheus-prometheus.monitoring:9090"
 	prometheus_url string,
 	// +optional
 	// +default=2
