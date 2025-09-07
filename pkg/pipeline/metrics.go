@@ -108,23 +108,27 @@ func extractStructuredData(value model.Value, query string) MetricsCollectorResu
 func (p *Pipeline) computeBenchmarkingResults(
 	ctx context.Context,
 	q *Query,
+	cncfProject string,
 	benchmarkJobDurationMins int,
 	benchmarkNamespace string,
 ) (BenchmarkingCollectorResults, error) {
 	queries := []string{
 		fmt.Sprintf(
-			`rate(container_cpu_usage_seconds_total{namespace="%s"}[%dm])`,
+			`rate(container_cpu_usage_seconds_total{namespace="%s", green-software.foundation/project="%s"}[%dm])`,
 			benchmarkNamespace,
+			cncfProject,
 			benchmarkJobDurationMins,
 		),
 		fmt.Sprintf(
-			`avg_over_time(container_memory_rss{namespace="%s"}[%dm])`,
+			`avg_over_time(container_memory_rss{namespace="%s", green-software.foundation/project="%s"}[%dm])`,
 			benchmarkNamespace,
+			cncfProject,
 			benchmarkJobDurationMins,
 		),
 		fmt.Sprintf(
-			`avg_over_time(container_memory_working_set_bytes{namespace="%s"}[%dm])`,
+			`avg_over_time(container_memory_working_set_bytes{namespace="%s", green-software.foundation/project="%s"}[%dm])`,
 			benchmarkNamespace,
+			cncfProject,
 			benchmarkJobDurationMins,
 		),
 	}

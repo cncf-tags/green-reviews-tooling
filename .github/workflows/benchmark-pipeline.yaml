@@ -31,7 +31,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  DAGGER_VERSION: "0.18.14"
+  DAGGER_VERSION: "0.18.17"
 
 defaults:
   run:

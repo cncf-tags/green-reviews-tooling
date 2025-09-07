@@ -13,6 +13,6 @@ jobs:
       - uses: dagger/dagger-for-github@v7
         with:
           module: "."
-          version: "0.18.14"
+          version: "0.18.17"
           args: benchmark-pipeline-test
               --source='.'

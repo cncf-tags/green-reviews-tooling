@@ -66,6 +66,7 @@ func (p *Pipeline) Benchmark(ctx context.Context,
 	results, err := p.computeBenchmarkingResults(
 		ctx,
 		q,
+		cncfProject,
 		benchmarkJobDurationMins,
 		benchmarkNamespace,
 	)
