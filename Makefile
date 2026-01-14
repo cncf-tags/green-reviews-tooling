@@ -21,6 +21,7 @@ install:
 	helm upgrade --install \
 		--namespace=dagger \
 		--create-namespace \
+		--version 0.18.17 \
 		dagger oci://registry.dagger.io/dagger-helm && \
 	kubectl wait \
 		--for condition=Ready \
