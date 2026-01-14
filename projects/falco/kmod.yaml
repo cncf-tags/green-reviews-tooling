@@ -33,3 +33,4 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/version: "$VERSION"
+      green-software.foundation/project: falco
