@@ -1,6 +1,9 @@
 package cmd
 
-import "fmt"
+import (
+	"fmt"
+	"net/url"
+)
 
 func Apply(manifest string) []string {
 	return []string{
@@ -92,5 +95,17 @@ func WaitForReadyPods(namespace string) []string {
 		"300s",
 		"--for",
 		"condition=Ready",
+	}
+}
+
+// QueryPrometheus executes an instant PromQL query via kubectl's API server proxy,
+// returning the raw JSON response from the Prometheus HTTP API.
+func QueryPrometheus(query string) []string {
+	path := "/api/v1/namespaces/monitoring/services/prometheus-kube-prometheus-prometheus:9090/proxy/api/v1/query?query=" + url.QueryEscape(query)
+	return []string{
+		"kubectl",
+		"get",
+		"--raw",
+		path,
 	}
 }

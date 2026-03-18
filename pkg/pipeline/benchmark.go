@@ -2,6 +2,7 @@ package pipeline
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"path"
@@ -50,8 +51,18 @@ func (p *Pipeline) Benchmark(ctx context.Context,
 	version,
 	benchmarkJobURL string,
 	benchmarkJobDurationMins int) (*dagger.Container, error) {
+	startTime := time.Now()
 	if _, err := p.benchmark(ctx, cncfProject, config, version, benchmarkJobURL, benchmarkJobDurationMins); err != nil {
 		log.Printf("benchmark failed: %v", err)
+	}
+	endTime := time.Now()
+
+	result, err := p.collect(ctx, cncfProject, config, version, benchmarkJobDurationMins, startTime, endTime)
+	if err != nil {
+		log.Printf("collect failed: %v", err)
+	} else {
+		resultJSON, _ := json.MarshalIndent(result, "", "  ")
+		log.Printf("benchmark result:\n%s", string(resultJSON))
 	}
 
 	if _, err := p.delete(ctx, cncfProject, config, benchmarkJobURL); err != nil {
